@@ -11,26 +11,33 @@
     "db:push": "prisma db push --schema ./prisma/schema",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate --schema ./prisma/schema",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
     "schema": "./schema"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "zod": "^4.0.2",
-    "express": "^5.1.0",
+    "@prisma/client": "^6.12.0",
+    "bcrypt": "^6.0.0",
+    "better-auth": "^1.2.10",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "@prisma/client": "^6.9.0",
-    "better-auth": "^1.2.10"
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.0.2"
   },
   "devDependencies": {
-    "tsdown": "^0.12.9",
-    "typescript": "^5.8.2",
-    "@types/express": "^5.0.1",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.17",
-    "tsx": "^4.19.2",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.13.11",
-    "prisma": "^6.9.0"
+    "prisma": "^6.12.0",
+    "tsdown": "^0.12.9",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2"
   }
 }

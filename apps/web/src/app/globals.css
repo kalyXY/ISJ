@@ -1,0 +1,15 @@
+/* Preflight (le reset CSS de base) */
+@import "tailwindcss/preflight";
+
+/* Utilitaires Tailwind */
+@tailwind utilities;
+
+/* Variables CSS globales personnalisées */
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Poppins', var(--font-sans);
+  --font-mono: 'Roboto', monospace;
+}
+
+/* Import du fichier principal de styles */
+@import '../index.css'; 

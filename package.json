@@ -15,7 +15,12 @@
     "db:push": "npm run db:push --workspace server",
     "db:studio": "npm run db:studio --workspace server",
     "db:generate": "npm run db:generate --workspace server",
-    "db:migrate": "npm run db:migrate --workspace server"
+    "db:migrate": "npm run db:migrate --workspace server",
+    "db:seed": "npm run db:seed --workspace server"
   },
-  "packageManager": "npm@11.2.0"
+  "packageManager": "npm@11.2.0",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  }
 }

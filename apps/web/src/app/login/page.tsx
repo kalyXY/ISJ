@@ -1,16 +1,15 @@
 "use client"
 
-import SignInForm from "@/components/sign-in-form";
-import SignUpForm from "@/components/sign-up-form";
-import { useState } from "react";
-
+import { AuthLayout } from "@/components/auth-layout";
+import LoginForm from "@/components/login-form";
 
 export default function LoginPage() {
-  const [showSignIn, setShowSignIn] = useState(false);
-
-  return showSignIn ? (
-    <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
-  ) : (
-    <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
+  return (
+    <AuthLayout
+      title="École Saint Joseph"
+      subtitle="Système de gestion scolaire"
+    >
+      <LoginForm />
+    </AuthLayout>
   );
 }

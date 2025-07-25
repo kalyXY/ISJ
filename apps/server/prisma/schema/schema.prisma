@@ -8,3 +8,145 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model Student {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName      String
+  lastName       String
+  gender         String
+  birthDate      DateTime
+  class          String
+  promotion      String
+  matricule      String   @unique
+  parentPhone    String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  classeId       String?  @db.ObjectId
+  classe         Classe?  @relation(fields: [classeId], references: [id])
+}
+
+// Modèles pour l'authentification
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName     String
+  lastName      String
+  email         String    @unique
+  password      String
+  role          String    @default("pending_parent") // Valeurs possibles: "admin", "pending_parent"
+  status        String    @default("en_attente") // Valeurs possibles: "active", "inactive", "en_attente"
+  resetToken    String?   // Pour mot de passe oublié
+  resetExpires  DateTime?
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  accountId             String
+  providerId            String
+  userId                String    @db.ObjectId
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verifications")
+}
+
+// Modèles pour la gestion académique
+model Section {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  nom       String    @unique
+  classes   Classe[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("sections")
+}
+
+model Option {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  nom       String    @unique
+  classes   Classe[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("options")
+}
+
+model Classe {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  nom           String
+  sectionId     String    @db.ObjectId
+  optionId      String?   @db.ObjectId
+  anneeScolaire String
+  section       Section   @relation(fields: [sectionId], references: [id])
+  option        Option?   @relation(fields: [optionId], references: [id])
+  matieres      Matiere[]
+  students      Student[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("classes")
+}
+
+model Matiere {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nom       String
+  classeId  String   @db.ObjectId
+  classe    Classe   @relation(fields: [classeId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("matieres")
+}
+
+model AnneeScolaire {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  nom       String   @unique // Par exemple: "2023-2024"
+  debut     DateTime
+  fin       DateTime
+  actuelle  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("annees_scolaires")
+}

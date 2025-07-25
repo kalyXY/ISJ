@@ -2,7 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import z from "zod";
-import Loader from "./loader";
+import Spinner from "./ui/spinner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -50,7 +50,14 @@ export default function SignUpForm({
   });
 
   if (isPending) {
-    return <Loader />;
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="text-center">
+          <Spinner size="lg" color="primary" />
+          <p className="mt-4 text-blue-600 font-medium">Chargement...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
