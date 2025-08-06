@@ -119,10 +119,11 @@ model Option {
 model Classe {
   id                  String            @id @default(auto()) @map("_id") @db.ObjectId
   nom                 String
-  sectionId           String            @db.ObjectId
+  salle               String?           // A, B, C, etc. pour les variantes physiques
+  sectionId           String?           @db.ObjectId
   optionId            String?           @db.ObjectId
   anneeScolaire       String
-  section             Section           @relation(fields: [sectionId], references: [id])
+  section             Section?          @relation(fields: [sectionId], references: [id])
   option              Option?           @relation(fields: [optionId], references: [id])
   matieres            Matiere[]
   students            Student[]

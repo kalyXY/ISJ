@@ -5,9 +5,23 @@ import { z } from 'zod';
 // Schéma de validation pour la création et la mise à jour d'une classe
 const classeSchema = z.object({
   nom: z.string().min(1, 'Le nom est requis'),
-  sectionId: z.string().min(1, 'La section est requise'),
+  salle: z.string().optional(),
+  sectionId: z.string().optional().nullable(),
   optionId: z.string().optional().nullable(),
   anneeScolaire: z.string().min(1, 'L\'année scolaire est requise'),
+}).refine((data) => {
+  // Pour les classes de 7ème et 8ème, section et option ne sont pas requises
+  const isBasicClass = data.nom.includes('7ème') || data.nom.includes('8ème');
+  
+  if (!isBasicClass) {
+    // Pour les autres classes (1ère à 4ème), la section est requise
+    return data.sectionId && data.sectionId.length > 0;
+  }
+  
+  return true;
+}, {
+  message: 'La section est requise pour les classes de 1ère à 4ème',
+  path: ['sectionId']
 });
 
 // Récupérer toutes les classes
@@ -97,16 +111,18 @@ export const createClasse = async (req: Request, res: Response) => {
       });
     }
 
-    // Vérifier si la section existe
-    const section = await prisma.section.findUnique({
-      where: { id: validationResult.data.sectionId },
-    });
-
-    if (!section) {
-      return res.status(400).json({
-        success: false,
-        message: 'La section spécifiée n\'existe pas',
+    // Vérifier si la section existe (seulement si spécifiée)
+    if (validationResult.data.sectionId) {
+      const section = await prisma.section.findUnique({
+        where: { id: validationResult.data.sectionId },
       });
+
+      if (!section) {
+        return res.status(400).json({
+          success: false,
+          message: 'La section spécifiée n\'existe pas',
+        });
+      }
     }
 
     // Vérifier si l'option existe (si spécifiée)
@@ -174,16 +190,18 @@ export const updateClasse = async (req: Request, res: Response) => {
       });
     }
 
-    // Vérifier si la section existe
-    const section = await prisma.section.findUnique({
-      where: { id: validationResult.data.sectionId },
-    });
-
-    if (!section) {
-      return res.status(400).json({
-        success: false,
-        message: 'La section spécifiée n\'existe pas',
+    // Vérifier si la section existe (seulement si spécifiée)
+    if (validationResult.data.sectionId) {
+      const section = await prisma.section.findUnique({
+        where: { id: validationResult.data.sectionId },
       });
+
+      if (!section) {
+        return res.status(400).json({
+          success: false,
+          message: 'La section spécifiée n\'existe pas',
+        });
+      }
     }
 
     // Vérifier si l'option existe (si spécifiée)
