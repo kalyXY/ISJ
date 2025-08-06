@@ -17,16 +17,26 @@ export const getAllClasses = async (req: Request, res: Response) => {
       include: {
         section: true,
         option: true,
-        _count: {
-          select: { students: true, matieres: true }
+        matieres: true,
+        students: {
+          where: { isActive: true }
         }
       },
       orderBy: { nom: 'asc' },
     });
 
+    // Calculer le nombre d'étudiants actifs pour chaque classe
+    const classesWithActiveCount = classes.map(classe => ({
+      ...classe,
+      _count: {
+        students: classe.students.length,
+        matieres: classe.matieres.length
+      }
+    }));
+
     return res.status(200).json({
       success: true,
-      data: classes,
+      data: classesWithActiveCount,
     });
   } catch (error: any) {
     console.error('❌ Erreur lors de la récupération des classes:', error);
@@ -283,16 +293,26 @@ export const getClassesBySectionAndOption = async (req: Request, res: Response) 
       include: {
         section: true,
         option: true,
-        _count: {
-          select: { students: true, matieres: true }
+        matieres: true,
+        students: {
+          where: { isActive: true }
         }
       },
       orderBy: { nom: 'asc' },
     });
 
+    // Calculer le nombre d'étudiants actifs pour chaque classe
+    const classesWithActiveCount = classes.map(classe => ({
+      ...classe,
+      _count: {
+        students: classe.students.length,
+        matieres: classe.matieres.length
+      }
+    }));
+
     return res.status(200).json({
       success: true,
-      data: classes,
+      data: classesWithActiveCount,
     });
   } catch (error: any) {
     console.error('❌ Erreur lors de la récupération des classes filtrées:', error);
