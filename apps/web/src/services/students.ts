@@ -39,25 +39,4 @@ export const archiveStudent = async (id: string): Promise<void> => {
 export const generateStudentInfo = async (section: string, option: string): Promise<{ promotion: string; matricule: string }> => {
   const res = await axiosInstance.post('/academics/eleves/generate-info', { section, option });
   return res.data.data;
-};
-
-// Fonction server-side pour Next.js App Router (SSR/SSG)
-export const getStudentsServer = async (params?: { page?: number; limit?: number; search?: string }): Promise<StudentPagination> => {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL || ''}/academics/eleves`);
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined) url.searchParams.append(key, String(value));
-    });
-  }
-  const res = await fetch(url.toString(), {
-    // Revalidation côté Next.js (ex: 60s)
-    next: { revalidate: 60 },
-    headers: {
-      'Content-Type': 'application/json',
-      // Ajouter l'authentification si besoin (ex: cookies, token)
-    },
-    // credentials: 'include', // si besoin
-  });
-  if (!res.ok) throw new Error('Erreur lors du chargement des élèves');
-  return res.json();
 }; 
