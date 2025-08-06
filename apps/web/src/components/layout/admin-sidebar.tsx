@@ -35,20 +35,18 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     router.prefetch(href);
   }, [router]);
   
-  // Prefetch all navigation routes on component mount
+  // Prefetch important routes on component mount
   useEffect(() => {
-    const routesToPrefetch = [
+    const importantRoutes = [
       "/admin/dashboard",
-      "/admin/users", 
-      "/admin/users/create",
+      "/admin/users",
       "/admin/students",
-      "/admin/teachers",
-      "/admin/academique"
+      "/admin/teachers"
     ];
     
-    // Prefetch routes with a slight delay to avoid blocking initial render
+    // Prefetch with a small delay to avoid blocking initial render
     const timer = setTimeout(() => {
-      routesToPrefetch.forEach(route => prefetchRoute(route));
+      importantRoutes.forEach(route => prefetchRoute(route));
     }, 100);
     
     return () => clearTimeout(timer);
@@ -166,7 +164,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                       prefetchRoute(item.href);
                     }
                   }}
-                  prefetch={true}
+                  prefetch={false} // We handle prefetch manually
                 >
                   <span className={cn(
                     "transition-transform duration-normal",

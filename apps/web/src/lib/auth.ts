@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 // Types
 export type UserRole = 'admin' | 'enseignant' | 'eleve' | 'parent' | 'parent_attente';
@@ -373,57 +373,56 @@ export const useRequireAuth = (allowedRoles: UserRole[] = []) => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   
-  // Memoize the verification function to avoid unnecessary re-runs
-  const verifyAuth = useCallback(async () => {
-    if (authChecked || isLoading) return;
-    
-    try {
-      // Only check auth if no user is present
-      if (!user) {
-        await checkAuth();
-      } else {
-        // Refresh token silently if user exists (non-blocking)
-        refreshAuthToken().catch(console.error);
-      }
-    } finally {
-      setAuthChecked(true);
-    }
-  }, [checkAuth, isLoading, authChecked, refreshAuthToken, user]);
-  
   // Vérifier l'authentification au chargement du composant
   useEffect(() => {
+    // Éviter les vérifications multiples
+    if (authChecked) return;
+    
+    const verifyAuth = async () => {
+      if (!isLoading && !authChecked) {
+        // Rafraîchir le token si l'utilisateur existe déjà
+        if (user) {
+          await refreshAuthToken();
+        } else {
+          // Sinon essayer de récupérer l'utilisateur
+        await checkAuth();
+        }
+        setAuthChecked(true);
+      }
+    };
+    
     verifyAuth();
-  }, [verifyAuth]);
+  }, [checkAuth, isLoading, authChecked, refreshAuthToken, user]);
   
-  // Memoize redirect logic
-  const shouldRedirect = useMemo(() => {
-    if (!authChecked || isLoading || isRedirecting) return null;
-    
-    if (!user) {
-      return { type: 'login', path: `/login${typeof window !== 'undefined' ? `?redirect=${encodeURIComponent(window.location.pathname)}` : ''}` };
-    }
-    
-    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-      const dashboardPaths = {
-        admin: '/admin/dashboard',
-        parent_attente: '/pending-account',
-        enseignant: '/teacher/dashboard',
-        eleve: '/student/dashboard',
-        parent: '/parent/dashboard'
-      };
-      return { type: 'role', path: dashboardPaths[user.role] || '/' };
-    }
-    
-    return null;
-  }, [user, isLoading, allowedRoles, authChecked, isRedirecting]);
-  
-  // Handle redirects
+  // Rediriger en fonction du rôle
   useEffect(() => {
-    if (shouldRedirect && !isRedirecting) {
-      setIsRedirecting(true);
-      router.push(shouldRedirect.path);
+    // Ne rediriger que si la vérification est terminée et qu'on ne redirige pas déjà
+    if (authChecked && !isLoading && !isRedirecting) {
+      if (!user) {
+        setIsRedirecting(true);
+        // Rediriger vers login avec le chemin de retour
+        const returnPath = typeof window !== 'undefined' ? window.location.pathname : '';
+        const loginPath = `/login${returnPath ? `?redirect=${encodeURIComponent(returnPath)}` : ''}`;
+        router.push(loginPath);
+      } else if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+        setIsRedirecting(true);
+        // Rediriger en fonction du rôle
+        if (user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else if (user.role === 'parent_attente') {
+          router.push('/pending-account');
+        } else if (user.role === 'enseignant') {
+          router.push('/teacher/dashboard');
+        } else if (user.role === 'eleve') {
+          router.push('/student/dashboard');
+        } else if (user.role === 'parent') {
+          router.push('/parent/dashboard');
+        } else {
+          router.push('/');
+        }
+      }
     }
-  }, [shouldRedirect, router, isRedirecting]);
+  }, [user, isLoading, router, allowedRoles, authChecked, isRedirecting]);
   
   // État combiné pour simplifier l'utilisation dans les composants
   const combinedLoading = isLoading || !authChecked;

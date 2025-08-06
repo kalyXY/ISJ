@@ -1,8 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
-import { DashboardSkeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart3,
@@ -17,23 +17,37 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useDashboardData } from "@/services/dashboard";
+import { fetchDashboardData, DashboardData } from "@/services/dashboard";
 import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
   const { user, isLoading: authLoading } = useRequireAuth(["admin"]);
   const router = useRouter();
-  
-  // Use React Query hook for optimized data fetching
-  const { 
-    data: dashboardData, 
-    isLoading: dataLoading, 
-    error: dataError,
-    isError 
-  } = useDashboardData();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Show loading state while authenticating or if no user yet
-  if (authLoading || !user) {
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const data = await fetchDashboardData();
+        setDashboardData(data);
+        setError(null);
+      } catch (err) {
+        console.error("Erreur lors du chargement des données du tableau de bord", err);
+        setError("Impossible de charger les données du tableau de bord");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [user]);
+
+  if (authLoading || isLoading) {
     return (
       <div className="flex h-[calc(100vh-8rem)] w-full items-center justify-center">
         <div className="text-center animate-pulse">
@@ -44,20 +58,12 @@ export default function AdminDashboard() {
     );
   }
 
-  // Show loading state for data with skeleton
-  if (dataLoading) {
-    return <DashboardSkeleton />;
-  }
-
-  // Show error state
-  if (isError || dataError) {
+  if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
         <AlertCircle className="h-12 w-12 text-destructive mb-4" />
         <h2 className="text-2xl font-bold mb-2">Erreur</h2>
-        <p className="text-muted-foreground mb-4">
-          {dataError?.message || "Impossible de charger les données du tableau de bord"}
-        </p>
+        <p className="text-muted-foreground mb-4">{error}</p>
         <Button onClick={() => window.location.reload()}>
           Réessayer
         </Button>

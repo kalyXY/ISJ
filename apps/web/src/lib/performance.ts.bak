@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Performance monitoring utilities
  * Helps identify performance bottlenecks in the application
@@ -171,5 +173,3 @@ export function initWebVitals(): void {
     // Browser doesn't support this metric
   }
 }
-
-import React from 'react';

@@ -1,61 +1,50 @@
 "use client";
 
-import { ReactNode } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ThemeProvider } from "next-themes";
-import { Toaster } from "sonner";
+import { ReactNode, useEffect, useRef } from "react";
+import { ThemeProvider } from "./theme-provider";
+import { Toaster } from "./ui/sonner";
+import { useAuthStore } from "@/lib/auth";
 
-// Create a client with optimized settings
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Cache data for 5 minutes by default
-      staleTime: 5 * 60 * 1000,
-      // Keep data in cache for 10 minutes
-      gcTime: 10 * 60 * 1000,
-      // Retry failed requests
-      retry: (failureCount, error: any) => {
-        // Don't retry on 4xx errors except 408, 429
-        if (error?.response?.status >= 400 && error?.response?.status < 500) {
-          return error?.response?.status === 408 || error?.response?.status === 429;
-        }
-        return failureCount < 3;
-      },
-      // Refetch on window focus for fresh data
-      refetchOnWindowFocus: true,
-      // Background refetch interval for important data
-      refetchInterval: 30 * 60 * 1000, // 30 minutes
-    },
-    mutations: {
-      // Retry mutations once on failure
-      retry: 1,
-    },
-  },
-});
-
-interface ProvidersProps {
-  children: ReactNode;
-}
-
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({
+  children
+}: {
+  children: React.ReactNode
+}) {
+  // Vérifier l'authentification au chargement de l'application
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const authChecked = useRef(false);
+  
+  useEffect(() => {
+    // Éviter les vérifications multiples
+    if (authChecked.current) return;
+    
+    // Récupérer le token du localStorage ou des cookies (côté client uniquement)
+    if (typeof window !== 'undefined') {
+      // Vérifier si un token existe dans les cookies
+      const hasCookieToken = document.cookie.split(';').some(c => c.trim().startsWith('token='));
+      // Vérifier si un token existe dans localStorage
+      const localToken = localStorage.getItem('auth-token');
+      
+      // Vérifier l'authentification si un token existe dans l'un ou l'autre
+      if ((hasCookieToken || localToken) && !authChecked.current) {
+        console.log("🔒 Token trouvé, vérification de l'authentification...");
+        checkAuth();
+        authChecked.current = true;
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Dépendance vide pour n'exécuter qu'au montage du composant
+  
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem={true}
-        disableTransitionOnChange={false}
-      >
-        {children}
-        <Toaster 
-          position="top-right"
-          expand={true}
-          richColors={true}
-          closeButton={true}
-        />
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      themes={["light", "dark", "contrast", "system"]}
+    >
+      {children}
+      <Toaster richColors />
+    </ThemeProvider>
   );
 }
