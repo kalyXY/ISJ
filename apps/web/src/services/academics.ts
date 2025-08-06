@@ -18,7 +18,8 @@ export interface Option {
 export interface Classe {
   id: string;
   nom: string;
-  sectionId: string;
+  salle?: string;
+  sectionId?: string;
   optionId?: string;
   anneeScolaire: string;
   section?: Section;
@@ -122,7 +123,8 @@ export const getClasseById = async (id: string): Promise<Classe> => {
 
 export const createClasse = async (data: { 
   nom: string;
-  sectionId: string;
+  salle?: string;
+  sectionId?: string;
   optionId?: string;
   anneeScolaire: string;
 }): Promise<Classe> => {
@@ -132,7 +134,8 @@ export const createClasse = async (data: {
 
 export const updateClasse = async (id: string, data: { 
   nom: string;
-  sectionId: string;
+  salle?: string;
+  sectionId?: string;
   optionId?: string;
   anneeScolaire: string;
 }): Promise<Classe> => {
