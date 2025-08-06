@@ -1589,6 +1589,7 @@ export type OptionScalarFieldEnum = (typeof OptionScalarFieldEnum)[keyof typeof 
 export const ClasseScalarFieldEnum = {
   id: 'id',
   nom: 'nom',
+  salle: 'salle',
   sectionId: 'sectionId',
   optionId: 'optionId',
   anneeScolaire: 'anneeScolaire',

@@ -285,9 +285,9 @@ export type SectionMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type SectionScalarRelationFilter = {
-  is?: Prisma.SectionWhereInput
-  isNot?: Prisma.SectionWhereInput
+export type SectionNullableScalarRelationFilter = {
+  is?: Prisma.SectionWhereInput | null
+  isNot?: Prisma.SectionWhereInput | null
 }
 
 export type SectionCreateNestedOneWithoutClassesInput = {
@@ -296,10 +296,12 @@ export type SectionCreateNestedOneWithoutClassesInput = {
   connect?: Prisma.SectionWhereUniqueInput
 }
 
-export type SectionUpdateOneRequiredWithoutClassesNestedInput = {
+export type SectionUpdateOneWithoutClassesNestedInput = {
   create?: Prisma.XOR<Prisma.SectionCreateWithoutClassesInput, Prisma.SectionUncheckedCreateWithoutClassesInput>
   connectOrCreate?: Prisma.SectionCreateOrConnectWithoutClassesInput
   upsert?: Prisma.SectionUpsertWithoutClassesInput
+  disconnect?: boolean
+  delete?: Prisma.SectionWhereInput | boolean
   connect?: Prisma.SectionWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.SectionUpdateToOneWithWhereWithoutClassesInput, Prisma.SectionUpdateWithoutClassesInput>, Prisma.SectionUncheckedUpdateWithoutClassesInput>
 }
