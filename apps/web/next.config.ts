@@ -6,21 +6,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   
   // Performance optimizations
-  swcMinify: true,
   compress: true,
   
-  // Experimental features for better performance
-  experimental: {
-    // Enable optimistic client-side prefetching
-    optimisticClientCache: true,
-    // Optimize server components
-    serverComponentsExternalPackages: ['lucide-react'],
-    // Better bundle analysis
-    bundlePagesRouterDependencies: true,
-  },
-  
-  // Compile only necessary packages
-  transpilePackages: ['lucide-react'],
+  // Server external packages (moved from experimental)
+  serverExternalPackages: ['lucide-react'],
   
   // Image optimization
   images: {
