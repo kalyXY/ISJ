@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { UserRole, useRequireAuth } from "@/lib/auth";
+import { type ReactNode } from "react";
+import { type UserRole, useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
 
 interface AuthGuardProps {
@@ -52,7 +52,7 @@ export function AdminGuard({ children, fallback }: Omit<AuthGuardProps, "allowed
 // Composant spécifique pour les parents en attente
 export function PendingParentGuard({ children, fallback }: Omit<AuthGuardProps, "allowedRoles">) {
   return (
-    <AuthGuard allowedRoles={["pending_parent"]} fallback={fallback}>
+    <AuthGuard allowedRoles={["parent_attente"]} fallback={fallback}>
       {children}
     </AuthGuard>
   );

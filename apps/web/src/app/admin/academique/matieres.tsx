@@ -7,8 +7,8 @@ import {
   updateMatiere, 
   deleteMatiere,
   getClasses,
-  Matiere,
-  Classe
+  type Matiere,
+  type Classe
 } from '@/services/academics';
 import { Button } from '@/components/ui/button';
 import {

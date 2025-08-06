@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { UserRole, useAuth } from "@/lib/auth";
+import { type ReactNode } from "react";
+import { type UserRole, useAuth } from "@/lib/auth";
 
 interface RoleBasedProps {
   children: ReactNode;
@@ -63,7 +63,7 @@ export function ParentContent({ children, fallback }: Omit<RoleBasedProps, "role
 // Composant pour afficher du contenu uniquement pour les administrateurs ou les enseignants
 export function AdminOrTeacherContent({ children, fallback }: Omit<RoleBasedProps, "roles">) {
   return (
-    <RoleBasedContent roles={["admin", "teacher"]} fallback={fallback}>
+    <RoleBasedContent roles={["admin", "enseignant"]} fallback={fallback}>
       {children}
     </RoleBasedContent>
   );

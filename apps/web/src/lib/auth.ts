@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 
 // Types
-export type UserRole = 'admin' | 'enseignant' | 'eleve' | 'parent' | 'parent_attente';
+export type UserRole = 'admin' | 'enseignant' | 'eleve' | 'parent' | 'parent_attente' | 'pending_parent';
 
 export interface User {
   id: string;
