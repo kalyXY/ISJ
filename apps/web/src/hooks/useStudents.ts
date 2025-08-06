@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 // Fonction pour construire l'URL avec les filtres
 const buildStudentsUrl = (filters?: StudentFilters) => {
-  if (!filters) return '/api/students';
+  if (!filters) return '/api/academics/eleves';
   
   const params = new URLSearchParams();
   
@@ -19,7 +19,7 @@ const buildStudentsUrl = (filters?: StudentFilters) => {
     params.append('isActive', filters.isActive.toString());
   }
   
-  return `/api/students?${params.toString()}`;
+  return `/api/academics/eleves?${params.toString()}`;
 };
 
 // Fetcher pour SWR
@@ -46,7 +46,7 @@ export function useStudents(filters?: StudentFilters) {
 // Hook pour récupérer un élève par son ID
 export function useStudent(id: string) {
   const { data, error, isLoading } = useSWR<Student>(
-    id ? `/api/students/${id}` : null,
+    id ? `/api/academics/eleves/${id}` : null,
     fetcher
   );
   
@@ -68,8 +68,8 @@ export function useStudentActions() {
     setError(null);
     
     try {
-      const response = await api.post('/api/students', data);
-      await mutate('/api/students'); // Invalider le cache
+      const response = await api.post('/api/academics/eleves', data);
+      await mutate('/api/academics/eleves'); // Invalider le cache
       toast.success('Élève ajouté avec succès');
       return response.data;
     } catch (err: any) {
@@ -88,9 +88,9 @@ export function useStudentActions() {
     setError(null);
     
     try {
-      const response = await api.put(`/api/students/${id}`, data);
-      await mutate('/api/students'); // Invalider le cache global
-      await mutate(`/api/students/${id}`); // Invalider le cache spécifique
+      const response = await api.put(`/api/academics/eleves/${id}`, data);
+      await mutate('/api/academics/eleves'); // Invalider le cache global
+      await mutate(`/api/academics/eleves/${id}`); // Invalider le cache spécifique
       toast.success('Élève mis à jour avec succès');
       return response.data;
     } catch (err: any) {
@@ -109,8 +109,8 @@ export function useStudentActions() {
     setError(null);
     
     try {
-      await api.delete(`/api/students/${id}`);
-      await mutate('/api/students'); // Invalider le cache
+      await api.delete(`/api/academics/eleves/${id}`);
+      await mutate('/api/academics/eleves'); // Invalider le cache
       toast.success('Élève supprimé avec succès');
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Erreur lors de la suppression de l\'élève';

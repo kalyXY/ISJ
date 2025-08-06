@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { useEffect, useState } from 'react';
 
 // Types
-export type UserRole = 'admin' | 'teacher' | 'student' | 'parent' | 'pending_parent';
+export type UserRole = 'admin' | 'enseignant' | 'eleve' | 'parent' | 'parent_attente';
 
 export interface User {
   id: string;
@@ -326,7 +326,7 @@ export const useAuth = () => {
   // Fonctions utilitaires pour vérifier les rôles
   const isAdmin = !!user && user.role === 'admin';
   const isPendingParent = !!user && user.role === 'pending_parent';
-  const isTeacher = !!user && user.role === 'teacher';
+  const isTeacher = !!user && user.role === 'enseignant';
   const isStudent = !!user && user.role === 'student';
   const isParent = !!user && user.role === 'parent';
   const isAuthenticated = !!user;
@@ -409,11 +409,11 @@ export const useRequireAuth = (allowedRoles: UserRole[] = []) => {
         // Rediriger en fonction du rôle
         if (user.role === 'admin') {
           router.push('/admin/dashboard');
-        } else if (user.role === 'pending_parent') {
+        } else if (user.role === 'parent_attente') {
           router.push('/pending-account');
-        } else if (user.role === 'teacher') {
+        } else if (user.role === 'enseignant') {
           router.push('/teacher/dashboard');
-        } else if (user.role === 'student') {
+        } else if (user.role === 'eleve') {
           router.push('/student/dashboard');
         } else if (user.role === 'parent') {
           router.push('/parent/dashboard');

@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
 }
 
@@ -16,6 +16,8 @@ model Student {
   gender         String
   birthDate      DateTime
   class          String
+  section        String?
+  option         String?
   promotion      String
   matricule      String   @unique
   parentPhone    String
@@ -24,18 +26,19 @@ model Student {
   updatedAt      DateTime @updatedAt
   classeId       String?  @db.ObjectId
   classe         Classe?  @relation(fields: [classeId], references: [id])
+  userId         String?  @db.ObjectId
+  user           User?    @relation(fields: [userId], references: [id], name: "UserStudents")
 }
 
-// Modèles pour l'authentification
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName     String
   lastName      String
   email         String    @unique
   password      String
-  role          String    @default("pending_parent") // Valeurs possibles: "admin", "pending_parent"
-  status        String    @default("en_attente") // Valeurs possibles: "active", "inactive", "en_attente"
-  resetToken    String?   // Pour mot de passe oublié
+  role          String    @default("pending_parent")
+  status        String    @default("en_attente")
+  resetToken    String?
   resetExpires  DateTime?
   emailVerified Boolean   @default(false)
   image         String?
@@ -43,6 +46,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  students      Student[] @relation("UserStudents")
+  enseignants   Enseignant[] @relation("UserEnseignants")
 
   @@map("users")
 }
@@ -91,7 +96,6 @@ model Verification {
   @@map("verifications")
 }
 
-// Modèles pour la gestion académique
 model Section {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   nom       String    @unique
@@ -113,35 +117,66 @@ model Option {
 }
 
 model Classe {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  nom           String
-  sectionId     String    @db.ObjectId
-  optionId      String?   @db.ObjectId
-  anneeScolaire String
-  section       Section   @relation(fields: [sectionId], references: [id])
-  option        Option?   @relation(fields: [optionId], references: [id])
-  matieres      Matiere[]
-  students      Student[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  nom                 String
+  sectionId           String            @db.ObjectId
+  optionId            String?           @db.ObjectId
+  anneeScolaire       String
+  section             Section           @relation(fields: [sectionId], references: [id])
+  option              Option?           @relation(fields: [optionId], references: [id])
+  matieres            Matiere[]
+  students            Student[]
+  enseignantsClasses  EnseignantClasse[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 
   @@map("classes")
 }
 
 model Matiere {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  nom       String
-  classeId  String   @db.ObjectId
-  classe    Classe   @relation(fields: [classeId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  nom                String
+  classeId           String             @db.ObjectId
+  classe             Classe             @relation(fields: [classeId], references: [id])
+  enseignantsMatieres EnseignantMatiere[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   @@map("matieres")
 }
 
+model Enseignant {
+  id                   String              @id @default(auto()) @map("_id") @db.ObjectId
+  nom                  String
+  email                String              @unique
+  enseignantMatieres   EnseignantMatiere[]
+  enseignantClasses    EnseignantClasse[]
+  presences            Presence[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  userId               String?             @db.ObjectId
+  user                 User?               @relation(fields: [userId], references: [id], name: "UserEnseignants")
+}
+
+model EnseignantClasse {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  enseignantId  String      @db.ObjectId
+  classeId      String      @db.ObjectId
+  enseignant    Enseignant  @relation(fields: [enseignantId], references: [id])
+  classe        Classe      @relation(fields: [classeId], references: [id])
+}
+
+model EnseignantMatiere {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  enseignantId  String      @db.ObjectId
+  matiereId     String      @db.ObjectId
+  enseignant    Enseignant  @relation(fields: [enseignantId], references: [id])
+  matiere       Matiere     @relation(fields: [matiereId], references: [id])
+}
+
 model AnneeScolaire {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  nom       String   @unique // Par exemple: "2023-2024"
+  nom       String   @unique
   debut     DateTime
   fin       DateTime
   actuelle  Boolean  @default(false)
@@ -149,4 +184,12 @@ model AnneeScolaire {
   updatedAt DateTime @updatedAt
 
   @@map("annees_scolaires")
+}
+
+model Presence {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  enseignantId String     @db.ObjectId
+  date         DateTime
+  status       String
+  enseignant   Enseignant @relation(fields: [enseignantId], references: [id])
 }

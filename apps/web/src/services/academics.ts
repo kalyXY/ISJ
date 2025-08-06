@@ -106,6 +106,15 @@ export const getClasses = async (): Promise<Classe[]> => {
   return response.data.data;
 };
 
+export const getClassesBySectionAndOption = async (sectionId?: string, optionId?: string): Promise<Classe[]> => {
+  const params = new URLSearchParams();
+  if (sectionId) params.append('sectionId', sectionId);
+  if (optionId) params.append('optionId', optionId);
+  
+  const response = await axiosInstance.get(`/academics/classes/filter?${params.toString()}`);
+  return response.data.data;
+};
+
 export const getClasseById = async (id: string): Promise<Classe> => {
   const response = await axiosInstance.get(`/academics/classes/${id}`);
   return response.data.data;
@@ -178,6 +187,11 @@ export const getAnneesScolaires = async (): Promise<AnneeScolaire[]> => {
 };
 
 export const getAnneeScolareCourante = async (): Promise<AnneeScolaire> => {
+  const response = await axiosInstance.get(`/academics/annees/courante`);
+  return response.data.data;
+};
+
+export const getAnneeScolaireActive = async (): Promise<AnneeScolaire> => {
   const response = await axiosInstance.get(`/academics/annees/courante`);
   return response.data.data;
 };

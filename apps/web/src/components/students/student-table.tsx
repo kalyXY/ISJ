@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Student } from "@/types/student";
+import { type Student } from "@/types/student";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -29,10 +29,12 @@ import { useRouter } from "next/navigation";
 
 interface StudentTableProps {
   students: Student[];
+  loading?: boolean;
   onEdit: (student: Student) => void;
+  onArchive?: (id: string) => void;
 }
 
-export function StudentTable({ students, onEdit }: StudentTableProps) {
+export function StudentTable({ students, loading = false, onEdit, onArchive }: StudentTableProps) {
   const router = useRouter();
   const { deleteStudent, isLoading } = useStudentActions();
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
@@ -41,7 +43,11 @@ export function StudentTable({ students, onEdit }: StudentTableProps) {
     if (!studentToDelete) return;
     
     try {
-      await deleteStudent(studentToDelete.id);
+      if (onArchive) {
+        await onArchive(studentToDelete.id);
+      } else {
+        await deleteStudent(studentToDelete.id);
+      }
       setStudentToDelete(null);
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
@@ -72,7 +78,13 @@ export function StudentTable({ students, onEdit }: StudentTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {students.length === 0 ? (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                Chargement...
+              </TableCell>
+            </TableRow>
+          ) : students.length === 0 ? (
             <TableRow>
               <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                 Aucun élève trouvé
@@ -115,7 +127,7 @@ export function StudentTable({ students, onEdit }: StudentTableProps) {
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setStudentToDelete(student)}>
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Supprimer
+                        {onArchive ? "Archiver" : "Supprimer"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -129,9 +141,9 @@ export function StudentTable({ students, onEdit }: StudentTableProps) {
       <AlertDialog open={!!studentToDelete} onOpenChange={(open) => !open && setStudentToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet élève ?</AlertDialogTitle>
+            <AlertDialogTitle>Êtes-vous sûr de vouloir {onArchive ? "archiver" : "supprimer"} cet élève ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action est irréversible. Cela supprimera définitivement l'élève {studentToDelete?.lastName} {studentToDelete?.firstName} (matricule: {studentToDelete?.matricule}) de la base de données.
+              Cette action est irréversible. Cela {onArchive ? "archivera" : "supprimera définitivement"} l'élève {studentToDelete?.lastName} {studentToDelete?.firstName} (matricule: {studentToDelete?.matricule}) de la base de données.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -141,7 +153,7 @@ export function StudentTable({ students, onEdit }: StudentTableProps) {
               disabled={isLoading}
               className="bg-destructive hover:bg-destructive/90"
             >
-              {isLoading ? "Suppression..." : "Supprimer"}
+              {isLoading ? (onArchive ? "Archivage..." : "Suppression...") : (onArchive ? "Archiver" : "Supprimer")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -209,7 +209,7 @@ export type EnseignantMatiereScalarWhereWithAggregatesInput = {
 export type EnseignantMatiereCreateInput = {
   id?: string
   enseignant: Prisma.EnseignantCreateNestedOneWithoutEnseignantMatieresInput
-  matiere: Prisma.MatiereCreateNestedOneWithoutEnseignantMatieresInput
+  matiere: Prisma.MatiereCreateNestedOneWithoutEnseignantsMatieresInput
 }
 
 export type EnseignantMatiereUncheckedCreateInput = {
@@ -220,7 +220,7 @@ export type EnseignantMatiereUncheckedCreateInput = {
 
 export type EnseignantMatiereUpdateInput = {
   enseignant?: Prisma.EnseignantUpdateOneRequiredWithoutEnseignantMatieresNestedInput
-  matiere?: Prisma.MatiereUpdateOneRequiredWithoutEnseignantMatieresNestedInput
+  matiere?: Prisma.MatiereUpdateOneRequiredWithoutEnseignantsMatieresNestedInput
 }
 
 export type EnseignantMatiereUncheckedUpdateInput = {
@@ -401,7 +401,7 @@ export type EnseignantMatiereScalarWhereInput = {
 
 export type EnseignantMatiereCreateWithoutEnseignantInput = {
   id?: string
-  matiere: Prisma.MatiereCreateNestedOneWithoutEnseignantMatieresInput
+  matiere: Prisma.MatiereCreateNestedOneWithoutEnseignantsMatieresInput
 }
 
 export type EnseignantMatiereUncheckedCreateWithoutEnseignantInput = {
@@ -457,7 +457,7 @@ export type EnseignantMatiereCreateManyEnseignantInput = {
 }
 
 export type EnseignantMatiereUpdateWithoutEnseignantInput = {
-  matiere?: Prisma.MatiereUpdateOneRequiredWithoutEnseignantMatieresNestedInput
+  matiere?: Prisma.MatiereUpdateOneRequiredWithoutEnseignantsMatieresNestedInput
 }
 
 export type EnseignantMatiereUncheckedUpdateWithoutEnseignantInput = {

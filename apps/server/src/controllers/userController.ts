@@ -305,3 +305,102 @@ export const validateParent = async (req: express.Request, res: express.Response
     return res.status(500).json({ message: 'Erreur serveur' });
   }
 }; 
+
+// Fonction de test pour déboguer les utilisateurs
+export const debugUsers = async (req: express.Request, res: express.Response) => {
+  try {
+    console.log('[debugUsers] Test de récupération des utilisateurs...');
+    
+    // Récupérer tous les utilisateurs avec leurs rôles
+    const allUsers = await prisma.user.findMany({
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+        status: true,
+      },
+      orderBy: { role: 'asc' },
+    });
+    
+    console.log('[debugUsers] Total utilisateurs:', allUsers.length);
+    console.log('[debugUsers] Utilisateurs par rôle:', 
+      allUsers.reduce((acc, user) => {
+        acc[user.role] = (acc[user.role] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
+    );
+    
+    // Récupérer spécifiquement les utilisateurs avec rôle 'student'
+    const etudiants = await prisma.user.findMany({
+      where: { role: 'student' },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+      },
+    });
+    
+    console.log('[debugUsers] Utilisateurs avec rôle student:', etudiants.length);
+    console.log('[debugUsers] Étudiants:', etudiants);
+    
+    res.status(200).json({
+      totalUsers: allUsers.length,
+      usersByRole: allUsers.reduce((acc, user) => {
+        acc[user.role] = (acc[user.role] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      etudiants: etudiants,
+    });
+  } catch (error) {
+    console.error('[debugUsers] Erreur:', error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+}; 
+
+// GET /api/users?role=student&notLinkedToStudent=true
+export const getUnlinkedEtudiants = async (req: express.Request, res: express.Response) => {
+  try {
+    const { role, notLinkedToStudent } = req.query;
+    
+    if (role !== 'student' || notLinkedToStudent !== 'true') {
+      return res.status(400).json({ message: 'Paramètres invalides' });
+    }
+
+    // Récupérer tous les utilisateurs avec le rôle student
+    const allEtudiants = await prisma.user.findMany({
+      where: { role: 'student' },
+      select: { id: true, firstName: true, lastName: true, email: true },
+    });
+
+    // Récupérer tous les userId déjà liés à un élève
+    const students = await prisma.student.findMany({ 
+      where: { userId: { not: null } }, 
+      select: { userId: true } 
+    });
+    const linkedUserIds = students.map(s => s.userId).filter(Boolean);
+
+    // Récupérer les utilisateurs non liés
+    const users = await prisma.user.findMany({
+      where: {
+        role: 'student',
+        id: { notIn: linkedUserIds },
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
+      orderBy: { lastName: 'asc' },
+    });
+
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error('[getUnlinkedEtudiants] Erreur:', error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+}; 

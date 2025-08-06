@@ -55,7 +55,12 @@ const AuthService = {
   getCurrentUser: (): any => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
-      return JSON.parse(userStr);
+      try {
+        return JSON.parse(userStr);
+      } catch (e) {
+        console.error("Erreur lors du parsing de l'utilisateur dans localStorage:", e, userStr);
+        return null;
+      }
     }
     return null;
   },

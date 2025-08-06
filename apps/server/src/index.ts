@@ -3,9 +3,9 @@ import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routers/auth";
-import studentsRoutes from "./routers/students";
 import adminRoutes from "./routers/admin";
 import academicsRoutes from "./routes/academics/academics.routes";
+import enseignantsRoutes from './routes/enseignants.routes';
 import { initDatabase } from "./lib/init-db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -75,14 +75,14 @@ app.post("/api/auth/direct-login", async (req, res) => {
 // Routes d'authentification personnalisées avec gestion des rôles
 app.use("/api/auth", authRoutes);
 
-// Routes pour la gestion des élèves
-app.use("/api/students", studentsRoutes);
-
 // Routes pour l'administration (admin uniquement)
 app.use("/api/admin", adminRoutes);
 
 // Routes pour la gestion académique
 app.use("/api/academics", academicsRoutes);
+
+// Routes pour la gestion des enseignants
+app.use('/api/enseignants', enseignantsRoutes);
 
 // Route de test pour vérifier que le serveur fonctionne
 app.get("/", (_req, res) => {

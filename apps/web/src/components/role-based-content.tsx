@@ -36,7 +36,7 @@ export function AdminContent({ children, fallback }: Omit<RoleBasedProps, "roles
 // Composant pour afficher du contenu uniquement pour les enseignants
 export function TeacherContent({ children, fallback }: Omit<RoleBasedProps, "roles">) {
   return (
-    <RoleBasedContent roles={["teacher"]} fallback={fallback}>
+    <RoleBasedContent roles={["enseignant"]} fallback={fallback}>
       {children}
     </RoleBasedContent>
   );
@@ -45,7 +45,7 @@ export function TeacherContent({ children, fallback }: Omit<RoleBasedProps, "rol
 // Composant pour afficher du contenu uniquement pour les élèves
 export function StudentContent({ children, fallback }: Omit<RoleBasedProps, "roles">) {
   return (
-    <RoleBasedContent roles={["student"]} fallback={fallback}>
+    <RoleBasedContent roles={["eleve"]} fallback={fallback}>
       {children}
     </RoleBasedContent>
   );

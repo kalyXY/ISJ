@@ -87,20 +87,10 @@ export type Classe = Prisma.ClasseModel
  */
 export type Matiere = Prisma.MatiereModel
 /**
- * Model AnneeScolaire
- * 
- */
-export type AnneeScolaire = Prisma.AnneeScolaireModel
-/**
  * Model Enseignant
  * 
  */
 export type Enseignant = Prisma.EnseignantModel
-/**
- * Model Presence
- * 
- */
-export type Presence = Prisma.PresenceModel
 /**
  * Model EnseignantClasse
  * 
@@ -111,5 +101,15 @@ export type EnseignantClasse = Prisma.EnseignantClasseModel
  * 
  */
 export type EnseignantMatiere = Prisma.EnseignantMatiereModel
+/**
+ * Model AnneeScolaire
+ * 
+ */
+export type AnneeScolaire = Prisma.AnneeScolaireModel
+/**
+ * Model Presence
+ * 
+ */
+export type Presence = Prisma.PresenceModel
 
 

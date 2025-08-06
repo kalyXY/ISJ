@@ -262,3 +262,44 @@ export const deleteClasse = async (req: Request, res: Response) => {
     });
   }
 }; 
+
+// Récupérer les classes filtrées par section et option
+export const getClassesBySectionAndOption = async (req: Request, res: Response) => {
+  try {
+    const { sectionId, optionId } = req.query;
+    
+    const where: any = {};
+    
+    if (sectionId) {
+      where.sectionId = sectionId as string;
+    }
+    
+    if (optionId) {
+      where.optionId = optionId as string;
+    }
+    
+    const classes = await prisma.classe.findMany({
+      where,
+      include: {
+        section: true,
+        option: true,
+        _count: {
+          select: { students: true, matieres: true }
+        }
+      },
+      orderBy: { nom: 'asc' },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: classes,
+    });
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des classes filtrées:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la récupération des classes',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+}; 

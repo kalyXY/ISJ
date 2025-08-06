@@ -25,7 +25,8 @@ import {
   getClasseById,
   createClasse,
   updateClasse,
-  deleteClasse
+  deleteClasse,
+  getClassesBySectionAndOption
 } from '../../controllers/academics/classeController';
 
 // Contrôleurs pour les matières
@@ -49,6 +50,8 @@ import {
   setCurrentAnneeScolaire
 } from '../../controllers/academics/anneeScolaireController';
 
+import elevesRoutes from './eleves.routes';
+
 const router = express.Router();
 
 // Middleware pour protéger toutes les routes académiques
@@ -70,6 +73,7 @@ router.delete('/options/:id', deleteOption);
 
 // Routes pour les classes
 router.get('/classes', getAllClasses);
+router.get('/classes/filter', getClassesBySectionAndOption);
 router.get('/classes/:id', getClasseById);
 router.post('/classes', createClasse);
 router.put('/classes/:id', updateClasse);
@@ -91,5 +95,7 @@ router.post('/annees', createAnneeScolaire);
 router.put('/annees/:id', updateAnneeScolaire);
 router.delete('/annees/:id', deleteAnneeScolaire);
 router.put('/annees/:id/setCurrent', setCurrentAnneeScolaire);
+
+router.use('/eleves', elevesRoutes);
 
 export default router; 

@@ -30,6 +30,8 @@ export type StudentMinAggregateOutputType = {
   gender: string | null
   birthDate: Date | null
   class: string | null
+  section: string | null
+  option: string | null
   promotion: string | null
   matricule: string | null
   parentPhone: string | null
@@ -37,6 +39,7 @@ export type StudentMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   classeId: string | null
+  userId: string | null
 }
 
 export type StudentMaxAggregateOutputType = {
@@ -46,6 +49,8 @@ export type StudentMaxAggregateOutputType = {
   gender: string | null
   birthDate: Date | null
   class: string | null
+  section: string | null
+  option: string | null
   promotion: string | null
   matricule: string | null
   parentPhone: string | null
@@ -53,6 +58,7 @@ export type StudentMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   classeId: string | null
+  userId: string | null
 }
 
 export type StudentCountAggregateOutputType = {
@@ -62,6 +68,8 @@ export type StudentCountAggregateOutputType = {
   gender: number
   birthDate: number
   class: number
+  section: number
+  option: number
   promotion: number
   matricule: number
   parentPhone: number
@@ -69,6 +77,7 @@ export type StudentCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   classeId: number
+  userId: number
   _all: number
 }
 
@@ -80,6 +89,8 @@ export type StudentMinAggregateInputType = {
   gender?: true
   birthDate?: true
   class?: true
+  section?: true
+  option?: true
   promotion?: true
   matricule?: true
   parentPhone?: true
@@ -87,6 +98,7 @@ export type StudentMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   classeId?: true
+  userId?: true
 }
 
 export type StudentMaxAggregateInputType = {
@@ -96,6 +108,8 @@ export type StudentMaxAggregateInputType = {
   gender?: true
   birthDate?: true
   class?: true
+  section?: true
+  option?: true
   promotion?: true
   matricule?: true
   parentPhone?: true
@@ -103,6 +117,7 @@ export type StudentMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   classeId?: true
+  userId?: true
 }
 
 export type StudentCountAggregateInputType = {
@@ -112,6 +127,8 @@ export type StudentCountAggregateInputType = {
   gender?: true
   birthDate?: true
   class?: true
+  section?: true
+  option?: true
   promotion?: true
   matricule?: true
   parentPhone?: true
@@ -119,6 +136,7 @@ export type StudentCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   classeId?: true
+  userId?: true
   _all?: true
 }
 
@@ -201,6 +219,8 @@ export type StudentGroupByOutputType = {
   gender: string
   birthDate: Date
   class: string
+  section: string | null
+  option: string | null
   promotion: string
   matricule: string
   parentPhone: string
@@ -208,6 +228,7 @@ export type StudentGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   classeId: string | null
+  userId: string | null
   _count: StudentCountAggregateOutputType | null
   _min: StudentMinAggregateOutputType | null
   _max: StudentMaxAggregateOutputType | null
@@ -238,6 +259,8 @@ export type StudentWhereInput = {
   gender?: Prisma.StringFilter<"Student"> | string
   birthDate?: Prisma.DateTimeFilter<"Student"> | Date | string
   class?: Prisma.StringFilter<"Student"> | string
+  section?: Prisma.StringNullableFilter<"Student"> | string | null
+  option?: Prisma.StringNullableFilter<"Student"> | string | null
   promotion?: Prisma.StringFilter<"Student"> | string
   matricule?: Prisma.StringFilter<"Student"> | string
   parentPhone?: Prisma.StringFilter<"Student"> | string
@@ -245,7 +268,9 @@ export type StudentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   classeId?: Prisma.StringNullableFilter<"Student"> | string | null
+  userId?: Prisma.StringNullableFilter<"Student"> | string | null
   classe?: Prisma.XOR<Prisma.ClasseNullableScalarRelationFilter, Prisma.ClasseWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type StudentOrderByWithRelationInput = {
@@ -255,6 +280,8 @@ export type StudentOrderByWithRelationInput = {
   gender?: Prisma.SortOrder
   birthDate?: Prisma.SortOrder
   class?: Prisma.SortOrder
+  section?: Prisma.SortOrder
+  option?: Prisma.SortOrder
   promotion?: Prisma.SortOrder
   matricule?: Prisma.SortOrder
   parentPhone?: Prisma.SortOrder
@@ -262,7 +289,9 @@ export type StudentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classeId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   classe?: Prisma.ClasseOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type StudentWhereUniqueInput = Prisma.AtLeast<{
@@ -276,13 +305,17 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   gender?: Prisma.StringFilter<"Student"> | string
   birthDate?: Prisma.DateTimeFilter<"Student"> | Date | string
   class?: Prisma.StringFilter<"Student"> | string
+  section?: Prisma.StringNullableFilter<"Student"> | string | null
+  option?: Prisma.StringNullableFilter<"Student"> | string | null
   promotion?: Prisma.StringFilter<"Student"> | string
   parentPhone?: Prisma.StringFilter<"Student"> | string
   isActive?: Prisma.BoolFilter<"Student"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   classeId?: Prisma.StringNullableFilter<"Student"> | string | null
+  userId?: Prisma.StringNullableFilter<"Student"> | string | null
   classe?: Prisma.XOR<Prisma.ClasseNullableScalarRelationFilter, Prisma.ClasseWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "matricule">
 
 export type StudentOrderByWithAggregationInput = {
@@ -292,6 +325,8 @@ export type StudentOrderByWithAggregationInput = {
   gender?: Prisma.SortOrder
   birthDate?: Prisma.SortOrder
   class?: Prisma.SortOrder
+  section?: Prisma.SortOrder
+  option?: Prisma.SortOrder
   promotion?: Prisma.SortOrder
   matricule?: Prisma.SortOrder
   parentPhone?: Prisma.SortOrder
@@ -299,6 +334,7 @@ export type StudentOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classeId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   _count?: Prisma.StudentCountOrderByAggregateInput
   _max?: Prisma.StudentMaxOrderByAggregateInput
   _min?: Prisma.StudentMinOrderByAggregateInput
@@ -314,6 +350,8 @@ export type StudentScalarWhereWithAggregatesInput = {
   gender?: Prisma.StringWithAggregatesFilter<"Student"> | string
   birthDate?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
   class?: Prisma.StringWithAggregatesFilter<"Student"> | string
+  section?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  option?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   promotion?: Prisma.StringWithAggregatesFilter<"Student"> | string
   matricule?: Prisma.StringWithAggregatesFilter<"Student"> | string
   parentPhone?: Prisma.StringWithAggregatesFilter<"Student"> | string
@@ -321,6 +359,7 @@ export type StudentScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Student"> | Date | string
   classeId?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
 }
 
 export type StudentCreateInput = {
@@ -330,6 +369,8 @@ export type StudentCreateInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
@@ -337,6 +378,7 @@ export type StudentCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   classe?: Prisma.ClasseCreateNestedOneWithoutStudentsInput
+  user?: Prisma.UserCreateNestedOneWithoutStudentsInput
 }
 
 export type StudentUncheckedCreateInput = {
@@ -346,6 +388,8 @@ export type StudentUncheckedCreateInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
@@ -353,6 +397,7 @@ export type StudentUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   classeId?: string | null
+  userId?: string | null
 }
 
 export type StudentUpdateInput = {
@@ -361,6 +406,8 @@ export type StudentUpdateInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -368,6 +415,7 @@ export type StudentUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classe?: Prisma.ClasseUpdateOneWithoutStudentsNestedInput
+  user?: Prisma.UserUpdateOneWithoutStudentsNestedInput
 }
 
 export type StudentUncheckedUpdateInput = {
@@ -376,6 +424,8 @@ export type StudentUncheckedUpdateInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -383,6 +433,7 @@ export type StudentUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StudentCreateManyInput = {
@@ -392,6 +443,8 @@ export type StudentCreateManyInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
@@ -399,6 +452,7 @@ export type StudentCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   classeId?: string | null
+  userId?: string | null
 }
 
 export type StudentUpdateManyMutationInput = {
@@ -407,6 +461,8 @@ export type StudentUpdateManyMutationInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -421,6 +477,8 @@ export type StudentUncheckedUpdateManyInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -428,6 +486,7 @@ export type StudentUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StudentCountOrderByAggregateInput = {
@@ -437,6 +496,8 @@ export type StudentCountOrderByAggregateInput = {
   gender?: Prisma.SortOrder
   birthDate?: Prisma.SortOrder
   class?: Prisma.SortOrder
+  section?: Prisma.SortOrder
+  option?: Prisma.SortOrder
   promotion?: Prisma.SortOrder
   matricule?: Prisma.SortOrder
   parentPhone?: Prisma.SortOrder
@@ -444,6 +505,7 @@ export type StudentCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classeId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type StudentMaxOrderByAggregateInput = {
@@ -453,6 +515,8 @@ export type StudentMaxOrderByAggregateInput = {
   gender?: Prisma.SortOrder
   birthDate?: Prisma.SortOrder
   class?: Prisma.SortOrder
+  section?: Prisma.SortOrder
+  option?: Prisma.SortOrder
   promotion?: Prisma.SortOrder
   matricule?: Prisma.SortOrder
   parentPhone?: Prisma.SortOrder
@@ -460,6 +524,7 @@ export type StudentMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classeId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type StudentMinOrderByAggregateInput = {
@@ -469,6 +534,8 @@ export type StudentMinOrderByAggregateInput = {
   gender?: Prisma.SortOrder
   birthDate?: Prisma.SortOrder
   class?: Prisma.SortOrder
+  section?: Prisma.SortOrder
+  option?: Prisma.SortOrder
   promotion?: Prisma.SortOrder
   matricule?: Prisma.SortOrder
   parentPhone?: Prisma.SortOrder
@@ -476,6 +543,7 @@ export type StudentMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   classeId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type StudentListRelationFilter = {
@@ -496,13 +564,55 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+  unset?: boolean
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-  unset?: boolean
+export type StudentCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput> | Prisma.StudentCreateWithoutUserInput[] | Prisma.StudentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutUserInput | Prisma.StudentCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.StudentCreateManyUserInputEnvelope
+  connect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+}
+
+export type StudentUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput> | Prisma.StudentCreateWithoutUserInput[] | Prisma.StudentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutUserInput | Prisma.StudentCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.StudentCreateManyUserInputEnvelope
+  connect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+}
+
+export type StudentUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput> | Prisma.StudentCreateWithoutUserInput[] | Prisma.StudentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutUserInput | Prisma.StudentCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.StudentUpsertWithWhereUniqueWithoutUserInput | Prisma.StudentUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.StudentCreateManyUserInputEnvelope
+  set?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  disconnect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  delete?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  connect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  update?: Prisma.StudentUpdateWithWhereUniqueWithoutUserInput | Prisma.StudentUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.StudentUpdateManyWithWhereWithoutUserInput | Prisma.StudentUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
+}
+
+export type StudentUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput> | Prisma.StudentCreateWithoutUserInput[] | Prisma.StudentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutUserInput | Prisma.StudentCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.StudentUpsertWithWhereUniqueWithoutUserInput | Prisma.StudentUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.StudentCreateManyUserInputEnvelope
+  set?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  disconnect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  delete?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  connect?: Prisma.StudentWhereUniqueInput | Prisma.StudentWhereUniqueInput[]
+  update?: Prisma.StudentUpdateWithWhereUniqueWithoutUserInput | Prisma.StudentUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.StudentUpdateManyWithWhereWithoutUserInput | Prisma.StudentUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
 }
 
 export type StudentCreateNestedManyWithoutClasseInput = {
@@ -547,6 +657,89 @@ export type StudentUncheckedUpdateManyWithoutClasseNestedInput = {
   deleteMany?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
 }
 
+export type StudentCreateWithoutUserInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  gender: string
+  birthDate: Date | string
+  class: string
+  section?: string | null
+  option?: string | null
+  promotion: string
+  matricule: string
+  parentPhone: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classe?: Prisma.ClasseCreateNestedOneWithoutStudentsInput
+}
+
+export type StudentUncheckedCreateWithoutUserInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  gender: string
+  birthDate: Date | string
+  class: string
+  section?: string | null
+  option?: string | null
+  promotion: string
+  matricule: string
+  parentPhone: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classeId?: string | null
+}
+
+export type StudentCreateOrConnectWithoutUserInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput>
+}
+
+export type StudentCreateManyUserInputEnvelope = {
+  data: Prisma.StudentCreateManyUserInput | Prisma.StudentCreateManyUserInput[]
+}
+
+export type StudentUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.StudentWhereUniqueInput
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutUserInput, Prisma.StudentUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutUserInput, Prisma.StudentUncheckedCreateWithoutUserInput>
+}
+
+export type StudentUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.StudentWhereUniqueInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutUserInput, Prisma.StudentUncheckedUpdateWithoutUserInput>
+}
+
+export type StudentUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.StudentScalarWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateManyMutationInput, Prisma.StudentUncheckedUpdateManyWithoutUserInput>
+}
+
+export type StudentScalarWhereInput = {
+  AND?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
+  OR?: Prisma.StudentScalarWhereInput[]
+  NOT?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
+  id?: Prisma.StringFilter<"Student"> | string
+  firstName?: Prisma.StringFilter<"Student"> | string
+  lastName?: Prisma.StringFilter<"Student"> | string
+  gender?: Prisma.StringFilter<"Student"> | string
+  birthDate?: Prisma.DateTimeFilter<"Student"> | Date | string
+  class?: Prisma.StringFilter<"Student"> | string
+  section?: Prisma.StringNullableFilter<"Student"> | string | null
+  option?: Prisma.StringNullableFilter<"Student"> | string | null
+  promotion?: Prisma.StringFilter<"Student"> | string
+  matricule?: Prisma.StringFilter<"Student"> | string
+  parentPhone?: Prisma.StringFilter<"Student"> | string
+  isActive?: Prisma.BoolFilter<"Student"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
+  classeId?: Prisma.StringNullableFilter<"Student"> | string | null
+  userId?: Prisma.StringNullableFilter<"Student"> | string | null
+}
+
 export type StudentCreateWithoutClasseInput = {
   id?: string
   firstName: string
@@ -554,12 +747,15 @@ export type StudentCreateWithoutClasseInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutStudentsInput
 }
 
 export type StudentUncheckedCreateWithoutClasseInput = {
@@ -569,12 +765,15 @@ export type StudentUncheckedCreateWithoutClasseInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  userId?: string | null
 }
 
 export type StudentCreateOrConnectWithoutClasseInput = {
@@ -602,23 +801,73 @@ export type StudentUpdateManyWithWhereWithoutClasseInput = {
   data: Prisma.XOR<Prisma.StudentUpdateManyMutationInput, Prisma.StudentUncheckedUpdateManyWithoutClasseInput>
 }
 
-export type StudentScalarWhereInput = {
-  AND?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
-  OR?: Prisma.StudentScalarWhereInput[]
-  NOT?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[]
-  id?: Prisma.StringFilter<"Student"> | string
-  firstName?: Prisma.StringFilter<"Student"> | string
-  lastName?: Prisma.StringFilter<"Student"> | string
-  gender?: Prisma.StringFilter<"Student"> | string
-  birthDate?: Prisma.DateTimeFilter<"Student"> | Date | string
-  class?: Prisma.StringFilter<"Student"> | string
-  promotion?: Prisma.StringFilter<"Student"> | string
-  matricule?: Prisma.StringFilter<"Student"> | string
-  parentPhone?: Prisma.StringFilter<"Student"> | string
-  isActive?: Prisma.BoolFilter<"Student"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"Student"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
-  classeId?: Prisma.StringNullableFilter<"Student"> | string | null
+export type StudentCreateManyUserInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  gender: string
+  birthDate: Date | string
+  class: string
+  section?: string | null
+  option?: string | null
+  promotion: string
+  matricule: string
+  parentPhone: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  classeId?: string | null
+}
+
+export type StudentUpdateWithoutUserInput = {
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotion?: Prisma.StringFieldUpdateOperationsInput | string
+  matricule?: Prisma.StringFieldUpdateOperationsInput | string
+  parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classe?: Prisma.ClasseUpdateOneWithoutStudentsNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutUserInput = {
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotion?: Prisma.StringFieldUpdateOperationsInput | string
+  matricule?: Prisma.StringFieldUpdateOperationsInput | string
+  parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type StudentUncheckedUpdateManyWithoutUserInput = {
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  promotion?: Prisma.StringFieldUpdateOperationsInput | string
+  matricule?: Prisma.StringFieldUpdateOperationsInput | string
+  parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  classeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StudentCreateManyClasseInput = {
@@ -628,12 +877,15 @@ export type StudentCreateManyClasseInput = {
   gender: string
   birthDate: Date | string
   class: string
+  section?: string | null
+  option?: string | null
   promotion: string
   matricule: string
   parentPhone: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  userId?: string | null
 }
 
 export type StudentUpdateWithoutClasseInput = {
@@ -642,12 +894,15 @@ export type StudentUpdateWithoutClasseInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutStudentsNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutClasseInput = {
@@ -656,12 +911,15 @@ export type StudentUncheckedUpdateWithoutClasseInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StudentUncheckedUpdateManyWithoutClasseInput = {
@@ -670,12 +928,15 @@ export type StudentUncheckedUpdateManyWithoutClasseInput = {
   gender?: Prisma.StringFieldUpdateOperationsInput | string
   birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  option?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   promotion?: Prisma.StringFieldUpdateOperationsInput | string
   matricule?: Prisma.StringFieldUpdateOperationsInput | string
   parentPhone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -687,6 +948,8 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   gender?: boolean
   birthDate?: boolean
   class?: boolean
+  section?: boolean
+  option?: boolean
   promotion?: boolean
   matricule?: boolean
   parentPhone?: boolean
@@ -694,7 +957,9 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   classeId?: boolean
+  userId?: boolean
   classe?: boolean | Prisma.Student$classeArgs<ExtArgs>
+  user?: boolean | Prisma.Student$userArgs<ExtArgs>
 }, ExtArgs["result"]["student"]>
 
 
@@ -706,6 +971,8 @@ export type StudentSelectScalar = {
   gender?: boolean
   birthDate?: boolean
   class?: boolean
+  section?: boolean
+  option?: boolean
   promotion?: boolean
   matricule?: boolean
   parentPhone?: boolean
@@ -713,17 +980,20 @@ export type StudentSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   classeId?: boolean
+  userId?: boolean
 }
 
-export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "gender" | "birthDate" | "class" | "promotion" | "matricule" | "parentPhone" | "isActive" | "createdAt" | "updatedAt" | "classeId", ExtArgs["result"]["student"]>
+export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "gender" | "birthDate" | "class" | "section" | "option" | "promotion" | "matricule" | "parentPhone" | "isActive" | "createdAt" | "updatedAt" | "classeId" | "userId", ExtArgs["result"]["student"]>
 export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   classe?: boolean | Prisma.Student$classeArgs<ExtArgs>
+  user?: boolean | Prisma.Student$userArgs<ExtArgs>
 }
 
 export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Student"
   objects: {
     classe: Prisma.$ClassePayload<ExtArgs> | null
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -732,6 +1002,8 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     gender: string
     birthDate: Date
     class: string
+    section: string | null
+    option: string | null
     promotion: string
     matricule: string
     parentPhone: string
@@ -739,6 +1011,7 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     createdAt: Date
     updatedAt: Date
     classeId: string | null
+    userId: string | null
   }, ExtArgs["result"]["student"]>
   composites: {}
 }
@@ -1103,6 +1376,7 @@ readonly fields: StudentFieldRefs;
 export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   classe<T extends Prisma.Student$classeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$classeArgs<ExtArgs>>): Prisma.Prisma__ClasseClient<runtime.Types.Result.GetResult<Prisma.$ClassePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Student$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1138,6 +1412,8 @@ export interface StudentFieldRefs {
   readonly gender: Prisma.FieldRef<"Student", 'String'>
   readonly birthDate: Prisma.FieldRef<"Student", 'DateTime'>
   readonly class: Prisma.FieldRef<"Student", 'String'>
+  readonly section: Prisma.FieldRef<"Student", 'String'>
+  readonly option: Prisma.FieldRef<"Student", 'String'>
   readonly promotion: Prisma.FieldRef<"Student", 'String'>
   readonly matricule: Prisma.FieldRef<"Student", 'String'>
   readonly parentPhone: Prisma.FieldRef<"Student", 'String'>
@@ -1145,6 +1421,7 @@ export interface StudentFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Student", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Student", 'DateTime'>
   readonly classeId: Prisma.FieldRef<"Student", 'String'>
+  readonly userId: Prisma.FieldRef<"Student", 'String'>
 }
     
 
@@ -1531,6 +1808,25 @@ export type Student$classeArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.ClasseInclude<ExtArgs> | null
   where?: Prisma.ClasseWhereInput
+}
+
+/**
+ * Student.user
+ */
+export type Student$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

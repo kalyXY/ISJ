@@ -209,7 +209,7 @@ export type EnseignantClasseScalarWhereWithAggregatesInput = {
 export type EnseignantClasseCreateInput = {
   id?: string
   enseignant: Prisma.EnseignantCreateNestedOneWithoutEnseignantClassesInput
-  classe: Prisma.ClasseCreateNestedOneWithoutEnseignantClassesInput
+  classe: Prisma.ClasseCreateNestedOneWithoutEnseignantsClassesInput
 }
 
 export type EnseignantClasseUncheckedCreateInput = {
@@ -220,7 +220,7 @@ export type EnseignantClasseUncheckedCreateInput = {
 
 export type EnseignantClasseUpdateInput = {
   enseignant?: Prisma.EnseignantUpdateOneRequiredWithoutEnseignantClassesNestedInput
-  classe?: Prisma.ClasseUpdateOneRequiredWithoutEnseignantClassesNestedInput
+  classe?: Prisma.ClasseUpdateOneRequiredWithoutEnseignantsClassesNestedInput
 }
 
 export type EnseignantClasseUncheckedUpdateInput = {
@@ -401,7 +401,7 @@ export type EnseignantClasseScalarWhereInput = {
 
 export type EnseignantClasseCreateWithoutEnseignantInput = {
   id?: string
-  classe: Prisma.ClasseCreateNestedOneWithoutEnseignantClassesInput
+  classe: Prisma.ClasseCreateNestedOneWithoutEnseignantsClassesInput
 }
 
 export type EnseignantClasseUncheckedCreateWithoutEnseignantInput = {
@@ -457,7 +457,7 @@ export type EnseignantClasseCreateManyEnseignantInput = {
 }
 
 export type EnseignantClasseUpdateWithoutEnseignantInput = {
-  classe?: Prisma.ClasseUpdateOneRequiredWithoutEnseignantClassesNestedInput
+  classe?: Prisma.ClasseUpdateOneRequiredWithoutEnseignantsClassesNestedInput
 }
 
 export type EnseignantClasseUncheckedUpdateWithoutEnseignantInput = {

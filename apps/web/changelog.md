@@ -35,3 +35,10 @@
 - Fonction `getCurrentUser()` pour centraliser l'appel à l'API
 - Correction des problèmes d'authentification persistante
 - Vérification des rôles pour l'accès aux routes protégées 
+
+## [Correction] Gestion des enseignants (admin)
+- Correction d'une erreur HTTP 500 sur la route `/api/enseignants` (GET/POST) :
+  - Suppression des `include` Prisma sur relations many-to-many (MongoDB).
+  - Récupération des classes et matières via les tables de jointure.
+  - Ajout de logs détaillés dans le contrôleur pour faciliter le debug.
+- La route `/api/enseignants` fonctionne désormais sans erreur et retourne bien les enseignants avec leurs classes et matières. 
