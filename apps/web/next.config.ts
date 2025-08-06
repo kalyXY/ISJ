@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   compress: true,
   
   // Server external packages (moved from experimental)
-  serverExternalPackages: ['lucide-react'],
+  // serverExternalPackages: ['lucide-react'],
   
   // Image optimization
   images: {
