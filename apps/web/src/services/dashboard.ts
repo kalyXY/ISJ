@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { API_URL, getAuthHeaders } from '@/config/api';
 
 // Interface pour la distribution des utilisateurs par rôle
@@ -54,4 +55,25 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     console.error('Erreur lors de la récupération des données du tableau de bord:', error);
     throw error;
   }
+};
+
+/**
+ * Hook React Query pour les données du dashboard avec mise en cache
+ */
+export const useDashboardData = () => {
+  return useQuery({
+    queryKey: ['dashboard-data'],
+    queryFn: fetchDashboardData,
+    staleTime: 2 * 60 * 1000, // 2 minutes - dashboard data should be relatively fresh
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes for dashboard
+    retry: (failureCount, error: any) => {
+      // Don't retry on auth errors
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+  });
 }; 

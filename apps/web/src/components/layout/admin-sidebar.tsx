@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   X, 
   LayoutDashboard, 
@@ -28,6 +28,31 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  
+  // Prefetch routes for better performance
+  const prefetchRoute = useCallback((href: string) => {
+    router.prefetch(href);
+  }, [router]);
+  
+  // Prefetch all navigation routes on component mount
+  useEffect(() => {
+    const routesToPrefetch = [
+      "/admin/dashboard",
+      "/admin/users", 
+      "/admin/users/create",
+      "/admin/students",
+      "/admin/teachers",
+      "/admin/academique"
+    ];
+    
+    // Prefetch routes with a slight delay to avoid blocking initial render
+    const timer = setTimeout(() => {
+      routesToPrefetch.forEach(route => prefetchRoute(route));
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [prefetchRoute]);
   
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -135,6 +160,13 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                     animationDelay: `${index * 50}ms`,
                     transform: isActive ? 'translateX(4px)' : 'none'
                   }}
+                  onMouseEnter={() => {
+                    // Prefetch route on hover for instant navigation
+                    if (!isActive) {
+                      prefetchRoute(item.href);
+                    }
+                  }}
+                  prefetch={true}
                 >
                   <span className={cn(
                     "transition-transform duration-normal",
