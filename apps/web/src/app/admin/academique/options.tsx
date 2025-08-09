@@ -6,7 +6,7 @@ import {
   createOption, 
   updateOption, 
   deleteOption,
-  Option
+  type Option
 } from '@/services/academics';
 import { Button } from '@/components/ui/button';
 import {

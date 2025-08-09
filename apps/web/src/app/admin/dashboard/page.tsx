@@ -2,7 +2,7 @@
 
 import { useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
-import { DashboardSkeleton } from "@/components/ui/loading-skeleton";
+import { type DashboardSkeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart3,
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
           title="Élèves inscrits" 
           value={dashboardData ? formatNumber(dashboardData.totalStudents) : "0"}
           trend="Élèves actifs" 
-          trendPositive={null}
+          trendPositive={undefined}
           icon={<Users className="h-6 w-6 text-blue-500" />}
           iconBg="bg-blue-100 dark:bg-blue-900/30"
           delay={0}
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
           title="Enseignants" 
           value={dashboardData ? formatNumber(dashboardData.totalTeachers) : "0"} 
           trend="Enseignants actifs" 
-          trendPositive={null}
+          trendPositive={undefined}
           icon={<GraduationCap className="h-6 w-6 text-green-500" />}
           iconBg="bg-green-100 dark:bg-green-900/30"
           delay={100}
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
           title="Classes" 
           value={dashboardData ? formatNumber(dashboardData.totalClasses) : "0"} 
           trend="Classes actives" 
-          trendPositive={null}
+          trendPositive={undefined}
           icon={<BookOpen className="h-6 w-6 text-purple-500" />}
           iconBg="bg-purple-100 dark:bg-purple-900/30"
           delay={200}
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
           title="Taux d'assiduité" 
           value={dashboardData ? formatPercent(dashboardData.attendanceRate * 100) : "0%"} 
           trend="Moyenne globale" 
-          trendPositive={null}
+          trendPositive={undefined}
           icon={<BarChart3 className="h-6 w-6 text-orange-500" />}
           iconBg="bg-orange-100 dark:bg-orange-900/30"
           delay={300}
@@ -377,7 +377,15 @@ export default function AdminDashboard() {
 }
 
 // Composant pour les cartes de statistiques
-function StatCard({ title, value, trend, trendPositive, icon, iconBg, delay = 0 }) {
+function StatCard({ title, value, trend, trendPositive, icon, iconBg, delay = 0 }: {
+  title: string;
+  value: string | number;
+  trend?: string;
+  trendPositive?: boolean;
+  icon: any;
+  iconBg: string;
+  delay?: number;
+}) {
   return (
     <Card className="transition-all duration-normal hover:shadow-hover hover:-translate-y-1 animate-scaleIn" style={{ animationDelay: `${delay}ms` }}>
       <CardContent className="p-6">
@@ -407,7 +415,16 @@ function StatCard({ title, value, trend, trendPositive, icon, iconBg, delay = 0 
 }
 
 // Composant pour les cartes d'action
-function ActionCard({ title, value, description, icon, bgColor, buttonText, onClick, delay = 0 }) {
+function ActionCard({ title, value, description, icon, bgColor, buttonText, onClick, delay = 0 }: {
+  title: string;
+  value: string | number;
+  description: string;
+  icon: any;
+  bgColor: string;
+  buttonText: string;
+  onClick: () => void;
+  delay?: number;
+}) {
   return (
     <Card className="bg-card dark:bg-card border transition-all duration-normal hover:shadow-hover hover:-translate-y-1 animate-scaleIn" style={{ animationDelay: `${delay}ms` }}>
       <CardContent className="p-6">
@@ -434,7 +451,12 @@ function ActionCard({ title, value, description, icon, bgColor, buttonText, onCl
 }
 
 // Composant pour la répartition des rôles
-function RoleCard({ role, count, title, color }) {
+function RoleCard({ role, count, title, color }: {
+  role: string;
+  count: number;
+  title: string;
+  color: string;
+}) {
   return (
     <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
       <div>

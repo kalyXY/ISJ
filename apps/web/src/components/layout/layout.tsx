@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
+import React, { type ReactNode, useState } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
 import MobileNav from "./mobile-nav";

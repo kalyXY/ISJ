@@ -1,6 +1,6 @@
 "use client"
 
-import { AuthLayout } from "@/components/auth-layout";
+import { type AuthLayout } from "@/components/auth-layout";
 import ResetPasswordForm from "@/components/reset-password-form";
 import { useSearchParams } from "next/navigation";
 

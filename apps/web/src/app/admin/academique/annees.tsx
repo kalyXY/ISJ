@@ -6,8 +6,8 @@ import {
   createAnneeScolaire, 
   updateAnneeScolaire, 
   deleteAnneeScolaire,
-  setCurrentAnneeScolaire,
-  AnneeScolaire
+  setCurrentAnneeScolaire as setCurrentAnneeScolaireAPI,
+  type AnneeScolaire
 } from '@/services/academics';
 import { Button } from '@/components/ui/button';
 import {
@@ -59,10 +59,15 @@ const anneeScolaireSchema = z.object({
   nom: z.string().min(1, { message: "Le nom de l'année scolaire est requis" }),
   debut: z.string().min(1, { message: "La date de début est requise" }),
   fin: z.string().min(1, { message: "La date de fin est requise" }),
-  actuelle: z.boolean().default(false),
+  actuelle: z.boolean(),
 });
 
-type AnneeScolaireFormValues = z.infer<typeof anneeScolaireSchema>;
+type AnneeScolaireFormValues = {
+  nom: string;
+  debut: string;
+  fin: string;
+  actuelle: boolean;
+};
 
 export default function AnneeScolaireTab() {
   const { toast } = useToast();
@@ -193,7 +198,7 @@ export default function AnneeScolaireTab() {
   const handleSetCurrent = async (id: string) => {
     try {
       setIsSubmitting(true);
-      await setCurrentAnneeScolaire(id);
+      await setCurrentAnneeScolaireAPI(id);
       toast({
         title: "Succès",
         description: "L'année scolaire courante a été mise à jour",

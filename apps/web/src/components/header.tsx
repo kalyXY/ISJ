@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ModeToggle } from "./mode-toggle";
+import { type ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 import { useAuth } from "@/lib/auth";
 import { School } from "lucide-react";
@@ -11,7 +11,7 @@ export default function Header() {
   // Déterminer dynamiquement la route du tableau de bord selon le rôle
   const dashboardPath = user?.role === "admin"
     ? "/admin/dashboard"
-    : user?.role === "pending_parent"
+    : user?.role === "parent_attente"
       ? "/pending-account"
       : "/";
 

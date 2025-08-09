@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Users, GraduationCap, School, Percent, DollarSign, BarChart3 } from 'lucide-react';
 import StatsCard from './stats-card';
-import { formatCurrency, formatPercentage } from '@/lib/utils';
+import { formatCurrency, formatPercent } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface StatsData {
@@ -90,7 +90,7 @@ export default function StatsOverview() {
       
       <StatsCard
         title="Taux de présence"
-        value={stats ? formatPercentage(stats.attendanceRate) : '0%'}
+        value={stats ? formatPercent(stats.attendanceRate) : '0%'}
         icon={Percent}
         description="Présence moyenne des élèves"
         trend={stats ? { value: 2.5, isPositive: true } : undefined}

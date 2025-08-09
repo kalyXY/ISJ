@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { AdminLayout } from "@/components/layout";
+import { type ReactNode } from "react";
+import { type AdminLayout } from "@/components/layout";
 
 export default function AdminRootLayout({ children }: { children: ReactNode }) {
   return (
