@@ -1617,7 +1617,8 @@ export const EnseignantScalarFieldEnum = {
   email: 'email',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId'
+  userId: 'userId',
+  assignedClassroomId: 'assignedClassroomId'
 } as const
 
 export type EnseignantScalarFieldEnum = (typeof EnseignantScalarFieldEnum)[keyof typeof EnseignantScalarFieldEnum]

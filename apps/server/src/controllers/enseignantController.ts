@@ -6,6 +6,14 @@ export const getAllEnseignants = async (req: Request, res: Response) => {
   try {
     console.log('[GET /enseignants] Début récupération enseignants');
     const enseignants = await prisma.enseignant.findMany({
+      include: {
+        assignedClassroom: {
+          include: {
+            section: true,
+            option: true,
+          },
+        },
+      },
       orderBy: { nom: 'asc' },
     });
     const enseignantsWithRelations = await Promise.all(
@@ -51,7 +59,7 @@ export const getAllEnseignants = async (req: Request, res: Response) => {
 export const createEnseignant = async (req: Request, res: Response) => {
   try {
     console.log('[POST /enseignants] Payload reçu:', req.body);
-    const { userId } = req.body;
+    const { userId, assignedClassroomId } = req.body;
     if (!userId) {
       return res.status(400).json({ success: false, message: 'userId requis' });
     }
@@ -60,12 +68,38 @@ export const createEnseignant = async (req: Request, res: Response) => {
     if (!user || user.role !== 'teacher') {
       return res.status(400).json({ success: false, message: 'Utilisateur non trouvé ou non enseignant' });
     }
+    // Vérifier que la classe existe si assignedClassroomId est fourni
+    if (assignedClassroomId) {
+      const classe = await prisma.classe.findUnique({ where: { id: assignedClassroomId } });
+      if (!classe) {
+        return res.status(400).json({ success: false, message: 'Salle de classe non trouvée' });
+      }
+      // Vérifier qu'aucun autre enseignant n'est déjà titulaire de cette salle
+      const existingTitulaire = await prisma.enseignant.findUnique({ 
+        where: { assignedClassroomId: assignedClassroomId } 
+      });
+      if (existingTitulaire) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Cette salle a déjà un enseignant titulaire' 
+        });
+      }
+    }
     // Créer l'enseignant lié à ce user
     const enseignant = await prisma.enseignant.create({
       data: {
         userId,
         nom: user.firstName ? user.firstName + (user.lastName ? ' ' + user.lastName : '') : user.email,
         email: user.email,
+        assignedClassroomId,
+      },
+      include: {
+        assignedClassroom: {
+          include: {
+            section: true,
+            option: true,
+          },
+        },
       },
     });
     console.log('[POST /enseignants] Enseignant créé:', enseignant.id);

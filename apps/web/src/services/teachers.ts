@@ -15,6 +15,20 @@ export interface Enseignant {
     lastName?: string;
     email: string;
   } | null;
+  assignedClassroomId?: string | null;
+  assignedClassroom?: {
+    id: string;
+    nom: string;
+    salle?: string;
+    section?: {
+      id: string;
+      nom: string;
+    };
+    option?: {
+      id: string;
+      nom: string;
+    };
+  } | null;
 }
 
 export const getEnseignants = async (): Promise<Enseignant[]> => {
@@ -22,7 +36,7 @@ export const getEnseignants = async (): Promise<Enseignant[]> => {
   return res.data.data;
 };
 
-export const createEnseignant = async (data: { userId: string }): Promise<Enseignant> => {
+export const createEnseignant = async (data: { userId: string; assignedClassroomId?: string }): Promise<Enseignant> => {
   const res = await axiosInstance.post('/enseignants', data);
   return res.data.data;
 };
