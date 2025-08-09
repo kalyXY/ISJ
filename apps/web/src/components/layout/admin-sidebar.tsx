@@ -16,7 +16,8 @@ import {
   UserPlus,
   BookOpen,
   Bell,
-  BookText
+  BookText,
+  UserCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       "/admin/users/create",
       "/admin/students",
       "/admin/teachers",
-      "/admin/academique"
+      "/admin/academique",
+      "/admin/classes/assignment"
     ];
     
     // Prefetch routes with a slight delay to avoid blocking initial render
@@ -107,6 +109,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         { href: "/admin/teachers", label: "Enseignants", icon: <GraduationCap className="h-5 w-5" /> },
         { href: "/admin/academique", label: "Gestion académique", icon: <BookText className="h-5 w-5" /> },
         { href: "/admin/classes", label: "Classes", icon: <BookOpen className="h-5 w-5" /> },
+        { href: "/admin/classes/assignment", label: "Affectation des élèves", icon: <UserCheck className="h-5 w-5" /> },
         { href: "/admin/grades", label: "Notes", icon: <ClipboardList className="h-5 w-5" /> },
         { href: "/admin/schedule", label: "Horaires", icon: <Calendar className="h-5 w-5" /> },
       ]

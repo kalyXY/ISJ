@@ -123,6 +123,8 @@ model Classe {
   sectionId           String?           @db.ObjectId
   optionId            String?           @db.ObjectId
   anneeScolaire       String
+  capaciteMaximale    Int               @default(30)  // Capacité maximale d'élèves
+  description         String?           // Description optionnelle de la classe
   section             Section?          @relation(fields: [sectionId], references: [id])
   option              Option?           @relation(fields: [optionId], references: [id])
   matieres            Matiere[]
