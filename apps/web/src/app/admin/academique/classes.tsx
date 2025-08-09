@@ -118,9 +118,9 @@ export default function ClassesTab() {
     resolver: zodResolver(classeSchema),
     defaultValues: {
       nom: '',
-      salle: '',
-      sectionId: '',
-      optionId: '',
+      salle: 'none',
+      sectionId: 'none',
+      optionId: 'none',
       anneeScolaire: '',
     },
   });
@@ -166,9 +166,9 @@ export default function ClassesTab() {
     setCurrentClasse(null);
     form.reset({
       nom: '',
-      salle: '',
-      sectionId: '',
-      optionId: '',
+      salle: 'none',
+      sectionId: 'none',
+      optionId: 'none',
       anneeScolaire: anneesScolaires.find(a => a.actuelle)?.nom || '',
     });
     setIsDialogOpen(true);
@@ -179,9 +179,9 @@ export default function ClassesTab() {
     setCurrentClasse(classe);
     form.reset({
       nom: classe.nom,
-      salle: classe.salle || '',
-      sectionId: classe.sectionId || '',
-      optionId: classe.optionId || '',
+      salle: classe.salle || 'none',
+      sectionId: classe.sectionId || 'none',
+      optionId: classe.optionId || 'none',
       anneeScolaire: classe.anneeScolaire,
     });
     setIsDialogOpen(true);
@@ -199,9 +199,9 @@ export default function ClassesTab() {
     const formattedValues = {
       ...values,
       // Si c'est une classe de 7ème ou 8ème, supprimer section et option
-      sectionId: needsSectionAndOption ? (values.sectionId || undefined) : undefined,
-      optionId: needsSectionAndOption ? (values.optionId || undefined) : undefined,
-      salle: values.salle || undefined
+      sectionId: needsSectionAndOption ? (values.sectionId === 'none' ? undefined : values.sectionId) : undefined,
+      optionId: needsSectionAndOption ? (values.optionId === 'none' ? undefined : values.optionId) : undefined,
+      salle: values.salle === 'none' ? undefined : values.salle
     };
 
     try {
@@ -367,123 +367,123 @@ export default function ClassesTab() {
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Nom de la classe */}
-              <FormField
-                control={form.control}
-                name="nom"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold">Nom de la classe</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="Sélectionnez le niveau de classe" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {NOMS_CLASSES.map((nom) => (
-                          <SelectItem key={nom} value={nom}>
-                            {nom}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Salle */}
-              <FormField
-                control={form.control}
-                name="salle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold">Salle</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="Sélectionnez la salle (optionnel)" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="">Aucune salle spécifiée</SelectItem>
-                        {SALLES.map((salle) => (
-                          <SelectItem key={salle} value={salle}>
-                            Salle {salle}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription className="text-sm text-muted-foreground">
-                      La salle permet de créer des variantes physiques de la même classe (ex: 1ère A, 1ère B).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Année scolaire */}
-              <FormField
-                control={form.control}
-                name="anneeScolaire"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold">Année scolaire</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="Sélectionnez une année scolaire" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {anneesScolaires.map((annee) => (
-                          <SelectItem key={annee.id} value={annee.nom}>
-                            {annee.nom} {annee.actuelle && '(Actuelle)'}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Section - Conditionnelle */}
-              {needsSectionAndOption && (
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Première ligne : Nom de classe et Salle */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Nom de la classe */}
                 <FormField
                   control={form.control}
-                  name="sectionId"
+                  name="nom"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-semibold">
-                        Section <span className="text-destructive">*</span>
-                      </FormLabel>
+                      <FormLabel className="text-base font-semibold">Nom de la classe</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="h-11">
-                            <SelectValue placeholder="Sélectionnez une section" />
+                            <SelectValue placeholder="Sélectionnez le niveau de classe" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {sections.map((section) => (
-                            <SelectItem key={section.id} value={section.id}>
-                              {section.nom}
+                          {NOMS_CLASSES.map((nom) => (
+                            <SelectItem key={nom} value={nom}>
+                              {nom}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className="text-sm text-muted-foreground">
-                        Requise pour les classes de 1ère à 4ème (ex: scientifique, commerciale).
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
 
-              {/* Option - Conditionnelle */}
+                {/* Salle */}
+                <FormField
+                  control={form.control}
+                  name="salle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Salle</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-11">
+                            <SelectValue placeholder="Sélectionnez la salle (optionnel)" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="none">Aucune salle spécifiée</SelectItem>
+                          {SALLES.map((salle) => (
+                            <SelectItem key={salle} value={salle}>
+                              Salle {salle}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Deuxième ligne : Année scolaire et Section (si nécessaire) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Année scolaire */}
+                <FormField
+                  control={form.control}
+                  name="anneeScolaire"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Année scolaire</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-11">
+                            <SelectValue placeholder="Sélectionnez une année scolaire" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {anneesScolaires.map((annee) => (
+                            <SelectItem key={annee.id} value={annee.nom}>
+                              {annee.nom} {annee.actuelle && '(Actuelle)'}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Section - Conditionnelle */}
+                {needsSectionAndOption && (
+                  <FormField
+                    control={form.control}
+                    name="sectionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">
+                          Section <span className="text-destructive">*</span>
+                        </FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Sélectionnez une section" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {sections.map((section) => (
+                              <SelectItem key={section.id} value={section.id}>
+                                {section.nom}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
+
+              {/* Troisième ligne : Option (si nécessaire) */}
               {needsSectionAndOption && (
                 <FormField
                   control={form.control}
@@ -498,7 +498,7 @@ export default function ClassesTab() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">Aucune option</SelectItem>
+                          <SelectItem value="none">Aucune option</SelectItem>
                           {options.map((option) => (
                             <SelectItem key={option.id} value={option.id}>
                               {option.nom}
@@ -515,19 +515,32 @@ export default function ClassesTab() {
                 />
               )}
 
-              {/* Message informatif pour les classes de base */}
-              {!needsSectionAndOption && watchedNom && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <p className="text-sm text-blue-700 font-medium">
-                      Les classes de {watchedNom} ne nécessitent pas de section ni d'option.
-                    </p>
-                  </div>
-                </div>
-              )}
+              {/* Descriptions et messages informatifs */}
+              <div className="space-y-2">
+                <FormDescription className="text-sm text-muted-foreground">
+                  La salle permet de créer des variantes physiques de la même classe (ex: 1ère A, 1ère B).
+                </FormDescription>
+                
+                {needsSectionAndOption && (
+                  <FormDescription className="text-sm text-muted-foreground">
+                    Requise pour les classes de 1ère à 4ème (ex: scientifique, commerciale).
+                  </FormDescription>
+                )}
 
-              <DialogFooter className="gap-2 pt-6">
+                {/* Message informatif pour les classes de base */}
+                {!needsSectionAndOption && watchedNom && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <p className="text-sm text-blue-700 font-medium">
+                        Les classes de {watchedNom} ne nécessitent pas de section ni d'option.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <DialogFooter className="gap-2 pt-4">
                 <Button
                   type="button"
                   variant="outline"

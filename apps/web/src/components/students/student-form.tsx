@@ -14,7 +14,7 @@ import { generateStudentInfo } from "@/services/students";
 import { 
   getSections, 
   getOptions, 
-  getClassesBySectionAndOption, 
+  getClasses, 
   getAnneeScolareCourante,
   type Section,
   type Option,
@@ -66,17 +66,41 @@ const studentFormSchema = z.object({
   birthDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Format de date invalide",
   }),
-  sectionId: z.string().min(1, "La section est requise"),
-  optionId: z.string().min(1, "L'option est requise"),
+  sectionId: z.string().optional(),
+  optionId: z.string().optional(),
   classeId: z.string().min(1, "La classe est requise"),
   promotion: z.string().min(1, "La promotion est requise"),
   matricule: z.string().min(3, "Le matricule doit contenir au moins 3 caractères"),
   parentPhone: z.string().min(9, "Le numéro de téléphone doit contenir au moins 9 chiffres"),
   isActive: z.boolean(),
   userId: z.string().optional(),
+}).refine((data) => {
+  // Pour les classes de 7ème et 8ème, section et option ne sont pas requises
+  // Pour les autres classes, section et option sont requises
+  const selectedClasse = data.classeId;
+  if (!selectedClasse) return true; // La validation de classeId se fait séparément
+  
+  // Cette validation sera complétée après chargement des classes
+  return true;
+}, {
+  message: 'Veuillez sélectionner une section et une option pour les classes de 1ère à 4ème',
+  path: ['sectionId']
 });
 
-type StudentFormData = z.infer<typeof studentFormSchema>;
+type StudentFormData = {
+  firstName: string;
+  lastName: string;
+  gender: "M" | "F";
+  birthDate: string;
+  sectionId?: string;
+  optionId?: string;
+  classeId: string;
+  promotion: string;
+  matricule: string;
+  parentPhone: string;
+  isActive: boolean;
+  userId?: string;
+};
 
 interface StudentFormProps {
   student?: Student;
@@ -97,21 +121,18 @@ async function fetchUnlinkedEtudiants(): Promise<UserEtudiant[]> {
 export function StudentForm({ student, open, onClose }: StudentFormProps) {
   const { createStudent, updateStudent, isLoading } = useStudentActions();
   const isEditing = Boolean(student);
-
-  // --- États pour les données académiques ---
   const [sections, setSections] = useState<Section[]>([]);
   const [options, setOptions] = useState<Option[]>([]);
+  const [allClasses, setAllClasses] = useState<Classe[]>([]);
   const [classes, setClasses] = useState<Classe[]>([]);
   const [anneeScolaire, setAnneeScolaire] = useState<AnneeScolaire | null>(null);
   const [etudiants, setEtudiants] = useState<UserEtudiant[]>([]);
-  
-  // --- États pour la gestion de l'interface ---
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [userFieldsLocked, setUserFieldsLocked] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [loadingClasses, setLoadingClasses] = useState(false);
   const [generatingInfo, setGeneratingInfo] = useState(false);
-
+  
   // --- Chargement initial des données ---
   useEffect(() => {
     if (open) {
@@ -119,14 +140,17 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
       
       const loadInitialData = async () => {
         try {
-          const [sectionsData, optionsData, etudiantsData] = await Promise.all([
+          const [sectionsData, optionsData, classesData, etudiantsData] = await Promise.all([
             getSections(),
             getOptions(),
+            getClasses(),
             !isEditing ? fetchUnlinkedEtudiants() : Promise.resolve([])
           ]);
           
           setSections(sectionsData);
           setOptions(optionsData);
+          setAllClasses(classesData);
+          setClasses(classesData); // Afficher toutes les classes par défaut
           setEtudiants(etudiantsData);
           
           // Essayer de récupérer l'année scolaire active
@@ -204,33 +228,60 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
     }
   }, [selectedUserId, isEditing, etudiants, form]);
 
+  // --- Déterminer si les champs section/option sont nécessaires ---
+  const selectedClasse = classes.find(c => c.id === form.watch("classeId"));
+  const needsSectionAndOption = selectedClasse ? 
+    !selectedClasse.nom.includes('7ème') && !selectedClasse.nom.includes('8ème') : 
+    false; // Par défaut, ne pas afficher les champs section/option
+
+  // --- Afficher automatiquement les champs section/option quand une classe est sélectionnée ---
+  useEffect(() => {
+    const classeId = form.watch("classeId");
+    if (classeId) {
+      const classe = allClasses.find(c => c.id === classeId);
+      if (classe && classe.sectionId && classe.optionId) {
+        // Si la classe a une section et option, les pré-remplir
+        form.setValue("sectionId", classe.sectionId);
+        form.setValue("optionId", classe.optionId);
+      } else if (classe && !classe.sectionId && !classe.optionId) {
+        // Si la classe n'a pas de section/option (7ème, 8ème), vider ces champs
+        form.setValue("sectionId", "");
+        form.setValue("optionId", "");
+      }
+    }
+  }, [allClasses, form]);
+
   // --- Charger les classes quand section et option changent ---
   useEffect(() => {
     const sectionId = form.watch("sectionId");
     const optionId = form.watch("optionId");
     
+    setLoadingClasses(true);
+    
+    // Filtrer les classes selon la logique métier
+    let filteredClasses = allClasses;
+    
     if (sectionId && optionId) {
-      setLoadingClasses(true);
-      
-      getClassesBySectionAndOption(sectionId, optionId)
-        .then((classesData) => {
-          setClasses(classesData);
-          // Réinitialiser la sélection de classe
-          form.setValue("classeId", "");
-        })
-        .catch((error) => {
-          console.error('Erreur lors du chargement des classes:', error);
-          toast.error('Erreur lors du chargement des classes');
-          setClasses([]);
-        })
-        .finally(() => {
-          setLoadingClasses(false);
-        });
+      // Pour les classes de 1ère à 4ème : filtrer par section et option
+      filteredClasses = allClasses.filter(classe => 
+        classe.sectionId === sectionId && classe.optionId === optionId
+      );
+    } else if (sectionId) {
+      // Pour les classes de 1ère à 4ème : filtrer par section seulement
+      filteredClasses = allClasses.filter(classe => 
+        classe.sectionId === sectionId
+      );
     } else {
-      setClasses([]);
-      form.setValue("classeId", "");
+      // Afficher toutes les classes disponibles (7ème, 8ème, 1ère, 2ème, 3ème, 4ème)
+      // Pas de filtrage - montrer toutes les classes
+      filteredClasses = allClasses;
     }
-  }, [form.watch("sectionId"), form.watch("optionId"), form]);
+    
+    setClasses(filteredClasses);
+    // Réinitialiser la sélection de classe
+    form.setValue("classeId", "");
+    setLoadingClasses(false);
+  }, [allClasses, form]);
 
   // --- Générer automatiquement la promotion et le matricule ---
   useEffect(() => {
@@ -262,7 +313,7 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
       
       generateInfo();
     }
-  }, [form.watch("sectionId"), form.watch("optionId"), isEditing, form, sections, options]);
+  }, [isEditing, form, sections, options]);
 
   // --- Remplir le formulaire avec les données de l'élève en cas de modification ---
   useEffect(() => {
@@ -313,10 +364,17 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
           return;
         }
         
+        // Préparer les données pour l'API (convertir undefined en chaînes vides)
+        const apiData = {
+          ...data,
+          sectionId: data.sectionId || "",
+          optionId: data.optionId || "",
+        };
+        
         if (isEditing && student) {
-          await updateStudent(student.id, data);
+          await updateStudent(student.id, apiData);
         } else {
-          await createStudent(data);
+          await createStudent(apiData);
         }
         onClose();
       } catch (error: any) {
@@ -471,72 +529,76 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
 
               {/* --- Informations académiques --- */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="sectionId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Section</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner une section" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {sections.length === 0 ? (
-                            <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none disabled:pointer-events-none disabled:opacity-50">
-                              Aucune section disponible
-                            </div>
-                          ) : (
-                            sections.map((section) => (
-                              <SelectItem key={section.id} value={section.id}>
-                                {section.nom}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="optionId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Option</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner une option" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {options.length === 0 ? (
-                            <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none disabled:pointer-events-none disabled:opacity-50">
-                              Aucune option disponible
-                            </div>
-                          ) : (
-                            options.map((option) => (
-                              <SelectItem key={option.id} value={option.id}>
-                                {option.nom}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {needsSectionAndOption && (
+                  <FormField
+                    control={form.control}
+                    name="sectionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Section</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionner une section" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {sections.length === 0 ? (
+                              <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none disabled:pointer-events-none disabled:opacity-50">
+                                Aucune section disponible
+                              </div>
+                            ) : (
+                              sections.map((section) => (
+                                <SelectItem key={section.id} value={section.id}>
+                                  {section.nom}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {needsSectionAndOption && (
+                  <FormField
+                    control={form.control}
+                    name="optionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Option</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionner une option" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {options.length === 0 ? (
+                              <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none disabled:pointer-events-none disabled:opacity-50">
+                                Aucune option disponible
+                              </div>
+                            ) : (
+                              options.map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                  {option.nom}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -568,7 +630,7 @@ export function StudentForm({ student, open, onClose }: StudentFormProps) {
                           ) : (
                             classes.map((classe) => (
                               <SelectItem key={classe.id} value={classe.id}>
-                                {classe.nom}
+                                {classe.salle ? `${classe.nom} ${classe.salle}` : classe.nom}
                               </SelectItem>
                             ))
                           )}
