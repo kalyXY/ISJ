@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import UserMenu from "@/components/user-menu";
 import { usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";

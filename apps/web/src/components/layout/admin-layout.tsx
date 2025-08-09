@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { type AdminGuard } from "@/components/auth-guard";
+import { AdminGuard } from "@/components/auth-guard";
 import AdminHeader from "./admin-header";
 import AdminSidebar from "./admin-sidebar";
 

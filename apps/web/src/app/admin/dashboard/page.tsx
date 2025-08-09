@@ -2,7 +2,7 @@
 
 import { useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
-import { type DashboardSkeleton } from "@/components/ui/loading-skeleton";
+import { DashboardSkeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart3,

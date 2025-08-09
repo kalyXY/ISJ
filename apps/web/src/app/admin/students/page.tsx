@@ -6,8 +6,8 @@ import { type Student } from '@/types/student';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit, Archive, Eye } from 'lucide-react';
-import { type StudentTable } from '@/components/students/student-table';
-import { type StudentForm } from '@/components/students/student-form';
+import { StudentTable } from '@/components/students/student-table';
+import { StudentForm } from '@/components/students/student-form';
 import { toast } from 'sonner';
 
 const StudentsPage = () => {
