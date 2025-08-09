@@ -63,7 +63,7 @@ export const useUsers = (page = 1, limit = 10, search = '', role = '') => {
     queryFn: () => fetchUsers(page, limit, search, role),
     staleTime: 3 * 60 * 1000, // 3 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    keepPreviousData: true, // Keep previous data while loading new page
+    placeholderData: (prev) => prev, // Keep previous data while loading new page
     refetchOnWindowFocus: false, // Don't refetch on window focus for user lists
   });
 };

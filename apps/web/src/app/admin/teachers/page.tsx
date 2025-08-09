@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { getEnseignants, type Enseignant, deleteEnseignant, createEnseignant, assignClasseMatiere, getTeacherUsers, type UserTeacher } from '@/services/teachers';
 import { getClasses, type Classe, getAllMatieres, type Matiere } from '@/services/academics';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ import { type ENDPOINTS } from '@/config/api';
 // Removed duplicate DialogDescription import
 
 const TeachersPage = () => {
+  const router = useRouter();
   const [enseignants, setEnseignants] = useState<Enseignant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -124,7 +126,7 @@ const TeachersPage = () => {
           <h2 className="text-2xl font-bold">Gestion des enseignants</h2>
           <p className="text-muted-foreground mt-1">Ajoutez, modifiez ou supprimez les enseignants de l'établissement.</p>
         </div>
-        <Button onClick={() => { setSelectedEnseignant(null); setModalOpen(true); }} className="w-full sm:w-auto">
+        <Button onClick={() => router.push('/admin/teachers/nouveau')} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Ajouter un enseignant
         </Button>
@@ -147,6 +149,7 @@ const TeachersPage = () => {
                   <TableRow>
                     <TableHead>Nom</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Salle titulaire</TableHead>
                     <TableHead>Matières</TableHead>
                     <TableHead>Classes</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -157,6 +160,16 @@ const TeachersPage = () => {
                     <TableRow key={ens.id}>
                       <TableCell className="font-medium">{ens.nom}</TableCell>
                       <TableCell>{ens.email}</TableCell>
+                      <TableCell>
+                        {ens.assignedClassroom ? (
+                          <span className="font-medium text-primary">
+                            {ens.assignedClassroom.nom}
+                            {ens.assignedClassroom.salle && ` ${ens.assignedClassroom.salle}`}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">Aucune salle</span>
+                        )}
+                      </TableCell>
                       <TableCell>
                         {ens.matieres && ens.matieres.length > 0
                           ? ens.matieres.map((m) => m.nom).join(", ")
