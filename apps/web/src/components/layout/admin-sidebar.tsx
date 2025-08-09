@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { NavigationLoading } from "@/components/ui/navigation-loading";
+import { useNavigationLoading } from "@/hooks/use-navigation-loading";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -29,6 +31,11 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isLoading, targetRoute, navigateWithLoading } = useNavigationLoading({
+    minLoadingTime: 500,
+    delay: 120,
+    excludeRoutes: ['/login', '/register', '/admin/dashboard']
+  });
   
   // Prefetch routes for better performance
   const prefetchRoute = useCallback((href: string) => {
@@ -121,6 +128,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
   return (
     <>
+      {/* Navigation Loading */}
+      <NavigationLoading isVisible={isLoading} currentRoute={targetRoute} />
+      
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
@@ -183,11 +193,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                     const isActive = pathname === item.href;
                     
                     return (
-                      <Link 
+                      <button
                         key={item.href}
-                        href={item.href}
+                        onClick={() => navigateWithLoading(item.href, item.label)}
                         className={cn(
-                          "flex items-center px-3 py-3 rounded-xl gap-3 text-sm font-medium",
+                          "flex items-center px-3 py-3 rounded-xl gap-3 text-sm font-medium w-full text-left",
                           "transition-all duration-200 group relative",
                           isActive 
                             ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25" 
@@ -202,7 +212,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                             prefetchRoute(item.href);
                           }
                         }}
-                        prefetch={true}
+                        disabled={isLoading}
                       >
                         {/* Active indicator */}
                         {isActive && (
@@ -221,7 +231,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                         {!isActive && (
                           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5 transition-all duration-200" />
                         )}
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>
