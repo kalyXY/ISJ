@@ -327,7 +327,7 @@ export const useAuth = () => {
   const isAdmin = !!user && user.role === 'admin';
   const isPendingParent = !!user && user.role === 'pending_parent';
   const isTeacher = !!user && user.role === 'enseignant';
-  const isStudent = !!user && user.role === 'student';
+  const isStudent = !!user && user.role === 'eleve';
   const isParent = !!user && user.role === 'parent';
   const isAuthenticated = !!user;
 
@@ -407,6 +407,7 @@ export const useRequireAuth = (allowedRoles: UserRole[] = []) => {
       const dashboardPaths = {
         admin: '/admin/dashboard',
         parent_attente: '/pending-account',
+        pending_parent: '/pending-account',
         enseignant: '/teacher/dashboard',
         eleve: '/student/dashboard',
         parent: '/parent/dashboard'

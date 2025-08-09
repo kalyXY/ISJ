@@ -128,6 +128,7 @@ model Classe {
   matieres            Matiere[]
   students            Student[]
   enseignantsClasses  EnseignantClasse[]
+  titulaireEnseignant Enseignant?       @relation(name: "TitulaireEnseignant")
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 
@@ -157,6 +158,8 @@ model Enseignant {
   updatedAt            DateTime            @updatedAt
   userId               String?             @db.ObjectId
   user                 User?               @relation(fields: [userId], references: [id], name: "UserEnseignants")
+  assignedClassroomId  String?             @unique @db.ObjectId
+  assignedClassroom    Classe?             @relation(fields: [assignedClassroomId], references: [id], name: "TitulaireEnseignant")
 }
 
 model EnseignantClasse {

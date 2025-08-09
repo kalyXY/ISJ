@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { type ModeToggle } from "./mode-toggle";
+import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 import { useAuth } from "@/lib/auth";
 import { School } from "lucide-react";
