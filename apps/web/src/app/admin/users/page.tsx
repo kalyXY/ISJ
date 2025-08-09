@@ -339,19 +339,19 @@ export default function UsersPage() {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <Table>
+                <Table className="text-sm">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Nom</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Rôle</TableHead>
-                      <TableHead>Statut</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead className="text-muted-foreground">Nom</TableHead>
+                      <TableHead className="text-muted-foreground">Email</TableHead>
+                      <TableHead className="text-muted-foreground">Rôle</TableHead>
+                      <TableHead className="text-muted-foreground">Statut</TableHead>
+                      <TableHead className="text-right text-muted-foreground">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id}>
+                    {users.map((user, idx) => (
+                      <TableRow key={user.id} className={idx % 2 === 0 ? "bg-muted/30" : "bg-transparent"}>
                         <TableCell>
                           <div className="font-medium">{user.firstName} {user.lastName}</div>
                         </TableCell>

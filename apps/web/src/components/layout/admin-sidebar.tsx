@@ -99,7 +99,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden animate-fadeIn"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden fade-in"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -109,22 +109,18 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       <aside
         id="admin-sidebar"
         className={cn(
-          "fixed md:sticky top-0 md:top-0 z-50 md:z-0",
+          "fixed md:sticky top-0 md:top-0 z-40 md:z-0",
           "h-screen w-[280px]",
-          "border-r border-sidebar-border",
+          "bg-background border-r border-border",
           "flex flex-col",
-          "transition-all duration-normal ease-out",
+          "transition-transform duration-300 ease-in-out",
           isOpen ? "translate-x-0 shadow-xl" : "-translate-x-full md:translate-x-0"
         )}
-        style={{
-          backgroundColor: 'var(--sidebar-bg)',
-          color: 'var(--sidebar-fg)'
-        }}
       >
         {/* Logo and title */}
-        <div className="flex items-center h-16 px-6 border-b border-sidebar-border">
-          <Link href="/admin/dashboard" className="flex items-center gap-2 transition-all hover:scale-[1.02]">
-            <span className="font-heading text-xl font-bold text-sidebar-fg">
+        <div className="flex items-center h-16 px-4 border-b border-border">
+          <Link href="/admin/dashboard" className="flex items-center gap-2 hover:opacity-90">
+            <span className="font-heading text-lg font-semibold">
               Institut Saint Joseph
             </span>
           </Link>
@@ -132,7 +128,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             variant="ghost" 
             size="icon" 
             onClick={onClose} 
-            className="absolute right-2 top-2 text-sidebar-fg hover:bg-sidebar-hover hover:scale-110 transition-all md:hidden"
+            className="absolute right-2 top-2 md:hidden"
             aria-label="Fermer"
           >
             <X className="h-5 w-5" />
@@ -140,9 +136,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 py-6 overflow-y-auto">
-          <nav className="px-3 space-y-1">
-            {navItems.map((item, index) => {
+        <div className="flex-1 py-4 overflow-y-auto">
+          <nav className="px-2 space-y-1">
+            {navItems.map((item) => {
               const isActive = pathname === item.href;
               
               return (
@@ -150,31 +146,18 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-3 py-2 rounded-md gap-3 sidebar-item",
-                    "transition-all duration-normal",
+                    "flex items-center px-3 py-2 rounded-md gap-3",
                     isActive 
-                      ? "bg-sidebar-active text-sidebar-active-fg shadow-sm" 
-                      : "text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-fg"
+                      ? "bg-primary text-primary-foreground" 
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
-                  style={{ 
-                    animationDelay: `${index * 50}ms`,
-                    transform: isActive ? 'translateX(4px)' : 'none'
-                  }}
                   onMouseEnter={() => {
-                    // Prefetch route on hover for instant navigation
-                    if (!isActive) {
-                      prefetchRoute(item.href);
-                    }
+                    if (!isActive) prefetchRoute(item.href);
                   }}
                   prefetch={true}
                 >
-                  <span className={cn(
-                    "transition-transform duration-normal",
-                    isActive ? "scale-110" : "group-hover:scale-110"
-                  )}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
+                  <span>{item.icon}</span>
+                  <span className="text-sm font-medium">{item.label}</span>
                 </Link>
               );
             })}
@@ -182,8 +165,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-sidebar-border">
-          <p className="text-xs text-center text-sidebar-muted hover:text-sidebar-fg transition-colors">
+        <div className="p-4 border-t border-border">
+          <p className="text-xs text-center text-muted-foreground">
             École Saint Joseph © {new Date().getFullYear()}
           </p>
         </div>

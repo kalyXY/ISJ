@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import UserMenu from "@/components/user-menu";
 import { usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-20 bg-white dark:bg-gray-900 h-16 shadow-sm">
+    <header className="sticky top-0 z-30 bg-background border-b border-border h-16">
       <div className="h-full px-4 md:px-6 flex items-center justify-between">
         {/* Left section: Menu button (mobile) and Title */}
         <div className="flex items-center gap-4">
@@ -46,7 +46,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <h1 className="text-lg font-medium md:ml-2">{getPageTitle()}</h1>
+          <h1 className="text-lg font-semibold tracking-tight md:ml-2">{getPageTitle()}</h1>
         </div>
 
         {/* Center section: Search */}
@@ -56,13 +56,13 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Input 
               type="search" 
               placeholder="Rechercher..." 
-              className="pl-10 h-9 bg-gray-100 dark:bg-gray-800 border-0 focus-visible:ring-1"
+              className="pl-10 h-9 bg-muted border-input focus-visible:ring-2"
             />
           </div>
         </div>
 
         {/* Right section: Theme toggle, User menu */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:gap-3">
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>

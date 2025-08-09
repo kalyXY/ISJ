@@ -2,7 +2,7 @@
 
 import { useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
-import { type DashboardSkeleton } from "@/components/ui/loading-skeleton";
+import { DashboardSkeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart3,
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useDashboardData } from "@/services/dashboard";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
   const { user, isLoading: authLoading } = useRequireAuth(["admin"]);
@@ -294,19 +295,19 @@ export default function AdminDashboard() {
         <CardContent>
           {dashboardData?.recentUsers && dashboardData.recentUsers.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-sm">Nom</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm">Email</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm">Rôle</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm">Statut</th>
-                    <th className="text-right py-3 px-4 font-medium text-sm">Date</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Nom</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Email</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Rôle</th>
+                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">Statut</th>
+                    <th className="text-right py-3 px-4 font-medium text-muted-foreground">Date</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboardData.recentUsers.map((user) => (
-                    <tr key={user.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-all duration-fast">
+                  {dashboardData.recentUsers.map((user, idx) => (
+                    <tr key={user.id} className={cn("border-b transition-colors hover:bg-muted/50", idx % 2 === 0 ? "bg-muted/30" : "bg-transparent") }>
                       <td className="py-3 px-4">
                         <div className="font-medium">{user.firstName} {user.lastName}</div>
                       </td>

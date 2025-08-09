@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,7 +24,6 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import axiosInstance from '@/lib/axiosInstance';
 import { type ENDPOINTS } from '@/config/api';
-import { type DialogDescription } from '@/components/ui/dialog';
 
 const TeachersPage = () => {
   const [enseignants, setEnseignants] = useState<Enseignant[]>([]);

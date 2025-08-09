@@ -63,7 +63,8 @@ export const useUsers = (page = 1, limit = 10, search = '', role = '') => {
     queryFn: () => fetchUsers(page, limit, search, role),
     staleTime: 3 * 60 * 1000, // 3 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    keepPreviousData: true, // Keep previous data while loading new page
+    // keepPreviousData: true, // replaced by placeholderData to avoid TS error with current @tanstack/react-query types
+    placeholderData: (previousData) => previousData,
     refetchOnWindowFocus: false, // Don't refetch on window focus for user lists
   });
 };

@@ -63,7 +63,7 @@ export function StudentTable({ students, loading = false, onEdit, onArchive }: S
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border bg-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -91,8 +91,8 @@ export function StudentTable({ students, loading = false, onEdit, onArchive }: S
               </TableCell>
             </TableRow>
           ) : (
-            students.map((student) => (
-              <TableRow key={student.id}>
+            students.map((student, idx) => (
+              <TableRow key={student.id} className={idx % 2 === 0 ? "bg-muted/30" : "bg-transparent"}>
                 <TableCell className="font-medium">{student.matricule}</TableCell>
                 <TableCell>
                   {student.lastName} {student.firstName}

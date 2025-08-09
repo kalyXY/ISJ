@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { type AdminGuard } from "@/components/auth-guard";
+import { AdminGuard } from "@/components/auth-guard";
 import AdminHeader from "./admin-header";
 import AdminSidebar from "./admin-sidebar";
 
@@ -18,7 +18,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex bg-background">
         {/* Sidebar - visible on desktop, hidden on mobile until toggled */}
         <AdminSidebar 
           isOpen={isSidebarOpen} 
@@ -31,12 +31,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <AdminHeader onMenuClick={toggleSidebar} />
           
           {/* Main content */}
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
+          <main className="flex-1 p-4 md:p-6 overflow-auto bg-background">
             {children}
           </main>
           
           {/* Footer */}
-          <footer className="py-4 px-6 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800">
+          <footer className="py-4 px-6 text-center text-xs text-muted-foreground border-t border-border">
             © {new Date().getFullYear()} École Saint Joseph - Tous droits réservés
           </footer>
         </div>

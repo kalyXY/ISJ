@@ -47,7 +47,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { type Switch } from "@/components/ui/switch";
+import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
 
 // --- Types pour les utilisateurs étudiants non liés ---
