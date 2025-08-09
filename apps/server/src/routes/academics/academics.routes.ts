@@ -53,6 +53,7 @@ import {
 } from '../../controllers/academics/anneeScolaireController';
 
 import elevesRoutes from './eleves.routes';
+import bulletinsRoutes from './bulletins.routes';
 
 const router = express.Router();
 
@@ -101,5 +102,6 @@ router.delete('/annees/:id', deleteAnneeScolaire);
 router.put('/annees/:id/setCurrent', setCurrentAnneeScolaire);
 
 router.use('/eleves', elevesRoutes);
+router.use('/bulletins', bulletinsRoutes);
 
 export default router; 
