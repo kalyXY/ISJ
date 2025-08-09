@@ -68,7 +68,7 @@ const NewTeacherPage = () => {
     try {
       await createEnseignant({
         userId: data.userId,
-        assignedClassroomId: data.assignedClassroomId || undefined,
+        assignedClassroomId: data.assignedClassroomId === 'none' ? undefined : data.assignedClassroomId || undefined,
       });
       
       toast.success('Enseignant créé avec succès');
@@ -143,11 +143,13 @@ const NewTeacherPage = () => {
                     <SelectValue placeholder="Sélectionner un utilisateur enseignant" />
                   </SelectTrigger>
                   <SelectContent>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.firstName || ''} {user.lastName || ''} ({user.email})
-                      </SelectItem>
-                    ))}
+                    {users
+                      .filter(user => user.id && user.id.trim() !== '') // Filtrer les utilisateurs sans ID valide
+                      .map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.firstName || ''} {user.lastName || ''} ({user.email})
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 {users.length === 0 && (
@@ -168,12 +170,14 @@ const NewTeacherPage = () => {
                     <SelectValue placeholder="Sélectionner la salle titulaire (optionnel)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Aucune salle</SelectItem>
-                    {classes.map((classe) => (
-                      <SelectItem key={classe.id} value={classe.id}>
-                        {formatClassroomName(classe)}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="none">Aucune salle</SelectItem>
+                    {classes
+                      .filter(classe => classe.id && classe.id.trim() !== '') // Filtrer les classes sans ID valide
+                      .map((classe) => (
+                        <SelectItem key={classe.id} value={classe.id}>
+                          {formatClassroomName(classe)}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-muted-foreground">

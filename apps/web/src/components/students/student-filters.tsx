@@ -28,10 +28,10 @@ export function StudentFiltersForm({
   availablePromotions,
 }: StudentFiltersProps) {
   const [searchTerm, setSearchTerm] = useState(filters.search || "");
-  const [selectedClass, setSelectedClass] = useState(filters.class || "");
-  const [selectedPromotion, setSelectedPromotion] = useState(filters.promotion || "");
+  const [selectedClass, setSelectedClass] = useState(filters.class || "all");
+  const [selectedPromotion, setSelectedPromotion] = useState(filters.promotion || "all");
   const [selectedStatus, setSelectedStatus] = useState<string>(
-    filters.isActive === null ? "" : filters.isActive ? "active" : "inactive"
+    filters.isActive === null ? "all" : filters.isActive ? "active" : "inactive"
   );
 
   // Appliquer les filtres avec un délai pour la recherche
@@ -52,7 +52,7 @@ export function StudentFiltersForm({
     setSelectedClass(value);
     onFilterChange({
       ...filters,
-      class: value,
+      class: value === "all" ? "" : value,
       page: 1,
     });
   };
@@ -61,7 +61,7 @@ export function StudentFiltersForm({
     setSelectedPromotion(value);
     onFilterChange({
       ...filters,
-      promotion: value,
+      promotion: value === "all" ? "" : value,
       page: 1,
     });
   };
@@ -70,16 +70,16 @@ export function StudentFiltersForm({
     setSelectedStatus(value);
     onFilterChange({
       ...filters,
-      isActive: value === "" ? null : value === "active",
+      isActive: value === "" || value === "all" ? null : value === "active",
       page: 1,
     });
   };
 
   const handleReset = () => {
     setSearchTerm("");
-    setSelectedClass("");
-    setSelectedPromotion("");
-    setSelectedStatus("");
+    setSelectedClass("all");
+    setSelectedPromotion("all");
+    setSelectedStatus("all");
     onFilterChange({
       page: 1,
       limit: filters.limit,
@@ -114,7 +114,7 @@ export function StudentFiltersForm({
               <SelectValue placeholder="Toutes les classes" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Toutes les classes</SelectItem>
+              <SelectItem value="all">Toutes les classes</SelectItem>
               {availableClasses.map((cls) => (
                 <SelectItem key={cls} value={cls}>
                   {cls}
@@ -131,7 +131,7 @@ export function StudentFiltersForm({
               <SelectValue placeholder="Toutes les promotions" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Toutes les promotions</SelectItem>
+              <SelectItem value="all">Toutes les promotions</SelectItem>
               {availablePromotions.map((promo) => (
                 <SelectItem key={promo} value={promo}>
                   {promo}
@@ -148,7 +148,7 @@ export function StudentFiltersForm({
               <SelectValue placeholder="Tous les statuts" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous les statuts</SelectItem>
+              <SelectItem value="all">Tous les statuts</SelectItem>
               <SelectItem value="active">Actif</SelectItem>
               <SelectItem value="inactive">Inactif</SelectItem>
             </SelectContent>
