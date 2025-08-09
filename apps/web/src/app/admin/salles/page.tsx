@@ -99,8 +99,8 @@ const ClassroomsAdminPage = () => {
   const [classes, setClasses] = useState<Classe[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBatiment, setSelectedBatiment] = useState<string>('');
-  const [selectedClasse, setSelectedClasse] = useState<string>('');
+  const [selectedBatiment, setSelectedBatiment] = useState<string>('all');
+  const [selectedClasse, setSelectedClasse] = useState<string>('all');
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
   
   // États pour les dialogues
@@ -160,8 +160,8 @@ const ClassroomsAdminPage = () => {
       classroom.numero?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       classroom.description?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesBatiment = !selectedBatiment || classroom.batiment === selectedBatiment;
-    const matchesClasse = !selectedClasse || classroom.classeId === selectedClasse;
+    const matchesBatiment = !selectedBatiment || selectedBatiment === 'all' || classroom.batiment === selectedBatiment;
+    const matchesClasse = !selectedClasse || selectedClasse === 'all' || (selectedClasse === 'none' ? !classroom.classeId : classroom.classeId === selectedClasse);
     const matchesAvailable = !showAvailableOnly || !isClassroomFull(classroom);
 
     return matchesSearch && matchesBatiment && matchesClasse && matchesAvailable;
@@ -411,7 +411,7 @@ const ClassroomsAdminPage = () => {
                   <SelectValue placeholder="Tous les bâtiments" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tous les bâtiments</SelectItem>
+                  <SelectItem value="all">Tous les bâtiments</SelectItem>
                   {uniqueBuildings.map(building => (
                     <SelectItem key={building} value={building}>
                       {building}
@@ -428,7 +428,7 @@ const ClassroomsAdminPage = () => {
                   <SelectValue placeholder="Toutes les classes" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les classes</SelectItem>
+                  <SelectItem value="all">Toutes les classes</SelectItem>
                   {classes.map(classe => (
                     <SelectItem key={classe.id} value={classe.id}>
                       {classe.nom}
@@ -689,7 +689,7 @@ const ClassroomsAdminPage = () => {
                   <SelectValue placeholder="Sélectionner une classe" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Aucune classe</SelectItem>
+                  <SelectItem value="none">Aucune classe</SelectItem>
                   {classes.map((classe) => (
                     <SelectItem key={classe.id} value={classe.id}>
                       {classe.nom}
@@ -825,7 +825,7 @@ const ClassroomsAdminPage = () => {
                   <SelectValue placeholder="Sélectionner une classe" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Aucune classe</SelectItem>
+                  <SelectItem value="none">Aucune classe</SelectItem>
                   {classes.map((classe) => (
                     <SelectItem key={classe.id} value={classe.id}>
                       {classe.nom}
