@@ -197,6 +197,7 @@ export type AnneeScolaireWhereInput = {
   actuelle?: Prisma.BoolFilter<"AnneeScolaire"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AnneeScolaire"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AnneeScolaire"> | Date | string
+  periodes?: Prisma.PeriodeListRelationFilter
 }
 
 export type AnneeScolaireOrderByWithRelationInput = {
@@ -207,6 +208,7 @@ export type AnneeScolaireOrderByWithRelationInput = {
   actuelle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  periodes?: Prisma.PeriodeOrderByRelationAggregateInput
 }
 
 export type AnneeScolaireWhereUniqueInput = Prisma.AtLeast<{
@@ -220,6 +222,7 @@ export type AnneeScolaireWhereUniqueInput = Prisma.AtLeast<{
   actuelle?: Prisma.BoolFilter<"AnneeScolaire"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AnneeScolaire"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AnneeScolaire"> | Date | string
+  periodes?: Prisma.PeriodeListRelationFilter
 }, "id" | "nom">
 
 export type AnneeScolaireOrderByWithAggregationInput = {
@@ -256,6 +259,7 @@ export type AnneeScolaireCreateInput = {
   actuelle?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  periodes?: Prisma.PeriodeCreateNestedManyWithoutAnneeScolaireInput
 }
 
 export type AnneeScolaireUncheckedCreateInput = {
@@ -266,6 +270,7 @@ export type AnneeScolaireUncheckedCreateInput = {
   actuelle?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  periodes?: Prisma.PeriodeUncheckedCreateNestedManyWithoutAnneeScolaireInput
 }
 
 export type AnneeScolaireUpdateInput = {
@@ -275,6 +280,7 @@ export type AnneeScolaireUpdateInput = {
   actuelle?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodes?: Prisma.PeriodeUpdateManyWithoutAnneeScolaireNestedInput
 }
 
 export type AnneeScolaireUncheckedUpdateInput = {
@@ -284,6 +290,7 @@ export type AnneeScolaireUncheckedUpdateInput = {
   actuelle?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  periodes?: Prisma.PeriodeUncheckedUpdateManyWithoutAnneeScolaireNestedInput
 }
 
 export type AnneeScolaireCreateManyInput = {
@@ -344,6 +351,108 @@ export type AnneeScolaireMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type AnneeScolaireScalarRelationFilter = {
+  is?: Prisma.AnneeScolaireWhereInput
+  isNot?: Prisma.AnneeScolaireWhereInput
+}
+
+export type AnneeScolaireCreateNestedOneWithoutPeriodesInput = {
+  create?: Prisma.XOR<Prisma.AnneeScolaireCreateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedCreateWithoutPeriodesInput>
+  connectOrCreate?: Prisma.AnneeScolaireCreateOrConnectWithoutPeriodesInput
+  connect?: Prisma.AnneeScolaireWhereUniqueInput
+}
+
+export type AnneeScolaireUpdateOneRequiredWithoutPeriodesNestedInput = {
+  create?: Prisma.XOR<Prisma.AnneeScolaireCreateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedCreateWithoutPeriodesInput>
+  connectOrCreate?: Prisma.AnneeScolaireCreateOrConnectWithoutPeriodesInput
+  upsert?: Prisma.AnneeScolaireUpsertWithoutPeriodesInput
+  connect?: Prisma.AnneeScolaireWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AnneeScolaireUpdateToOneWithWhereWithoutPeriodesInput, Prisma.AnneeScolaireUpdateWithoutPeriodesInput>, Prisma.AnneeScolaireUncheckedUpdateWithoutPeriodesInput>
+}
+
+export type AnneeScolaireCreateWithoutPeriodesInput = {
+  id?: string
+  nom: string
+  debut: Date | string
+  fin: Date | string
+  actuelle?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AnneeScolaireUncheckedCreateWithoutPeriodesInput = {
+  id?: string
+  nom: string
+  debut: Date | string
+  fin: Date | string
+  actuelle?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AnneeScolaireCreateOrConnectWithoutPeriodesInput = {
+  where: Prisma.AnneeScolaireWhereUniqueInput
+  create: Prisma.XOR<Prisma.AnneeScolaireCreateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedCreateWithoutPeriodesInput>
+}
+
+export type AnneeScolaireUpsertWithoutPeriodesInput = {
+  update: Prisma.XOR<Prisma.AnneeScolaireUpdateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedUpdateWithoutPeriodesInput>
+  create: Prisma.XOR<Prisma.AnneeScolaireCreateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedCreateWithoutPeriodesInput>
+  where?: Prisma.AnneeScolaireWhereInput
+}
+
+export type AnneeScolaireUpdateToOneWithWhereWithoutPeriodesInput = {
+  where?: Prisma.AnneeScolaireWhereInput
+  data: Prisma.XOR<Prisma.AnneeScolaireUpdateWithoutPeriodesInput, Prisma.AnneeScolaireUncheckedUpdateWithoutPeriodesInput>
+}
+
+export type AnneeScolaireUpdateWithoutPeriodesInput = {
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  debut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fin?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actuelle?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AnneeScolaireUncheckedUpdateWithoutPeriodesInput = {
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  debut?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fin?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actuelle?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type AnneeScolaireCountOutputType
+ */
+
+export type AnneeScolaireCountOutputType = {
+  periodes: number
+}
+
+export type AnneeScolaireCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  periodes?: boolean | AnneeScolaireCountOutputTypeCountPeriodesArgs
+}
+
+/**
+ * AnneeScolaireCountOutputType without action
+ */
+export type AnneeScolaireCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AnneeScolaireCountOutputType
+   */
+  select?: Prisma.AnneeScolaireCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AnneeScolaireCountOutputType without action
+ */
+export type AnneeScolaireCountOutputTypeCountPeriodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PeriodeWhereInput
+}
 
 
 export type AnneeScolaireSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -354,6 +463,8 @@ export type AnneeScolaireSelect<ExtArgs extends runtime.Types.Extensions.Interna
   actuelle?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  periodes?: boolean | Prisma.AnneeScolaire$periodesArgs<ExtArgs>
+  _count?: boolean | Prisma.AnneeScolaireCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["anneeScolaire"]>
 
 
@@ -369,10 +480,16 @@ export type AnneeScolaireSelectScalar = {
 }
 
 export type AnneeScolaireOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nom" | "debut" | "fin" | "actuelle" | "createdAt" | "updatedAt", ExtArgs["result"]["anneeScolaire"]>
+export type AnneeScolaireInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  periodes?: boolean | Prisma.AnneeScolaire$periodesArgs<ExtArgs>
+  _count?: boolean | Prisma.AnneeScolaireCountOutputTypeDefaultArgs<ExtArgs>
+}
 
 export type $AnneeScolairePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AnneeScolaire"
-  objects: {}
+  objects: {
+    periodes: Prisma.$PeriodePayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nom: string
@@ -744,6 +861,7 @@ readonly fields: AnneeScolaireFieldRefs;
  */
 export interface Prisma__AnneeScolaireClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  periodes<T extends Prisma.AnneeScolaire$periodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AnneeScolaire$periodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PeriodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -797,6 +915,10 @@ export type AnneeScolaireFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * Filter, which AnneeScolaire to fetch.
    */
   where: Prisma.AnneeScolaireWhereUniqueInput
@@ -815,6 +937,10 @@ export type AnneeScolaireFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * Filter, which AnneeScolaire to fetch.
    */
   where: Prisma.AnneeScolaireWhereUniqueInput
@@ -832,6 +958,10 @@ export type AnneeScolaireFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the AnneeScolaire
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
   /**
    * Filter, which AnneeScolaire to fetch.
    */
@@ -881,6 +1011,10 @@ export type AnneeScolaireFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * Filter, which AnneeScolaire to fetch.
    */
   where?: Prisma.AnneeScolaireWhereInput
@@ -929,6 +1063,10 @@ export type AnneeScolaireFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * Filter, which AnneeScolaires to fetch.
    */
   where?: Prisma.AnneeScolaireWhereInput
@@ -972,6 +1110,10 @@ export type AnneeScolaireCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * The data needed to create a AnneeScolaire.
    */
   data: Prisma.XOR<Prisma.AnneeScolaireCreateInput, Prisma.AnneeScolaireUncheckedCreateInput>
@@ -999,6 +1141,10 @@ export type AnneeScolaireUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the AnneeScolaire
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
   /**
    * The data needed to update a AnneeScolaire.
    */
@@ -1040,6 +1186,10 @@ export type AnneeScolaireUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
+  /**
    * The filter to search for the AnneeScolaire to update in case it exists.
    */
   where: Prisma.AnneeScolaireWhereUniqueInput
@@ -1065,6 +1215,10 @@ export type AnneeScolaireDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the AnneeScolaire
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
   /**
    * Filter which AnneeScolaire to delete.
    */
@@ -1114,6 +1268,30 @@ export type AnneeScolaireAggregateRawArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
+ * AnneeScolaire.periodes
+ */
+export type AnneeScolaire$periodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Periode
+   */
+  select?: Prisma.PeriodeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Periode
+   */
+  omit?: Prisma.PeriodeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PeriodeInclude<ExtArgs> | null
+  where?: Prisma.PeriodeWhereInput
+  orderBy?: Prisma.PeriodeOrderByWithRelationInput | Prisma.PeriodeOrderByWithRelationInput[]
+  cursor?: Prisma.PeriodeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PeriodeScalarFieldEnum | Prisma.PeriodeScalarFieldEnum[]
+}
+
+/**
  * AnneeScolaire without action
  */
 export type AnneeScolaireDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1125,4 +1303,8 @@ export type AnneeScolaireDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the AnneeScolaire
    */
   omit?: Prisma.AnneeScolaireOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnneeScolaireInclude<ExtArgs> | null
 }

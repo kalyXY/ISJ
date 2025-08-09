@@ -1,5 +1,124 @@
 # Changelog
 
+## [2025-01-19] - Développement complet du module "Gestion des bulletins & notes"
+
+### 🎯 Objectif atteint
+Développement du module complet "Gestion des bulletins & notes" selon le modèle Waterfall, avec intégration backend MongoDB + Prisma + Express et frontend Next.js, sans données mockées.
+
+### ✨ Nouvelles fonctionnalités
+
+#### 🗄️ Extension du schéma de base de données
+- **Nouveaux modèles Prisma** :
+  - `Periode` : Gestion des trimestres/semestres académiques
+  - `Note` : Stockage des notes avec coefficients et appréciations
+  - `Bulletin` : Génération et stockage des bulletins
+  - `HistoriqueModification` : Traçabilité des modifications de notes
+  - `ParametreEcole` : Configuration des bornes de notes et paramètres
+
+#### 🔧 Backend API complet
+- **Routes pour les périodes** : CRUD + validation des périodes académiques
+- **Routes pour les notes** : Saisie, modification, validation avec permissions enseignant
+- **Routes pour les bulletins** : Génération, téléchargement PDF individuel et par classe
+- **Routes pour les statistiques** : Calculs de moyennes, classements, répartitions
+- **Routes pour les paramètres** : Configuration des bornes de notes et seuils
+
+#### 🔒 Système de permissions avancé
+- **Middleware enseignant** : Vérification des permissions par matière/classe
+- **Contrôle d'accès granulaire** : Enseignants limités à leurs matières
+- **Validation des périodes** : Seuls les admins peuvent valider/verrouiller
+- **Historique complet** : Traçabilité de toutes les modifications
+
+#### 📄 Génération de bulletins PDF
+- **Template HTML professionnel** : Design moderne avec CSS avancé
+- **Données complètes** : Informations élève, notes par matière, moyennes, classements
+- **Téléchargement individuel** : Bulletin PDF par élève
+- **Téléchargement par classe** : Tous les bulletins d'une classe en un PDF
+- **Statistiques intégrées** : Moyennes de classe, répartitions, positions
+
+#### 🎨 Interface frontend complète
+- **Page d'accueil du module** : Vue d'ensemble avec statistiques
+- **Navigation intuitive** : Accès direct aux 5 sous-modules
+- **Actions rapides** : Raccourcis vers les fonctionnalités principales
+- **Guide d'utilisation** : Instructions intégrées pour les utilisateurs
+
+#### 📊 Module de statistiques avancé
+- **Calculs automatiques** : Moyennes pondérées par coefficient et matière
+- **Classements** : Rang de chaque élève dans sa classe
+- **Répartitions** : Distribution des notes par tranches (Excellent, Très bien, etc.)
+- **Visualisations** : Données préparées pour graphiques interactifs
+
+### 🛠️ Fichiers créés/modifiés
+
+#### Backend
+- `apps/server/prisma/schema/schema.prisma` - Extension avec 5 nouveaux modèles
+- `apps/server/src/controllers/academics/periodeController.ts` - Gestion des périodes
+- `apps/server/src/controllers/academics/noteController.ts` - Gestion des notes
+- `apps/server/src/controllers/academics/bulletinController.ts` - Gestion des bulletins
+- `apps/server/src/controllers/academics/parametreController.ts` - Gestion des paramètres
+- `apps/server/src/middleware/enseignantMiddleware.ts` - Permissions enseignant
+- `apps/server/src/routes/academics/bulletins.routes.ts` - Routes complètes
+- `apps/server/src/lib/pdfGenerator.ts` - Génération de bulletins PDF
+
+#### Frontend
+- `apps/web/src/services/bulletins.ts` - Services API complets (400+ lignes)
+- `apps/web/src/app/admin/bulletins/page.tsx` - Interface principale du module
+
+### 🔐 Sécurité et permissions
+- **Authentification requise** : Toutes les routes protégées
+- **Permissions par matière** : Enseignants limités à leurs matières enseignées
+- **Validation des périodes** : Verrouillage des notes après validation
+- **Historique des modifications** : Traçabilité complète avec utilisateur et date
+- **Contrôle d'accès granulaire** : Différents niveaux selon le rôle
+
+### 📋 Fonctionnalités clés
+
+#### 1. Gestion des périodes académiques
+- Création de trimestres/semestres avec dates
+- Validation pour verrouiller les notes
+- Liaison aux années scolaires existantes
+
+#### 2. Saisie des notes
+- Interface par classe et période
+- Coefficients par type d'évaluation
+- Validation avec paramètres configurables
+- Permissions par enseignant/matière
+
+#### 3. Génération des bulletins
+- Calcul automatique des moyennes pondérées
+- Classement dans la classe
+- Génération PDF avec template professionnel
+- Statistiques de classe intégrées
+
+#### 4. Statistiques et classements
+- Moyennes par matière et générale
+- Classements par classe
+- Répartitions par tranches de notes
+- Données pour graphiques
+
+#### 5. Configuration système
+- Paramètres de notation (min/max, seuils)
+- Coefficients par défaut
+- Configuration des appréciations
+
+### 🎯 Résultats
+- ✅ **Module complet** développé selon le modèle Waterfall
+- ✅ **Aucune donnée mockée** : Intégration complète avec la base existante
+- ✅ **Permissions sécurisées** : Contrôle d'accès granulaire par rôle
+- ✅ **Bulletins PDF professionnels** : Template moderne et complet
+- ✅ **Interface utilisateur intuitive** : Navigation claire et actions rapides
+- ✅ **Statistiques avancées** : Calculs automatiques et classements
+- ✅ **Historique complet** : Traçabilité de toutes les modifications
+- ✅ **Extensibilité** : Architecture modulaire pour évolutions futures
+
+### 📚 Architecture technique
+- **Backend** : Express + Prisma + MongoDB avec validation Zod
+- **Frontend** : Next.js + TypeScript + Tailwind CSS + Shadcn/ui
+- **PDF** : html-pdf-node avec templates HTML/CSS avancés
+- **Permissions** : Middleware spécialisé pour enseignants
+- **API** : RESTful avec gestion d'erreurs et validation complète
+
+---
+
 ## [2025-01-XX] - Intégration complète du formulaire d'ajout d'élève avec le module de gestion académique
 
 ### 🎯 Objectif atteint

@@ -200,6 +200,7 @@ export type EnseignantWhereInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereListRelationFilter
   enseignantClasses?: Prisma.EnseignantClasseListRelationFilter
   presences?: Prisma.PresenceListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   assignedClassroom?: Prisma.XOR<Prisma.ClasseNullableScalarRelationFilter, Prisma.ClasseWhereInput> | null
 }
@@ -215,6 +216,7 @@ export type EnseignantOrderByWithRelationInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereOrderByRelationAggregateInput
   enseignantClasses?: Prisma.EnseignantClasseOrderByRelationAggregateInput
   presences?: Prisma.PresenceOrderByRelationAggregateInput
+  notes?: Prisma.NoteOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   assignedClassroom?: Prisma.ClasseOrderByWithRelationInput
 }
@@ -233,6 +235,7 @@ export type EnseignantWhereUniqueInput = Prisma.AtLeast<{
   enseignantMatieres?: Prisma.EnseignantMatiereListRelationFilter
   enseignantClasses?: Prisma.EnseignantClasseListRelationFilter
   presences?: Prisma.PresenceListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   assignedClassroom?: Prisma.XOR<Prisma.ClasseNullableScalarRelationFilter, Prisma.ClasseWhereInput> | null
 }, "id" | "email" | "assignedClassroomId">
@@ -272,6 +275,7 @@ export type EnseignantCreateInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
   assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
 }
@@ -287,6 +291,7 @@ export type EnseignantUncheckedCreateInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantUpdateInput = {
@@ -297,6 +302,7 @@ export type EnseignantUpdateInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
   assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
 }
@@ -311,6 +317,7 @@ export type EnseignantUncheckedUpdateInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantCreateManyInput = {
@@ -505,6 +512,20 @@ export type EnseignantUpdateOneRequiredWithoutPresencesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EnseignantUpdateToOneWithWhereWithoutPresencesInput, Prisma.EnseignantUpdateWithoutPresencesInput>, Prisma.EnseignantUncheckedUpdateWithoutPresencesInput>
 }
 
+export type EnseignantCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.EnseignantCreateWithoutNotesInput, Prisma.EnseignantUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.EnseignantCreateOrConnectWithoutNotesInput
+  connect?: Prisma.EnseignantWhereUniqueInput
+}
+
+export type EnseignantUpdateOneRequiredWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.EnseignantCreateWithoutNotesInput, Prisma.EnseignantUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.EnseignantCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.EnseignantUpsertWithoutNotesInput
+  connect?: Prisma.EnseignantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EnseignantUpdateToOneWithWhereWithoutNotesInput, Prisma.EnseignantUpdateWithoutNotesInput>, Prisma.EnseignantUncheckedUpdateWithoutNotesInput>
+}
+
 export type EnseignantCreateWithoutUserInput = {
   id?: string
   nom: string
@@ -514,6 +535,7 @@ export type EnseignantCreateWithoutUserInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
 }
 
@@ -527,6 +549,7 @@ export type EnseignantUncheckedCreateWithoutUserInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantCreateOrConnectWithoutUserInput = {
@@ -576,6 +599,7 @@ export type EnseignantCreateWithoutAssignedClassroomInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
 }
 
@@ -589,6 +613,7 @@ export type EnseignantUncheckedCreateWithoutAssignedClassroomInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantCreateOrConnectWithoutAssignedClassroomInput = {
@@ -615,6 +640,7 @@ export type EnseignantUpdateWithoutAssignedClassroomInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
 }
 
@@ -627,6 +653,7 @@ export type EnseignantUncheckedUpdateWithoutAssignedClassroomInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantCreateWithoutEnseignantClassesInput = {
@@ -637,6 +664,7 @@ export type EnseignantCreateWithoutEnseignantClassesInput = {
   updatedAt?: Date | string
   enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
   assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
 }
@@ -651,6 +679,7 @@ export type EnseignantUncheckedCreateWithoutEnseignantClassesInput = {
   assignedClassroomId?: string | null
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantCreateOrConnectWithoutEnseignantClassesInput = {
@@ -676,6 +705,7 @@ export type EnseignantUpdateWithoutEnseignantClassesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
   assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
 }
@@ -689,6 +719,7 @@ export type EnseignantUncheckedUpdateWithoutEnseignantClassesInput = {
   assignedClassroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantCreateWithoutEnseignantMatieresInput = {
@@ -699,6 +730,7 @@ export type EnseignantCreateWithoutEnseignantMatieresInput = {
   updatedAt?: Date | string
   enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
   assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
 }
@@ -713,6 +745,7 @@ export type EnseignantUncheckedCreateWithoutEnseignantMatieresInput = {
   assignedClassroomId?: string | null
   enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
   presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantCreateOrConnectWithoutEnseignantMatieresInput = {
@@ -738,6 +771,7 @@ export type EnseignantUpdateWithoutEnseignantMatieresInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
   assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
 }
@@ -751,6 +785,7 @@ export type EnseignantUncheckedUpdateWithoutEnseignantMatieresInput = {
   assignedClassroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantCreateWithoutPresencesInput = {
@@ -761,6 +796,7 @@ export type EnseignantCreateWithoutPresencesInput = {
   updatedAt?: Date | string
   enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteCreateNestedManyWithoutEnseignantInput
   user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
   assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
 }
@@ -775,6 +811,7 @@ export type EnseignantUncheckedCreateWithoutPresencesInput = {
   assignedClassroomId?: string | null
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutEnseignantInput
 }
 
 export type EnseignantCreateOrConnectWithoutPresencesInput = {
@@ -800,6 +837,7 @@ export type EnseignantUpdateWithoutPresencesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
   assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
 }
@@ -813,6 +851,73 @@ export type EnseignantUncheckedUpdateWithoutPresencesInput = {
   assignedClassroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
+}
+
+export type EnseignantCreateWithoutNotesInput = {
+  id?: string
+  nom: string
+  email: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  enseignantMatieres?: Prisma.EnseignantMatiereCreateNestedManyWithoutEnseignantInput
+  enseignantClasses?: Prisma.EnseignantClasseCreateNestedManyWithoutEnseignantInput
+  presences?: Prisma.PresenceCreateNestedManyWithoutEnseignantInput
+  user?: Prisma.UserCreateNestedOneWithoutEnseignantsInput
+  assignedClassroom?: Prisma.ClasseCreateNestedOneWithoutTitulaireEnseignantInput
+}
+
+export type EnseignantUncheckedCreateWithoutNotesInput = {
+  id?: string
+  nom: string
+  email: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId?: string | null
+  assignedClassroomId?: string | null
+  enseignantMatieres?: Prisma.EnseignantMatiereUncheckedCreateNestedManyWithoutEnseignantInput
+  enseignantClasses?: Prisma.EnseignantClasseUncheckedCreateNestedManyWithoutEnseignantInput
+  presences?: Prisma.PresenceUncheckedCreateNestedManyWithoutEnseignantInput
+}
+
+export type EnseignantCreateOrConnectWithoutNotesInput = {
+  where: Prisma.EnseignantWhereUniqueInput
+  create: Prisma.XOR<Prisma.EnseignantCreateWithoutNotesInput, Prisma.EnseignantUncheckedCreateWithoutNotesInput>
+}
+
+export type EnseignantUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.EnseignantUpdateWithoutNotesInput, Prisma.EnseignantUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.EnseignantCreateWithoutNotesInput, Prisma.EnseignantUncheckedCreateWithoutNotesInput>
+  where?: Prisma.EnseignantWhereInput
+}
+
+export type EnseignantUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.EnseignantWhereInput
+  data: Prisma.XOR<Prisma.EnseignantUpdateWithoutNotesInput, Prisma.EnseignantUncheckedUpdateWithoutNotesInput>
+}
+
+export type EnseignantUpdateWithoutNotesInput = {
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
+  enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
+  presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  user?: Prisma.UserUpdateOneWithoutEnseignantsNestedInput
+  assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
+}
+
+export type EnseignantUncheckedUpdateWithoutNotesInput = {
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedClassroomId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
+  enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
+  presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantCreateManyUserInput = {
@@ -832,6 +937,7 @@ export type EnseignantUpdateWithoutUserInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutEnseignantNestedInput
   assignedClassroom?: Prisma.ClasseUpdateOneWithoutTitulaireEnseignantNestedInput
 }
 
@@ -844,6 +950,7 @@ export type EnseignantUncheckedUpdateWithoutUserInput = {
   enseignantMatieres?: Prisma.EnseignantMatiereUncheckedUpdateManyWithoutEnseignantNestedInput
   enseignantClasses?: Prisma.EnseignantClasseUncheckedUpdateManyWithoutEnseignantNestedInput
   presences?: Prisma.PresenceUncheckedUpdateManyWithoutEnseignantNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutEnseignantNestedInput
 }
 
 export type EnseignantUncheckedUpdateManyWithoutUserInput = {
@@ -863,12 +970,14 @@ export type EnseignantCountOutputType = {
   enseignantMatieres: number
   enseignantClasses: number
   presences: number
+  notes: number
 }
 
 export type EnseignantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enseignantMatieres?: boolean | EnseignantCountOutputTypeCountEnseignantMatieresArgs
   enseignantClasses?: boolean | EnseignantCountOutputTypeCountEnseignantClassesArgs
   presences?: boolean | EnseignantCountOutputTypeCountPresencesArgs
+  notes?: boolean | EnseignantCountOutputTypeCountNotesArgs
 }
 
 /**
@@ -902,6 +1011,13 @@ export type EnseignantCountOutputTypeCountPresencesArgs<ExtArgs extends runtime.
   where?: Prisma.PresenceWhereInput
 }
 
+/**
+ * EnseignantCountOutputType without action
+ */
+export type EnseignantCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NoteWhereInput
+}
+
 
 export type EnseignantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -914,6 +1030,7 @@ export type EnseignantSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   enseignantMatieres?: boolean | Prisma.Enseignant$enseignantMatieresArgs<ExtArgs>
   enseignantClasses?: boolean | Prisma.Enseignant$enseignantClassesArgs<ExtArgs>
   presences?: boolean | Prisma.Enseignant$presencesArgs<ExtArgs>
+  notes?: boolean | Prisma.Enseignant$notesArgs<ExtArgs>
   user?: boolean | Prisma.Enseignant$userArgs<ExtArgs>
   assignedClassroom?: boolean | Prisma.Enseignant$assignedClassroomArgs<ExtArgs>
   _count?: boolean | Prisma.EnseignantCountOutputTypeDefaultArgs<ExtArgs>
@@ -936,6 +1053,7 @@ export type EnseignantInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   enseignantMatieres?: boolean | Prisma.Enseignant$enseignantMatieresArgs<ExtArgs>
   enseignantClasses?: boolean | Prisma.Enseignant$enseignantClassesArgs<ExtArgs>
   presences?: boolean | Prisma.Enseignant$presencesArgs<ExtArgs>
+  notes?: boolean | Prisma.Enseignant$notesArgs<ExtArgs>
   user?: boolean | Prisma.Enseignant$userArgs<ExtArgs>
   assignedClassroom?: boolean | Prisma.Enseignant$assignedClassroomArgs<ExtArgs>
   _count?: boolean | Prisma.EnseignantCountOutputTypeDefaultArgs<ExtArgs>
@@ -947,6 +1065,7 @@ export type $EnseignantPayload<ExtArgs extends runtime.Types.Extensions.Internal
     enseignantMatieres: Prisma.$EnseignantMatierePayload<ExtArgs>[]
     enseignantClasses: Prisma.$EnseignantClassePayload<ExtArgs>[]
     presences: Prisma.$PresencePayload<ExtArgs>[]
+    notes: Prisma.$NotePayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs> | null
     assignedClassroom: Prisma.$ClassePayload<ExtArgs> | null
   }
@@ -1324,6 +1443,7 @@ export interface Prisma__EnseignantClient<T, Null = never, ExtArgs extends runti
   enseignantMatieres<T extends Prisma.Enseignant$enseignantMatieresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$enseignantMatieresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnseignantMatierePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enseignantClasses<T extends Prisma.Enseignant$enseignantClassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$enseignantClassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnseignantClassePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   presences<T extends Prisma.Enseignant$presencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$presencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PresencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.Enseignant$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.Enseignant$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   assignedClassroom<T extends Prisma.Enseignant$assignedClassroomArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enseignant$assignedClassroomArgs<ExtArgs>>): Prisma.Prisma__ClasseClient<runtime.Types.Result.GetResult<Prisma.$ClassePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1801,6 +1921,30 @@ export type Enseignant$presencesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.PresenceScalarFieldEnum | Prisma.PresenceScalarFieldEnum[]
+}
+
+/**
+ * Enseignant.notes
+ */
+export type Enseignant$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Note
+   */
+  select?: Prisma.NoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Note
+   */
+  omit?: Prisma.NoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NoteInclude<ExtArgs> | null
+  where?: Prisma.NoteWhereInput
+  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
+  cursor?: Prisma.NoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
 }
 
 /**

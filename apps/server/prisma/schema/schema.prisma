@@ -10,7 +10,7 @@ datasource db {
 }
 
 model Student {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String
   lastName       String
   gender         String
@@ -19,35 +19,38 @@ model Student {
   section        String?
   option         String?
   promotion      String
-  matricule      String   @unique
+  matricule      String     @unique
   parentPhone    String
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  classeId       String?  @db.ObjectId
-  classe         Classe?  @relation(fields: [classeId], references: [id])
-  userId         String?  @db.ObjectId
-  user           User?    @relation(fields: [userId], references: [id], name: "UserStudents")
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  classeId       String?    @db.ObjectId
+  classe         Classe?    @relation(fields: [classeId], references: [id])
+  userId         String?    @db.ObjectId
+  user           User?      @relation(fields: [userId], references: [id], name: "UserStudents")
+  notes          Note[]
+  bulletins      Bulletin[]
 }
 
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
   firstName     String
   lastName      String
-  email         String    @unique
+  email         String                  @unique
   password      String
-  role          String    @default("pending_parent")
-  status        String    @default("en_attente")
+  role          String                  @default("pending_parent")
+  status        String                  @default("en_attente")
   resetToken    String?
   resetExpires  DateTime?
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean                 @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
   sessions      Session[]
   accounts      Account[]
-  students      Student[] @relation("UserStudents")
-  enseignants   Enseignant[] @relation("UserEnseignants")
+  students      Student[]               @relation("UserStudents")
+  enseignants   Enseignant[]            @relation("UserEnseignants")
+  historiqueModifications HistoriqueModification[]
 
   @@map("users")
 }
@@ -131,6 +134,7 @@ model Classe {
   students            Student[]
   enseignantsClasses  EnseignantClasse[]
   titulaireEnseignant Enseignant?       @relation(name: "TitulaireEnseignant")
+  bulletins           Bulletin[]
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 
@@ -143,6 +147,7 @@ model Matiere {
   classeId           String             @db.ObjectId
   classe             Classe             @relation(fields: [classeId], references: [id])
   enseignantsMatieres EnseignantMatiere[]
+  notes              Note[]
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
@@ -156,6 +161,7 @@ model Enseignant {
   enseignantMatieres   EnseignantMatiere[]
   enseignantClasses    EnseignantClasse[]
   presences            Presence[]
+  notes                Note[]
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
   userId               String?             @db.ObjectId
@@ -181,13 +187,14 @@ model EnseignantMatiere {
 }
 
 model AnneeScolaire {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  nom       String   @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  nom       String    @unique
   debut     DateTime
   fin       DateTime
-  actuelle  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  actuelle  Boolean   @default(false)
+  periodes  Periode[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("annees_scolaires")
 }
@@ -198,4 +205,95 @@ model Presence {
   date         DateTime
   status       String
   enseignant   Enseignant @relation(fields: [enseignantId], references: [id])
+}
+
+// Nouveaux modèles pour le module de gestion des bulletins et notes
+
+model Periode {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  nom              String        // Trimestre 1, Semestre 1, etc.
+  type             String        // "trimestre" ou "semestre"
+  dateDebut        DateTime
+  dateFin          DateTime
+  anneeScolaireId  String        @db.ObjectId
+  anneeScolaire    AnneeScolaire @relation(fields: [anneeScolaireId], references: [id])
+  isActive         Boolean       @default(true)
+  isValidated      Boolean       @default(false) // Verrouille les notes
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  notes            Note[]
+  bulletins        Bulletin[]
+
+  @@map("periodes")
+}
+
+model Note {
+  id                     String                  @id @default(auto()) @map("_id") @db.ObjectId
+  valeur                 Float                   // Note sur 20
+  studentId              String                  @db.ObjectId
+  matiereId              String                  @db.ObjectId
+  periodeId              String                  @db.ObjectId
+  enseignantId           String                  @db.ObjectId
+  typeEvaluation         String                  @default("note_normale") // note_normale, interrogation, examen, etc.
+  coefficient            Float                   @default(1.0)
+  appreciation           String?                 // Commentaire sur la note
+  isValidated            Boolean                 @default(false)
+  dateValidation         DateTime?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  student                Student                 @relation(fields: [studentId], references: [id])
+  matiere                Matiere                 @relation(fields: [matiereId], references: [id])
+  periode                Periode                 @relation(fields: [periodeId], references: [id])
+  enseignant             Enseignant              @relation(fields: [enseignantId], references: [id])
+  historiqueModifications HistoriqueModification[]
+
+  @@unique([studentId, matiereId, periodeId, typeEvaluation])
+  @@map("notes")
+}
+
+model Bulletin {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId        String   @db.ObjectId
+  periodeId        String   @db.ObjectId
+  classeId         String   @db.ObjectId
+  moyenneGenerale  Float?   // Moyenne calculée
+  rangClasse       Int?     // Position dans la classe
+  appreciationGenerale String? // Appréciation globale du conseil de classe
+  isGenerated      Boolean  @default(false)
+  dateGeneration   DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  student          Student  @relation(fields: [studentId], references: [id])
+  periode          Periode  @relation(fields: [periodeId], references: [id])
+  classe           Classe   @relation(fields: [classeId], references: [id])
+
+  @@unique([studentId, periodeId])
+  @@map("bulletins")
+}
+
+model HistoriqueModification {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  noteId       String   @db.ObjectId
+  ancienneValeur Float?
+  nouvelleValeur Float?
+  userId       String   @db.ObjectId
+  action       String   // "creation", "modification", "suppression", "validation"
+  commentaire  String?
+  createdAt    DateTime @default(now())
+  note         Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("historique_modifications")
+}
+
+model ParametreEcole {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  cle         String   @unique // "note_min", "note_max", "seuil_reussite", etc.
+  valeur      String   // Valeur stockée en string, à convertir selon le type
+  type        String   // "number", "string", "boolean"
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("parametres_ecole")
 }
