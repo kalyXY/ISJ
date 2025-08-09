@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StudentFilters } from "@/types/student";
+import { type StudentFilters } from "@/types/student";
 
 interface StudentFiltersProps {
   filters: StudentFilters;

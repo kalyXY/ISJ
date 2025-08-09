@@ -9,10 +9,10 @@ import {
   getSections,
   getOptions,
   getAnneesScolaires,
-  Section,
-  Option,
-  Classe,
-  AnneeScolaire
+  type Section,
+  type Option,
+  type Classe,
+  type AnneeScolaire
 } from '@/services/academics';
 import { Button } from '@/components/ui/button';
 import {

@@ -6,7 +6,7 @@ import {
   createSection, 
   updateSection, 
   deleteSection,
-  Section
+  type Section
 } from '@/services/academics';
 import { Button } from '@/components/ui/button';
 import {
