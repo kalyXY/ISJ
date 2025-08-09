@@ -26,7 +26,9 @@ import {
   createClasse,
   updateClasse,
   deleteClasse,
-  getClassesBySectionAndOption
+  getClassesBySectionAndOption,
+  getClassesStats,
+  removeStudentFromClasse
 } from '../../controllers/academics/classeController';
 
 // Contrôleurs pour les matières
@@ -72,12 +74,14 @@ router.put('/options/:id', updateOption);
 router.delete('/options/:id', deleteOption);
 
 // Routes pour les classes
+router.get('/classes/stats', getClassesStats);
 router.get('/classes', getAllClasses);
 router.get('/classes/filter', getClassesBySectionAndOption);
 router.get('/classes/:id', getClasseById);
 router.post('/classes', createClasse);
 router.put('/classes/:id', updateClasse);
 router.delete('/classes/:id', deleteClasse);
+router.delete('/classes/:classeId/students/:eleveId', removeStudentFromClasse);
 
 // Routes pour les matières
 router.get('/matieres', getAllMatieres);

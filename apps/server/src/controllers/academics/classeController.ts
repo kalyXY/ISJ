@@ -9,6 +9,8 @@ const classeSchema = z.object({
   sectionId: z.string().optional().nullable(),
   optionId: z.string().optional().nullable(),
   anneeScolaire: z.string().min(1, 'L\'année scolaire est requise'),
+  capaciteMaximale: z.number().min(1, 'La capacité maximale doit être d\'au moins 1').max(100, 'La capacité maximale ne peut pas dépasser 100').optional(),
+  description: z.string().optional()
 }).refine((data) => {
   // Pour les classes de 7ème et 8ème, section et option ne sont pas requises
   const isBasicClass = data.nom.includes('7ème') || data.nom.includes('8ème');
@@ -23,6 +25,42 @@ const classeSchema = z.object({
   message: 'La section est requise pour les classes de 1ère à 4ème',
   path: ['sectionId']
 });
+
+// Fonction utilitaire pour vérifier la capacité d'une classe
+async function checkClassCapacity(classeId: string): Promise<{ 
+  canAdd: boolean; 
+  currentCount: number; 
+  maxCapacity: number; 
+  message?: string;
+}> {
+  const classe = await prisma.classe.findUnique({
+    where: { id: classeId },
+    include: {
+      students: { where: { isActive: true } }
+    }
+  });
+
+  if (!classe) {
+    return {
+      canAdd: false,
+      currentCount: 0,
+      maxCapacity: 0,
+      message: 'Classe non trouvée'
+    };
+  }
+
+  const currentCount = classe.students.length;
+  const maxCapacity = classe.capaciteMaximale || 30;
+
+  return {
+    canAdd: currentCount < maxCapacity,
+    currentCount,
+    maxCapacity,
+    message: currentCount >= maxCapacity 
+      ? `La classe a atteint sa capacité maximale (${maxCapacity} élèves)`
+      : undefined
+  };
+}
 
 // Récupérer toutes les classes
 export const getAllClasses = async (req: Request, res: Response) => {
@@ -39,13 +77,17 @@ export const getAllClasses = async (req: Request, res: Response) => {
       orderBy: { nom: 'asc' },
     });
 
-    // Calculer le nombre d'étudiants actifs pour chaque classe
+    // Calculer le nombre d'étudiants actifs et les informations de capacité pour chaque classe
     const classesWithActiveCount = classes.map(classe => ({
       ...classe,
       _count: {
         students: classe.students.length,
         matieres: classe.matieres.length
-      }
+      },
+      studentsCount: classe.students.length,
+      availableSpots: (classe.capaciteMaximale || 30) - classe.students.length,
+      isAtCapacity: classe.students.length >= (classe.capaciteMaximale || 30),
+      capacityPercentage: Math.round((classe.students.length / (classe.capaciteMaximale || 30)) * 100)
     }));
 
     return res.status(200).json({
@@ -141,17 +183,36 @@ export const createClasse = async (req: Request, res: Response) => {
 
     // Créer la classe
     const classe = await prisma.classe.create({
-      data: validationResult.data,
+      data: {
+        ...validationResult.data,
+        capaciteMaximale: validationResult.data.capaciteMaximale || 30
+      },
       include: {
         section: true,
         option: true,
+        _count: {
+          select: {
+            students: {
+              where: { isActive: true }
+            }
+          }
+        }
       },
     });
+
+    // Enrichir avec les informations de capacité
+    const classeWithCapacity = {
+      ...classe,
+      studentsCount: classe._count.students,
+      availableSpots: classe.capaciteMaximale - classe._count.students,
+      isAtCapacity: false,
+      capacityPercentage: 0
+    };
 
     return res.status(201).json({
       success: true,
       message: 'Classe créée avec succès',
-      data: classe,
+      data: classeWithCapacity,
     });
   } catch (error: any) {
     console.error('❌ Erreur lors de la création de la classe:', error);
@@ -341,3 +402,112 @@ export const getClassesBySectionAndOption = async (req: Request, res: Response) 
     });
   }
 }; 
+
+// Obtenir les statistiques des classes
+export const getClassesStats = async (req: Request, res: Response) => {
+  try {
+    const anneeScolaire = req.query.anneeScolaire as string;
+    
+    const where = anneeScolaire ? { anneeScolaire } : {};
+
+    const stats = await prisma.classe.aggregate({
+      where,
+      _sum: {
+        capaciteMaximale: true
+      },
+      _count: {
+        id: true
+      }
+    });
+
+    const studentsCount = await prisma.student.count({
+      where: {
+        isActive: true,
+        classe: anneeScolaire ? {
+          anneeScolaire
+        } : undefined
+      }
+    });
+
+    const classesByCapacity = await prisma.classe.groupBy({
+      by: ['capaciteMaximale'],
+      where,
+      _count: {
+        id: true
+      },
+      orderBy: {
+        capaciteMaximale: 'asc'
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalClasses: stats._count.id,
+        totalCapacity: stats._sum.capaciteMaximale || 0,
+        totalStudents: studentsCount,
+        availableSpots: (stats._sum.capaciteMaximale || 0) - studentsCount,
+        occupancyPercentage: stats._sum.capaciteMaximale ? 
+          Math.round((studentsCount / stats._sum.capaciteMaximale) * 100) : 0,
+        classesByCapacity
+      }
+    });
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des statistiques:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Erreur lors de la récupération des statistiques', 
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+};
+
+// Retirer un élève d'une classe
+export const removeStudentFromClasse = async (req: Request, res: Response) => {
+  try {
+    const { classeId, eleveId } = req.params;
+
+    const eleve = await prisma.student.findUnique({
+      where: { id: eleveId },
+      include: { classe: true }
+    });
+
+    if (!eleve) {
+      return res.status(404).json({
+        success: false,
+        message: 'Élève non trouvé'
+      });
+    }
+
+    if (eleve.classeId !== classeId) {
+      return res.status(400).json({
+        success: false,
+        message: 'L\'élève n\'est pas dans cette classe'
+      });
+    }
+
+    const updatedEleve = await prisma.student.update({
+      where: { id: eleveId },
+      data: {
+        classeId: null,
+        class: ''
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: updatedEleve,
+      message: `Élève ${eleve.firstName} ${eleve.lastName} retiré de la classe ${eleve.classe?.nom}`
+    });
+  } catch (error: any) {
+    console.error('❌ Erreur lors du retrait de l\'élève de la classe:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Erreur lors du retrait de l\'élève de la classe', 
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+};
+
+// Fonction utilitaire pour vérifier la capacité (exportée pour utilisation dans d'autres contrôleurs)
+export { checkClassCapacity }; 

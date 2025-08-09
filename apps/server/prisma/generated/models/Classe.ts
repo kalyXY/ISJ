@@ -19,8 +19,18 @@ export type ClasseModel = runtime.Types.Result.DefaultSelection<Prisma.$ClassePa
 
 export type AggregateClasse = {
   _count: ClasseCountAggregateOutputType | null
+  _avg: ClasseAvgAggregateOutputType | null
+  _sum: ClasseSumAggregateOutputType | null
   _min: ClasseMinAggregateOutputType | null
   _max: ClasseMaxAggregateOutputType | null
+}
+
+export type ClasseAvgAggregateOutputType = {
+  capaciteMaximale: number | null
+}
+
+export type ClasseSumAggregateOutputType = {
+  capaciteMaximale: number | null
 }
 
 export type ClasseMinAggregateOutputType = {
@@ -30,6 +40,8 @@ export type ClasseMinAggregateOutputType = {
   sectionId: string | null
   optionId: string | null
   anneeScolaire: string | null
+  capaciteMaximale: number | null
+  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -41,6 +53,8 @@ export type ClasseMaxAggregateOutputType = {
   sectionId: string | null
   optionId: string | null
   anneeScolaire: string | null
+  capaciteMaximale: number | null
+  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,11 +66,21 @@ export type ClasseCountAggregateOutputType = {
   sectionId: number
   optionId: number
   anneeScolaire: number
+  capaciteMaximale: number
+  description: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ClasseAvgAggregateInputType = {
+  capaciteMaximale?: true
+}
+
+export type ClasseSumAggregateInputType = {
+  capaciteMaximale?: true
+}
 
 export type ClasseMinAggregateInputType = {
   id?: true
@@ -65,6 +89,8 @@ export type ClasseMinAggregateInputType = {
   sectionId?: true
   optionId?: true
   anneeScolaire?: true
+  capaciteMaximale?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +102,8 @@ export type ClasseMaxAggregateInputType = {
   sectionId?: true
   optionId?: true
   anneeScolaire?: true
+  capaciteMaximale?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -87,6 +115,8 @@ export type ClasseCountAggregateInputType = {
   sectionId?: true
   optionId?: true
   anneeScolaire?: true
+  capaciteMaximale?: true
+  description?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -130,6 +160,18 @@ export type ClasseAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ClasseAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ClasseSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ClasseMinAggregateInputType
@@ -160,6 +202,8 @@ export type ClasseGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: ClasseCountAggregateInputType | true
+  _avg?: ClasseAvgAggregateInputType
+  _sum?: ClasseSumAggregateInputType
   _min?: ClasseMinAggregateInputType
   _max?: ClasseMaxAggregateInputType
 }
@@ -171,9 +215,13 @@ export type ClasseGroupByOutputType = {
   sectionId: string | null
   optionId: string | null
   anneeScolaire: string
+  capaciteMaximale: number
+  description: string | null
   createdAt: Date
   updatedAt: Date
   _count: ClasseCountAggregateOutputType | null
+  _avg: ClasseAvgAggregateOutputType | null
+  _sum: ClasseSumAggregateOutputType | null
   _min: ClasseMinAggregateOutputType | null
   _max: ClasseMaxAggregateOutputType | null
 }
@@ -203,6 +251,8 @@ export type ClasseWhereInput = {
   sectionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   optionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   anneeScolaire?: Prisma.StringFilter<"Classe"> | string
+  capaciteMaximale?: Prisma.IntFilter<"Classe"> | number
+  description?: Prisma.StringNullableFilter<"Classe"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
   section?: Prisma.XOR<Prisma.SectionNullableScalarRelationFilter, Prisma.SectionWhereInput> | null
@@ -220,6 +270,8 @@ export type ClasseOrderByWithRelationInput = {
   sectionId?: Prisma.SortOrder
   optionId?: Prisma.SortOrder
   anneeScolaire?: Prisma.SortOrder
+  capaciteMaximale?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   section?: Prisma.SectionOrderByWithRelationInput
@@ -240,6 +292,8 @@ export type ClasseWhereUniqueInput = Prisma.AtLeast<{
   sectionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   optionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   anneeScolaire?: Prisma.StringFilter<"Classe"> | string
+  capaciteMaximale?: Prisma.IntFilter<"Classe"> | number
+  description?: Prisma.StringNullableFilter<"Classe"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
   section?: Prisma.XOR<Prisma.SectionNullableScalarRelationFilter, Prisma.SectionWhereInput> | null
@@ -257,11 +311,15 @@ export type ClasseOrderByWithAggregationInput = {
   sectionId?: Prisma.SortOrder
   optionId?: Prisma.SortOrder
   anneeScolaire?: Prisma.SortOrder
+  capaciteMaximale?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClasseCountOrderByAggregateInput
+  _avg?: Prisma.ClasseAvgOrderByAggregateInput
   _max?: Prisma.ClasseMaxOrderByAggregateInput
   _min?: Prisma.ClasseMinOrderByAggregateInput
+  _sum?: Prisma.ClasseSumOrderByAggregateInput
 }
 
 export type ClasseScalarWhereWithAggregatesInput = {
@@ -274,6 +332,8 @@ export type ClasseScalarWhereWithAggregatesInput = {
   sectionId?: Prisma.StringNullableWithAggregatesFilter<"Classe"> | string | null
   optionId?: Prisma.StringNullableWithAggregatesFilter<"Classe"> | string | null
   anneeScolaire?: Prisma.StringWithAggregatesFilter<"Classe"> | string
+  capaciteMaximale?: Prisma.IntWithAggregatesFilter<"Classe"> | number
+  description?: Prisma.StringNullableWithAggregatesFilter<"Classe"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Classe"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Classe"> | Date | string
 }
@@ -283,6 +343,8 @@ export type ClasseCreateInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -300,6 +362,8 @@ export type ClasseUncheckedCreateInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -312,6 +376,8 @@ export type ClasseUpdateInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -328,6 +394,8 @@ export type ClasseUncheckedUpdateInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -343,6 +411,8 @@ export type ClasseCreateManyInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -351,6 +421,8 @@ export type ClasseUpdateManyMutationInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,6 +433,8 @@ export type ClasseUncheckedUpdateManyInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -387,8 +461,14 @@ export type ClasseCountOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   optionId?: Prisma.SortOrder
   anneeScolaire?: Prisma.SortOrder
+  capaciteMaximale?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClasseAvgOrderByAggregateInput = {
+  capaciteMaximale?: Prisma.SortOrder
 }
 
 export type ClasseMaxOrderByAggregateInput = {
@@ -398,6 +478,8 @@ export type ClasseMaxOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   optionId?: Prisma.SortOrder
   anneeScolaire?: Prisma.SortOrder
+  capaciteMaximale?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -409,8 +491,14 @@ export type ClasseMinOrderByAggregateInput = {
   sectionId?: Prisma.SortOrder
   optionId?: Prisma.SortOrder
   anneeScolaire?: Prisma.SortOrder
+  capaciteMaximale?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClasseSumOrderByAggregateInput = {
+  capaciteMaximale?: Prisma.SortOrder
 }
 
 export type ClasseScalarRelationFilter = {
@@ -518,6 +606,14 @@ export type ClasseUncheckedUpdateManyWithoutOptionNestedInput = {
   deleteMany?: Prisma.ClasseScalarWhereInput | Prisma.ClasseScalarWhereInput[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type ClasseCreateNestedOneWithoutMatieresInput = {
   create?: Prisma.XOR<Prisma.ClasseCreateWithoutMatieresInput, Prisma.ClasseUncheckedCreateWithoutMatieresInput>
   connectOrCreate?: Prisma.ClasseCreateOrConnectWithoutMatieresInput
@@ -567,6 +663,8 @@ export type ClasseCreateWithoutStudentsInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -583,6 +681,8 @@ export type ClasseUncheckedCreateWithoutStudentsInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -610,6 +710,8 @@ export type ClasseUpdateWithoutStudentsInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -625,6 +727,8 @@ export type ClasseUncheckedUpdateWithoutStudentsInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -637,6 +741,8 @@ export type ClasseCreateWithoutSectionInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   option?: Prisma.OptionCreateNestedOneWithoutClassesInput
@@ -652,6 +758,8 @@ export type ClasseUncheckedCreateWithoutSectionInput = {
   salle?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -695,6 +803,8 @@ export type ClasseScalarWhereInput = {
   sectionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   optionId?: Prisma.StringNullableFilter<"Classe"> | string | null
   anneeScolaire?: Prisma.StringFilter<"Classe"> | string
+  capaciteMaximale?: Prisma.IntFilter<"Classe"> | number
+  description?: Prisma.StringNullableFilter<"Classe"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Classe"> | Date | string
 }
@@ -704,6 +814,8 @@ export type ClasseCreateWithoutOptionInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -719,6 +831,8 @@ export type ClasseUncheckedCreateWithoutOptionInput = {
   salle?: string | null
   sectionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -757,6 +871,8 @@ export type ClasseCreateWithoutMatieresInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -773,6 +889,8 @@ export type ClasseUncheckedCreateWithoutMatieresInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutClasseInput
@@ -800,6 +918,8 @@ export type ClasseUpdateWithoutMatieresInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -815,6 +935,8 @@ export type ClasseUncheckedUpdateWithoutMatieresInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   students?: Prisma.StudentUncheckedUpdateManyWithoutClasseNestedInput
@@ -827,6 +949,8 @@ export type ClasseCreateWithoutTitulaireEnseignantInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -843,6 +967,8 @@ export type ClasseUncheckedCreateWithoutTitulaireEnseignantInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -870,6 +996,8 @@ export type ClasseUpdateWithoutTitulaireEnseignantInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -885,6 +1013,8 @@ export type ClasseUncheckedUpdateWithoutTitulaireEnseignantInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -897,6 +1027,8 @@ export type ClasseCreateWithoutEnseignantsClassesInput = {
   nom: string
   salle?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   section?: Prisma.SectionCreateNestedOneWithoutClassesInput
@@ -913,6 +1045,8 @@ export type ClasseUncheckedCreateWithoutEnseignantsClassesInput = {
   sectionId?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   matieres?: Prisma.MatiereUncheckedCreateNestedManyWithoutClasseInput
@@ -940,6 +1074,8 @@ export type ClasseUpdateWithoutEnseignantsClassesInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -955,6 +1091,8 @@ export type ClasseUncheckedUpdateWithoutEnseignantsClassesInput = {
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -968,6 +1106,8 @@ export type ClasseCreateManySectionInput = {
   salle?: string | null
   optionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -976,6 +1116,8 @@ export type ClasseUpdateWithoutSectionInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   option?: Prisma.OptionUpdateOneWithoutClassesNestedInput
@@ -990,6 +1132,8 @@ export type ClasseUncheckedUpdateWithoutSectionInput = {
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -1003,6 +1147,8 @@ export type ClasseUncheckedUpdateManyWithoutSectionInput = {
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   optionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1013,6 +1159,8 @@ export type ClasseCreateManyOptionInput = {
   salle?: string | null
   sectionId?: string | null
   anneeScolaire: string
+  capaciteMaximale?: number
+  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1021,6 +1169,8 @@ export type ClasseUpdateWithoutOptionInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneWithoutClassesNestedInput
@@ -1035,6 +1185,8 @@ export type ClasseUncheckedUpdateWithoutOptionInput = {
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matieres?: Prisma.MatiereUncheckedUpdateManyWithoutClasseNestedInput
@@ -1048,6 +1200,8 @@ export type ClasseUncheckedUpdateManyWithoutOptionInput = {
   salle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   anneeScolaire?: Prisma.StringFieldUpdateOperationsInput | string
+  capaciteMaximale?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1108,6 +1262,8 @@ export type ClasseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   sectionId?: boolean
   optionId?: boolean
   anneeScolaire?: boolean
+  capaciteMaximale?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   section?: boolean | Prisma.Classe$sectionArgs<ExtArgs>
@@ -1128,11 +1284,13 @@ export type ClasseSelectScalar = {
   sectionId?: boolean
   optionId?: boolean
   anneeScolaire?: boolean
+  capaciteMaximale?: boolean
+  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClasseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nom" | "salle" | "sectionId" | "optionId" | "anneeScolaire" | "createdAt" | "updatedAt", ExtArgs["result"]["classe"]>
+export type ClasseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nom" | "salle" | "sectionId" | "optionId" | "anneeScolaire" | "capaciteMaximale" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["classe"]>
 export type ClasseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.Classe$sectionArgs<ExtArgs>
   option?: boolean | Prisma.Classe$optionArgs<ExtArgs>
@@ -1160,6 +1318,8 @@ export type $ClassePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     sectionId: string | null
     optionId: string | null
     anneeScolaire: string
+    capaciteMaximale: number
+    description: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["classe"]>
@@ -1566,6 +1726,8 @@ export interface ClasseFieldRefs {
   readonly sectionId: Prisma.FieldRef<"Classe", 'String'>
   readonly optionId: Prisma.FieldRef<"Classe", 'String'>
   readonly anneeScolaire: Prisma.FieldRef<"Classe", 'String'>
+  readonly capaciteMaximale: Prisma.FieldRef<"Classe", 'Int'>
+  readonly description: Prisma.FieldRef<"Classe", 'String'>
   readonly createdAt: Prisma.FieldRef<"Classe", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Classe", 'DateTime'>
 }
