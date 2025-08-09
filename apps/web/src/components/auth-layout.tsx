@@ -3,7 +3,7 @@
 import React from 'react';
 import { School } from "lucide-react";
 import Link from 'next/link';
-import { ModeToggle } from './mode-toggle';
+import { type ModeToggle } from './mode-toggle';
 
 interface AuthLayoutProps {
   children: React.ReactNode;

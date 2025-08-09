@@ -24,6 +24,8 @@ import axios from 'axios';
 import axiosInstance from '@/lib/axiosInstance';
 import { type ENDPOINTS } from '@/config/api';
 import { DialogDescription } from '@/components/ui/dialog';
+import { type DialogDescription } from '@/components/ui/dialog';
+
 
 const TeachersPage = () => {
   const [enseignants, setEnseignants] = useState<Enseignant[]>([]);

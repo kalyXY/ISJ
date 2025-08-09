@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { type ModeToggle } from "@/components/mode-toggle";
 import UserMenu from "@/components/user-menu";
 
 interface HeaderProps {
