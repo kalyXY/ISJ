@@ -2,9 +2,9 @@
 
 import { type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { type ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { type ThemeProvider } from "next-themes";
-import { type Toaster } from "sonner";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 
 // Create a client with optimized settings
 const queryClient = new QueryClient({
