@@ -71,15 +71,37 @@ export const getCurrentUser = async (): Promise<User | null> => {
     
     return response.data.user;
   } catch (error: any) {
-    console.error('Erreur détaillée lors de la récupération de l\'utilisateur:', {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    });
+    // Créer un objet d'erreur détaillé pour le debug
+    const errorDetails = {
+      message: error.message || 'Erreur inconnue',
+      status: error.response?.status || 'Aucun statut',
+      statusText: error.response?.statusText || 'Aucun statusText',
+      data: error.response?.data || 'Aucune donnée de réponse',
+      url: error.config?.url || 'URL inconnue',
+      method: error.config?.method || 'Méthode inconnue',
+      headers: error.config?.headers || 'Headers inconnus',
+      timestamp: new Date().toISOString()
+    };
+    
+    console.error('Erreur détaillée lors de la récupération de l\'utilisateur:', errorDetails);
+    
+    // Log supplémentaire pour le debugging
+    if (error.response) {
+      console.error('Réponse d\'erreur du serveur:', {
+        status: error.response.status,
+        headers: error.response.headers,
+        data: error.response.data
+      });
+    } else if (error.request) {
+      console.error('Aucune réponse reçue du serveur:', error.request);
+    } else {
+      console.error('Erreur lors de la configuration de la requête:', error.message);
+    }
     
     // Ne pas supprimer le token automatiquement en cas d'erreur 500
     // car cela pourrait être un problème temporaire du serveur
     if (error.response?.status !== 500) {
+      console.log('Suppression du token en raison d\'une erreur non-temporaire');
       localStorage.removeItem('auth-token');
     }
     
