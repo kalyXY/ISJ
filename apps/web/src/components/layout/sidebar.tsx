@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { X, Home, BarChart3, Users, GraduationCap, BookOpen, ClipboardList, Calendar, MessageCircle, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { NavigationLoading } from "@/components/ui/navigation-loading";
+import { useNavigationLoading } from "@/hooks/use-navigation-loading";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -14,6 +16,11 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { isLoading, targetRoute, navigateWithLoading } = useNavigationLoading({
+    minLoadingTime: 400,
+    delay: 150,
+    excludeRoutes: ['/login', '/register']
+  });
   
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -54,6 +61,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
+      {/* Navigation Loading */}
+      <NavigationLoading isVisible={isLoading} currentRoute={targetRoute} />
+      
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
@@ -91,18 +101,19 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               
               return (
                 <li key={item.href}>
-                  <Link 
-                    href={item.href}
+                  <button
+                    onClick={() => navigateWithLoading(item.href, item.label)}
                     className={cn(
-                      "flex items-center px-4 py-3 rounded-md gap-3 transition-colors",
+                      "flex items-center px-4 py-3 rounded-md gap-3 transition-colors w-full text-left",
                       isActive 
                         ? "bg-sidebar-primary text-sidebar-primary-foreground" 
                         : "hover:bg-sidebar-accent text-sidebar-foreground"
                     )}
+                    disabled={isLoading}
                   >
                     {item.icon}
                     <span>{item.label}</span>
-                  </Link>
+                  </button>
                 </li>
               );
             })}
