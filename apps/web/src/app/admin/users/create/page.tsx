@@ -15,7 +15,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import Spinner from "@/components/ui/spinner";
 import { 
   ArrowLeft, 
@@ -33,6 +32,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { ENDPOINTS, getAuthHeaders } from "@/config/api";
+import { PersonFields } from '@/components/forms/person-fields';
 
 // Schéma de validation amélioré
 const createUserSchema = z.object({
@@ -239,87 +239,12 @@ export default function CreateUserPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium">
-                  Prénom <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="firstName"
-                  placeholder="Prénom"
-                  {...register("firstName")}
-                  className={errors.firstName ? "border-destructive focus-visible:ring-destructive" : ""}
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <Info className="h-3 w-3" />
-                    {errors.firstName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium">
-                  Nom <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="lastName"
-                  placeholder="Nom de famille"
-                  {...register("lastName")}
-                  className={errors.lastName ? "border-destructive focus-visible:ring-destructive" : ""}
-                />
-                {errors.lastName && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <Info className="h-3 w-3" />
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              <div className="space-y-2">
-                <Label htmlFor="gender" className="text-sm font-medium">Genre</Label>
-                <Select
-                  value={watch("gender") || ""}
-                  onValueChange={(value) => setValue("gender", value as "M" | "F")}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="M">Masculin</SelectItem>
-                    <SelectItem value="F">Féminin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="birthDate" className="text-sm font-medium">Date de naissance</Label>
-                <Input
-                  id="birthDate"
-                  type="date"
-                  {...register("birthDate")}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-sm font-medium">Téléphone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+243 900 000 000"
-                  {...register("phone")}
-                  className={errors.phone ? "border-destructive focus-visible:ring-destructive" : ""}
-                />
-                {errors.phone && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <Info className="h-3 w-3" />
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
-            </div>
+            <PersonFields
+              register={register}
+              errors={errors as any}
+              genderValue={watch("gender") || ""}
+              onGenderChange={(value) => setValue("gender", value as "M" | "F")}
+            />
           </CardContent>
         </Card>
 
