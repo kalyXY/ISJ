@@ -217,6 +217,16 @@ const ClassroomsAdminPage = () => {
   const onSubmit = async (data: ClassroomFormData) => {
     setIsSubmitting(true);
     try {
+      // Empêcher la duplication: si une classe est déjà assignée, ne pas l'assigner deux fois
+      if (data.classeId && data.classeId !== 'none') {
+        const alreadyExists = classrooms.some((c) => c.classeId === data.classeId && (!selectedClassroom || c.id !== selectedClassroom.id));
+        if (alreadyExists) {
+          toast.error("Cette classe est déjà assignée à une salle. Impossible de l'assigner une deuxième fois.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       // Nettoyer les données
       const cleanedData = {
         ...data,
@@ -224,7 +234,7 @@ const ClassroomsAdminPage = () => {
         description: data.description || undefined,
         batiment: data.batiment || undefined,
         etage: data.etage || undefined,
-        classeId: data.classeId || undefined,
+        classeId: data.classeId && data.classeId !== 'none' ? data.classeId : undefined,
       };
 
       if (selectedClassroom) {
@@ -492,7 +502,14 @@ const ClassroomsAdminPage = () => {
                       <TableRow key={classroom.id} className="hover:bg-muted/50">
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="font-medium">{formatClassroomName(classroom)}</div>
+                            <div className="font-medium">
+                              {classroom.classe ? classroom.classe.nom : formatClassroomName(classroom)}
+                            </div>
+                            {classroom.numero && (
+                              <div className="text-xs text-muted-foreground">
+                                Salle {classroom.numero}
+                              </div>
+                            )}
                             {classroom.description && (
                               <div className="text-xs text-muted-foreground">
                                 {classroom.description}

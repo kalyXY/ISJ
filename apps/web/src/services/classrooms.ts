@@ -53,6 +53,8 @@ function mapClasseToClassroom(classe: any): Classroom {
       section: classe.section ? { nom: classe.section.nom } : undefined,
       option: classe.option ? { nom: classe.option.nom } : undefined,
     },
+    // Injecter la lettre/numéro de salle si disponible pour l'affichage
+    numero: classe.salle ?? undefined,
     _count: { students: classe.studentsCount ?? (classe.students?.length ?? 0) },
     students: classe.students ?? undefined,
     createdAt: classe.createdAt ?? new Date().toISOString(),
