@@ -412,9 +412,9 @@ const ClassroomsAdminPage = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tous les bâtiments</SelectItem>
-                  {uniqueBuildings.map(building => (
-                    <SelectItem key={building} value={building}>
-                      {building}
+                  {uniqueBuildings.filter(Boolean).map((building) => (
+                    <SelectItem key={String(building)} value={String(building)}>
+                      {String(building)}
                     </SelectItem>
                   ))}
                 </SelectContent>

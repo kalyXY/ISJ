@@ -91,7 +91,8 @@ export default function CreateUserPage() {
     setValue,
     watch,
   } = useForm<CreateUserFormValues>({
-    resolver: zodResolver(createUserSchema),
+    // TODO: resolver type conflict in monorepo env; casting to any to avoid TS mismatch without changing behavior
+    resolver: zodResolver(createUserSchema) as any,
     defaultValues: {
       firstName: "",
       lastName: "",

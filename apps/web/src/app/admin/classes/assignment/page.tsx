@@ -25,6 +25,7 @@ import { StudentAssignmentDialog } from '@/components/classes/student-assignment
 import { ClassManagementCard } from '@/components/classes/class-management-card';
 import { StudentListByClass } from '@/components/classes/student-list-by-class';
 import { ClassStatsCard } from '@/components/classes/class-stats-card';
+import { API_URL, getAuthHeaders } from '@/config/api';
 
 interface Class {
   id: string;
@@ -68,7 +69,7 @@ const ClassAssignmentPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAnneeScolaire, setSelectedAnneeScolaire] = useState('');
-  const [selectedSection, setSelectedSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState('all');
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);
   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
   const [unassignedStudentsOnly, setUnassignedStudentsOnly] = useState(false);
@@ -79,12 +80,17 @@ const ClassAssignmentPage = () => {
 
   const fetchClasses = async () => {
     try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
       const params = new URLSearchParams();
       if (selectedAnneeScolaire) params.append('anneeScolaire', selectedAnneeScolaire);
-      if (selectedSection) params.append('sectionId', selectedSection);
+      if (selectedSection && selectedSection !== 'all') params.append('sectionId', selectedSection);
       if (searchTerm) params.append('search', searchTerm);
       
-      const response = await fetch(`/api/academics/classes?${params.toString()}`);
+      const response = await fetch(`${API_URL}/academics/classes?${params.toString()}`, {
+        headers,
+        credentials: 'include',
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -99,11 +105,16 @@ const ClassAssignmentPage = () => {
 
   const fetchStudents = async () => {
     try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (unassignedStudentsOnly) params.append('classeId', 'null');
       
-      const response = await fetch(`/api/eleves?${params.toString()}`);
+      const response = await fetch(`${API_URL}/eleves?${params.toString()}`, {
+        headers,
+        credentials: 'include',
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -118,10 +129,15 @@ const ClassAssignmentPage = () => {
 
   const fetchStats = async () => {
     try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
       const params = new URLSearchParams();
       if (selectedAnneeScolaire) params.append('anneeScolaire', selectedAnneeScolaire);
       
-      const response = await fetch(`/api/academics/classes/stats?${params.toString()}`);
+      const response = await fetch(`${API_URL}/academics/classes/stats?${params.toString()}`, {
+        headers,
+        credentials: 'include',
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -134,8 +150,13 @@ const ClassAssignmentPage = () => {
 
   const fetchMetadata = async () => {
     try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
       // Récupérer les années scolaires
-      const anneesResponse = await fetch('/api/academics/annees');
+      const anneesResponse = await fetch(`${API_URL}/academics/annees`, {
+        headers,
+        credentials: 'include',
+      });
       const anneesData = await anneesResponse.json();
       if (anneesData.success) {
         const years = anneesData.data.map((a: any) => a.nom);
@@ -149,7 +170,10 @@ const ClassAssignmentPage = () => {
       }
 
       // Récupérer les sections
-      const sectionsResponse = await fetch('/api/academics/sections');
+      const sectionsResponse = await fetch(`${API_URL}/academics/sections`, {
+        headers,
+        credentials: 'include',
+      });
       const sectionsData = await sectionsResponse.json();
       if (sectionsData.success) {
         setSections(sectionsData.data);
@@ -161,11 +185,12 @@ const ClassAssignmentPage = () => {
 
   const handleAssignStudent = async (studentId: string, classId: string, forceAssignment = false) => {
     try {
-      const response = await fetch('/api/eleves/add-to-classe', {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+      const response = await fetch(`${API_URL}/eleves/add-to-classe`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           eleveId: studentId,
           classeId: classId,
@@ -200,8 +225,12 @@ const ClassAssignmentPage = () => {
     if (!confirm('Retirer cet élève de la classe ?')) return;
     
     try {
-      const response = await fetch(`/api/academics/classes/${classId}/students/${studentId}`, {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+      const response = await fetch(`${API_URL}/academics/classes/${classId}/students/${studentId}`, {
         method: 'DELETE',
+        headers,
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -336,7 +365,7 @@ const ClassAssignmentPage = () => {
                   <SelectValue placeholder="Toutes les sections" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les sections</SelectItem>
+                  <SelectItem value="all">Toutes les sections</SelectItem>
                   {sections.map((section) => (
                     <SelectItem key={section.id} value={section.id}>
                       {section.nom}

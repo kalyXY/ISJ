@@ -6,6 +6,7 @@ import authRoutes from "./routers/auth";
 import adminRoutes from "./routers/admin";
 import academicsRoutes from "./routes/academics/academics.routes";
 import enseignantsRoutes from './routes/enseignants.routes';
+import classroomsRoutes from './routes/classrooms.routes';
 import { initDatabase } from "./lib/init-db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -80,6 +81,8 @@ app.use("/api/admin", adminRoutes);
 
 // Routes pour la gestion académique
 app.use("/api/academics", academicsRoutes);
+// Routes for classrooms (placeholder until fully implemented)
+app.use('/api/classrooms', classroomsRoutes);
 
 // Routes pour la gestion des enseignants
 app.use('/api/enseignants', enseignantsRoutes);

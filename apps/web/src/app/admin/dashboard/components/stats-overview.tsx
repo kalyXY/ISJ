@@ -1,7 +1,7 @@
 "use client";
 
 import { Users, GraduationCap, School, Percent, DollarSign, BarChart3 } from 'lucide-react';
-import { StatsCard } from './stats-card';
+import StatsCard from './stats-card';
 import { formatCurrency, formatPercent } from '@/lib/utils';
 import { useAdminSummary } from '@/services/dashboard';
 
