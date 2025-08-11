@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { API_URL, getAuthHeaders } from '@/config/api';
+import axiosInstance from '@/lib/axiosInstance';
 
 // Interface pour la distribution des utilisateurs par rôle
 export interface RoleDistribution {
@@ -42,16 +41,15 @@ export interface DashboardData {
  */
 export const fetchDashboardData = async (): Promise<DashboardData> => {
   try {
-    const response = await axios.get(`${API_URL}/admin/summary`, {
-      headers: getAuthHeaders(),
-    });
-    
+    const response = await axiosInstance.get('/admin/summary');
+
     if (response.data?.success) {
-      return response.data.data;
+      return response.data.data as DashboardData;
     }
-    
+
     throw new Error('Données du tableau de bord non disponibles');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Erreur lors de la récupération des données du tableau de bord:', error);
     throw error;
   }
@@ -64,12 +62,31 @@ export const useDashboardData = () => {
   return useQuery({
     queryKey: ['dashboard-data'],
     queryFn: fetchDashboardData,
-    staleTime: 2 * 60 * 1000, // 2 minutes - dashboard data should be relatively fresh
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes for dashboard
+    refetchInterval: 5 * 60 * 1000,
     retry: (failureCount, error: any) => {
-      // Don't retry on auth errors
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+  });
+};
+
+/**
+ * Hook dédié au résumé admin pour unifier la consommation dans le dashboard
+ */
+export const useAdminSummary = () => {
+  return useQuery({
+    queryKey: ['admin-summary'],
+    queryFn: fetchDashboardData,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchInterval: 5 * 60 * 1000,
+    retry: (failureCount, error: any) => {
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         return false;
       }
