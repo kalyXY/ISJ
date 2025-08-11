@@ -75,6 +75,7 @@ import {
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import Spinner from '@/components/ui/spinner';
+import { FilterSelect, ALL_VALUE } from '@/components/ui/filter-select';
 
 const AssignStudentsPage = () => {
   const [classroom, setClassroom] = useState<Classroom | null>(null);
@@ -85,8 +86,8 @@ const AssignStudentsPage = () => {
   
   // États pour les filtres et recherche
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGender, setSelectedGender] = useState<string>('');
-  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [selectedGender, setSelectedGender] = useState<string>('all');
+  const [selectedClass, setSelectedClass] = useState<string>('all');
   
   // États pour la sélection multiple
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
@@ -141,8 +142,8 @@ const AssignStudentsPage = () => {
       `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.matricule?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesGender = !selectedGender || student.gender === selectedGender;
-    const matchesClass = !selectedClass || student.class === selectedClass;
+    const matchesGender = selectedGender === 'all' || student.gender === selectedGender;
+    const matchesClass = selectedClass === 'all' || student.class === selectedClass;
 
     return matchesSearch && matchesGender && matchesClass;
   });
@@ -413,30 +414,26 @@ const AssignStudentsPage = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-2">
-                <Select value={selectedGender} onValueChange={setSelectedGender}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Genre" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Tous</SelectItem>
-                    <SelectItem value="M">Masculin</SelectItem>
-                    <SelectItem value="F">Féminin</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FilterSelect
+                  placeholder="Genre"
+                  value={selectedGender}
+                  onChange={setSelectedGender}
+                  options={[
+                    { value: 'M', label: 'Masculin' },
+                    { value: 'F', label: 'Féminin' },
+                  ]}
+                  includeAllOption
+                  allLabel="Tous"
+                />
                 
-                <Select value={selectedClass} onValueChange={setSelectedClass}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Classe" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Toutes</SelectItem>
-                    {uniqueClasses.map(className => (
-                      <SelectItem key={className} value={className}>
-                        {className}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FilterSelect
+                  placeholder="Classe"
+                  value={selectedClass}
+                  onChange={setSelectedClass}
+                  options={uniqueClasses.map((className) => ({ value: className, label: className }))}
+                  includeAllOption
+                  allLabel="Toutes"
+                />
               </div>
             </div>
 

@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FilterSelect } from '@/components/ui/filter-select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -71,7 +72,7 @@ const ClassroomDetailPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGender, setSelectedGender] = useState<string>('');
+  const [selectedGender, setSelectedGender] = useState<string>('all');
   const [studentToRemove, setStudentToRemove] = useState<Student | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
 
@@ -110,7 +111,7 @@ const ClassroomDetailPage = () => {
       `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.matricule?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesGender = !selectedGender || student.gender === selectedGender;
+    const matchesGender = selectedGender === 'all' || student.gender === selectedGender;
 
     return matchesSearch && matchesGender;
   });
@@ -426,16 +427,18 @@ const ClassroomDetailPage = () => {
               />
             </div>
             
-            <Select value={selectedGender} onValueChange={setSelectedGender}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filtrer par genre" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">Tous les genres</SelectItem>
-                <SelectItem value="M">Masculin</SelectItem>
-                <SelectItem value="F">Féminin</SelectItem>
-              </SelectContent>
-            </Select>
+            <FilterSelect
+              placeholder="Filtrer par genre"
+              value={selectedGender}
+              onChange={setSelectedGender}
+              options={[
+                { value: 'M', label: 'Masculin' },
+                { value: 'F', label: 'Féminin' },
+              ]}
+              includeAllOption
+              allLabel="Tous les genres"
+              className="w-full sm:w-48"
+            />
           </div>
 
           {/* Tableau des élèves */}
