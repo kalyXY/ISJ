@@ -22,7 +22,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\Peter AKILIMALI\\OneDrive\\Documents\\ISJ\\ISJ\\apps\\server\\prisma\\generated",
+      "value": "/workspace/apps/server/prisma/generated",
       "fromEnvVar": null
     },
     "config": {
@@ -32,12 +32,12 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Peter AKILIMALI\\OneDrive\\Documents\\ISJ\\ISJ\\apps\\server\\prisma\\schema\\schema.prisma",
+    "sourceFilePath": "/workspace/apps/server/prisma/schema/schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../schema",
@@ -47,6 +47,7 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "mongodb",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

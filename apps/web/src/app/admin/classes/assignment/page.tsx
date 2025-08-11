@@ -111,7 +111,7 @@ const ClassAssignmentPage = () => {
       if (searchTerm) params.append('search', searchTerm);
       if (unassignedStudentsOnly) params.append('classeId', 'null');
       
-      const response = await fetch(`${API_URL}/eleves?${params.toString()}`, {
+      const response = await fetch(`${API_URL}/academics/eleves?${params.toString()}`, {
         headers,
         credentials: 'include',
       });
@@ -134,10 +134,19 @@ const ClassAssignmentPage = () => {
       const params = new URLSearchParams();
       if (selectedAnneeScolaire) params.append('anneeScolaire', selectedAnneeScolaire);
       
-      const response = await fetch(`${API_URL}/academics/classes/stats?${params.toString()}`, {
+      let response = await fetch(`${API_URL}/academics/classes/stats?${params.toString()}`, {
         headers,
         credentials: 'include',
       });
+
+      // Fallback: si erreur serveur (ex: année inexistante), retenter sans filtre d'année
+      if (!response.ok) {
+        response = await fetch(`${API_URL}/academics/classes/stats`, {
+          headers,
+          credentials: 'include',
+        });
+      }
+
       const data = await response.json();
       
       if (data.success) {
@@ -187,7 +196,7 @@ const ClassAssignmentPage = () => {
     try {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
-      const response = await fetch(`${API_URL}/eleves/add-to-classe`, {
+      const response = await fetch(`${API_URL}/academics/eleves/add-to-classe`, {
         method: 'POST',
         headers,
         credentials: 'include',
