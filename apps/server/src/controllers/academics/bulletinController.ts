@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import prisma from '../../../prisma';
 import { z } from 'zod';
-import { genererBulletinPDF, genererBulletinsClassePDF } from '../../../lib/pdfGenerator';
+import { genererBulletinPDF, genererBulletinsClassePDF } from '../../lib/pdfGenerator';
 
 // Interface pour les données de bulletin
 interface BulletinData {
