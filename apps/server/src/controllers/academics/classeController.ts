@@ -409,9 +409,14 @@ export const getClassesStats = async (req: Request, res: Response) => {
     const anneeScolaire = req.query.anneeScolaire as string;
     
     const where = anneeScolaire ? { anneeScolaire } : {};
+    // Exclure les classes sans capacité définie pour éviter les erreurs Prisma sur groupBy
+    const whereNonNullCapacity = {
+      ...where,
+      capaciteMaximale: { not: null as any },
+    };
 
     const stats = await prisma.classe.aggregate({
-      where,
+      where: whereNonNullCapacity,
       _sum: {
         capaciteMaximale: true
       },
@@ -431,7 +436,7 @@ export const getClassesStats = async (req: Request, res: Response) => {
 
     const classesByCapacity = await prisma.classe.groupBy({
       by: ['capaciteMaximale'],
-      where,
+      where: whereNonNullCapacity,
       _count: {
         id: true
       },
@@ -440,15 +445,17 @@ export const getClassesStats = async (req: Request, res: Response) => {
       }
     });
 
+    const totalCapacity = stats._sum.capaciteMaximale || 0;
+
     return res.status(200).json({
       success: true,
       data: {
         totalClasses: stats._count.id,
-        totalCapacity: stats._sum.capaciteMaximale || 0,
+        totalCapacity,
         totalStudents: studentsCount,
-        availableSpots: (stats._sum.capaciteMaximale || 0) - studentsCount,
-        occupancyPercentage: stats._sum.capaciteMaximale ? 
-          Math.round((studentsCount / stats._sum.capaciteMaximale) * 100) : 0,
+        availableSpots: Math.max(0, totalCapacity - studentsCount),
+        occupancyPercentage: totalCapacity > 0 ? 
+          Math.round((studentsCount / totalCapacity) * 100) : 0,
         classesByCapacity
       }
     });
