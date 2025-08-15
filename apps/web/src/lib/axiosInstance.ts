@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '@/config';
+// Importer le wrapper offline pour activer automatiquement les intercepteurs
+import '@/lib/offlineApiWrapper';
 
 // Création d'une instance axios avec la configuration de base
 const axiosInstance = axios.create({

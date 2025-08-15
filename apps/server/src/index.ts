@@ -7,6 +7,7 @@ import adminRoutes from "./routers/admin";
 import academicsRoutes from "./routes/academics/academics.routes";
 import enseignantsRoutes from './routes/enseignants.routes';
 import classroomsRoutes from './routes/classrooms.routes';
+import syncRoutes from './routes/sync.routes';
 import { initDatabase } from "./lib/init-db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -86,6 +87,9 @@ app.use('/api/classrooms', classroomsRoutes);
 
 // Routes pour la gestion des enseignants
 app.use('/api/enseignants', enseignantsRoutes);
+
+// Routes pour la synchronisation offline
+app.use('/api/sync', syncRoutes);
 
 // Route de test pour vérifier que le serveur fonctionne
 app.get("/", (_req, res) => {
