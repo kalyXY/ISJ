@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NavigationLoading } from "@/components/ui/navigation-loading";
 import { useNavigationLoading } from "@/hooks/use-navigation-loading";
+import { OfflineStatus } from "@/components/offline-status";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -247,6 +248,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200/60 dark:border-gray-800/60 bg-gradient-to-r from-gray-50/80 to-gray-100/80 dark:from-slate-800/50 dark:to-slate-700/50">
+          {/* Indicateur de statut offline */}
+          <div className="mb-4 flex justify-center">
+            <OfflineStatus />
+          </div>
+          
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               École Saint Joseph
