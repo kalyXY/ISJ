@@ -6,10 +6,12 @@
 // Performance measurement utility
 export class PerformanceMonitor {
   private static measurements: Map<string, number> = new Map();
+  private static marks: Set<string> = new Set();
 
   static mark(name: string): void {
     if (typeof window !== 'undefined' && window.performance) {
       window.performance.mark(name);
+      this.marks.add(name);
     }
     this.measurements.set(name, Date.now());
   }
@@ -65,14 +67,45 @@ export class PerformanceMonitor {
     });
     console.groupEnd();
   }
+
+  // Nouvelle méthode pour mesurer le temps de rendu des composants
+  static measureComponentRender(componentName: string): () => void {
+    const startTime = Date.now();
+    const markName = `${componentName}-render-start`;
+    
+    this.mark(markName);
+    
+    return () => {
+      const duration = Date.now() - startTime;
+      console.log(`⚡ Component ${componentName} rendered in ${duration}ms`);
+      
+      if (duration > 100) {
+        console.warn(`⚠️ Slow component render: ${componentName} took ${duration}ms`);
+      }
+    };
+  }
+
+  // Méthode pour mesurer les requêtes API
+  static measureApiCall(endpoint: string): () => void {
+    const startTime = Date.now();
+    
+    return () => {
+      const duration = Date.now() - startTime;
+      console.log(`🌐 API ${endpoint} completed in ${duration}ms`);
+      
+      if (duration > 2000) {
+        console.warn(`⚠️ Slow API call: ${endpoint} took ${duration}ms`);
+      }
+    };
+  }
 }
 
 // React Query performance monitoring
 export function logQueryPerformance(queryKey: unknown[], duration: number): void {
   if (duration > 1000) {
-    console.warn(`🐌 Slow query detected: ${JSON.stringify(queryKey)} took ${duration}ms`);
-  } else if (duration > 500) {
-    console.log(`⚠️  Moderate query: ${JSON.stringify(queryKey)} took ${duration}ms`);
+    console.warn(`🐌 Slow query: ${JSON.stringify(queryKey)} took ${duration}ms`);
+  } else {
+    console.log(`⚡ Query ${JSON.stringify(queryKey)} completed in ${duration}ms`);
   }
 }
 
@@ -97,79 +130,122 @@ export function withPerformanceTracking<T extends {}>(
 export function trackRouteChange(from: string, to: string): void {
   const startTime = Date.now();
   
-  // Use requestIdleCallback or setTimeout as fallback
-  const callback = () => {
+  return () => {
     const duration = Date.now() - startTime;
-    console.log(`🛣️  Route change from ${from} to ${to} took ${duration}ms`);
+    console.log(`🔄 Route change: ${from} → ${to} in ${duration}ms`);
     
-    if (duration > 2000) {
-      console.warn(`🐌 Slow route change detected: ${duration}ms`);
+    if (duration > 500) {
+      console.warn(`⚠️ Slow route change: ${from} → ${to} took ${duration}ms`);
     }
   };
-
-  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-    window.requestIdleCallback(callback);
-  } else {
-    setTimeout(callback, 0);
-  }
 }
 
-// Memory usage monitoring
-export function logMemoryUsage(): void {
-  if (typeof window !== 'undefined' && 'memory' in window.performance) {
-    const memory = (window.performance as any).memory;
-    console.group('💾 Memory Usage');
-    console.log(`Used: ${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`);
-    console.log(`Total: ${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`);
-    console.log(`Limit: ${(memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB`);
-    console.groupEnd();
-  }
-}
-
-// Bundle size monitoring (development only)
-export function logBundleInfo(): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.group('📦 Bundle Information');
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('React version:', React.version);
-    console.groupEnd();
-  }
-}
-
-// Core Web Vitals monitoring
-export function initWebVitals(): void {
-  if (typeof window === 'undefined') return;
-
-  // Largest Contentful Paint
-  const observer = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-      if (entry.entryType === 'largest-contentful-paint') {
-        console.log('🎯 LCP:', entry.startTime);
-      }
-    }
+// Nouveau: Optimisations de performance pour les listes
+export function optimizeListRendering<T>(
+  items: T[],
+  keyExtractor: (item: T, index: number) => string,
+  renderItem: (item: T, index: number) => React.ReactNode,
+  options: {
+    chunkSize?: number;
+    delay?: number;
+  } = {}
+): React.ReactNode[] {
+  const { chunkSize = 50, delay = 10 } = options;
+  
+  return items.map((item, index) => {
+    const key = keyExtractor(item, index);
+    
+    // Utiliser React.memo pour éviter les re-renders inutiles
+    const MemoizedItem = React.memo(() => renderItem(item, index));
+    
+    return (
+      <div key={key} style={{ animationDelay: `${(index % chunkSize) * delay}ms` }}>
+        <MemoizedItem />
+      </div>
+    );
   });
+}
 
-  try {
-    observer.observe({ type: 'largest-contentful-paint', buffered: true });
-  } catch (error) {
-    // Browser doesn't support this metric
-  }
+// Nouveau: Debounce utility pour les recherches
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
 
-  // First Input Delay
-  const fidObserver = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-      if (entry.entryType === 'first-input') {
-        const fid = (entry as any).processingStart - entry.startTime;
-        console.log('⚡ FID:', fid);
-      }
+// Nouveau: Throttle utility pour les événements fréquents
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
+  
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
     }
-  });
+  };
+}
 
-  try {
-    fidObserver.observe({ type: 'first-input', buffered: true });
-  } catch (error) {
-    // Browser doesn't support this metric
-  }
+// Nouveau: Lazy loading utility
+export function createLazyLoader<T>(
+  loader: () => Promise<T>,
+  options: {
+    cacheTime?: number;
+    retryCount?: number;
+  } = {}
+): () => Promise<T> {
+  const { cacheTime = 5 * 60 * 1000, retryCount = 2 } = options;
+  let cachedData: T | null = null;
+  let cacheTimeStamp: number = 0;
+  let loadingPromise: Promise<T> | null = null;
+
+  return async (): Promise<T> => {
+    // Retourner les données en cache si elles sont encore valides
+    if (cachedData && Date.now() - cacheTimeStamp < cacheTime) {
+      return cachedData;
+    }
+
+    // Si déjà en cours de chargement, retourner la promesse existante
+    if (loadingPromise) {
+      return loadingPromise;
+    }
+
+    // Créer une nouvelle promesse de chargement
+    loadingPromise = (async () => {
+      let lastError: Error;
+      
+      for (let i = 0; i <= retryCount; i++) {
+        try {
+          const data = await loader();
+          cachedData = data;
+          cacheTimeStamp = Date.now();
+          return data;
+        } catch (error) {
+          lastError = error as Error;
+          if (i < retryCount) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+          }
+        }
+      }
+      
+      throw lastError!;
+    })();
+
+    try {
+      return await loadingPromise;
+    } finally {
+      loadingPromise = null;
+    }
+  };
 }
 
 import React from 'react';

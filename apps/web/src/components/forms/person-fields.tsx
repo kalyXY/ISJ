@@ -32,10 +32,10 @@ export const PersonFields = <FormValues extends Record<string, unknown>>({
             className={(errors as any).firstName ? "border-destructive focus-visible:ring-destructive" : ""}
           />
           {(errors as any).firstName && (
-            <p className="text-sm text-destructive flex items-center gap-1">
+            <div className="text-sm text-destructive flex items-center gap-1">
               <Info className="h-3 w-3" />
               {(errors as any).firstName?.message}
-            </p>
+            </div>
           )}
         </div>
 
@@ -50,10 +50,10 @@ export const PersonFields = <FormValues extends Record<string, unknown>>({
             className={(errors as any).lastName ? "border-destructive focus-visible:ring-destructive" : ""}
           />
           {(errors as any).lastName && (
-            <p className="text-sm text-destructive flex items-center gap-1">
+            <div className="text-sm text-destructive flex items-center gap-1">
               <Info className="h-3 w-3" />
               {(errors as any).lastName?.message}
-            </p>
+            </div>
           )}
         </div>
       </div>

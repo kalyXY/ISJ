@@ -18,14 +18,31 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
   );
 }
 
+// Composant de chargement ultra-rapide
+export function FastSkeleton({ className, ...props }: SkeletonProps) {
+  return (
+    <div
+      className={cn(
+        "animate-pulse rounded-md bg-gradient-to-r from-muted via-muted/50 to-muted",
+        className
+      )}
+      style={{
+        animationDuration: '0.8s',
+        animationTimingFunction: 'ease-in-out'
+      }}
+      {...props}
+    />
+  );
+}
+
 // Dashboard skeleton components
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <Skeleton className="h-8 w-[300px]" />
-        <Skeleton className="h-4 w-[200px]" />
+        <FastSkeleton className="h-8 w-[300px]" />
+        <FastSkeleton className="h-4 w-[200px]" />
       </div>
 
       {/* Stats cards */}
@@ -33,12 +50,12 @@ export function DashboardSkeleton() {
         {[...Array(4)].map((_, i) => (
           <div key={i} className="rounded-lg border bg-card p-6">
             <div className="flex items-center justify-between space-y-0 pb-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-4 w-4" />
+              <FastSkeleton className="h-4 w-[100px]" />
+              <FastSkeleton className="h-4 w-4" />
             </div>
             <div className="space-y-2">
-              <Skeleton className="h-8 w-[60px]" />
-              <Skeleton className="h-3 w-[120px]" />
+              <FastSkeleton className="h-8 w-[60px]" />
+              <FastSkeleton className="h-3 w-[120px]" />
             </div>
           </div>
         ))}
@@ -48,20 +65,20 @@ export function DashboardSkeleton() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 rounded-lg border bg-card p-6">
           <div className="space-y-4">
-            <Skeleton className="h-6 w-[150px]" />
-            <Skeleton className="h-[300px] w-full" />
+            <FastSkeleton className="h-6 w-[150px]" />
+            <FastSkeleton className="h-[300px] w-full" />
           </div>
         </div>
         <div className="col-span-3 rounded-lg border bg-card p-6">
           <div className="space-y-4">
-            <Skeleton className="h-6 w-[120px]" />
+            <FastSkeleton className="h-6 w-[120px]" />
             <div className="space-y-3">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex items-center space-x-4">
-                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <FastSkeleton className="h-8 w-8 rounded-full" />
                   <div className="space-y-1 flex-1">
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-3 w-[80px]" />
+                    <FastSkeleton className="h-4 w-[100px]" />
+                    <FastSkeleton className="h-3 w-[80px]" />
                   </div>
                 </div>
               ))}
@@ -73,14 +90,14 @@ export function DashboardSkeleton() {
   );
 }
 
-// Table skeleton
+// Table skeleton optimisé
 export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
   return (
     <div className="space-y-4">
       {/* Table header */}
       <div className="flex space-x-4">
         {[...Array(columns)].map((_, i) => (
-          <Skeleton key={i} className="h-4 flex-1" />
+          <FastSkeleton key={i} className="h-4 flex-1" />
         ))}
       </div>
       
@@ -88,7 +105,7 @@ export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; column
       {[...Array(rows)].map((_, rowIndex) => (
         <div key={rowIndex} className="flex space-x-4">
           {[...Array(columns)].map((_, colIndex) => (
-            <Skeleton key={colIndex} className="h-8 flex-1" />
+            <FastSkeleton key={colIndex} className="h-8 flex-1" />
           ))}
         </div>
       ))}
@@ -96,15 +113,15 @@ export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; column
   );
 }
 
-// User list skeleton
+// User list skeleton optimisé
 export function UserListSkeleton() {
   return (
     <div className="space-y-4">
       {/* Search and filters */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 w-[120px]" />
-        <Skeleton className="h-10 w-[100px]" />
+        <FastSkeleton className="h-10 flex-1" />
+        <FastSkeleton className="h-10 w-[120px]" />
+        <FastSkeleton className="h-10 w-[100px]" />
       </div>
 
       {/* Table */}
@@ -114,10 +131,10 @@ export function UserListSkeleton() {
 
       {/* Pagination */}
       <div className="flex items-center justify-between">
-        <Skeleton className="h-4 w-[100px]" />
+        <FastSkeleton className="h-4 w-[100px]" />
         <div className="flex space-x-2">
           {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-8 w-8" />
+            <FastSkeleton key={i} className="h-8 w-8" />
           ))}
         </div>
       </div>
@@ -125,33 +142,33 @@ export function UserListSkeleton() {
   );
 }
 
-// Form skeleton
+// Form skeleton optimisé
 export function FormSkeleton() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Skeleton className="h-6 w-[150px]" />
-        <Skeleton className="h-4 w-[250px]" />
+        <FastSkeleton className="h-6 w-[150px]" />
+        <FastSkeleton className="h-4 w-[250px]" />
       </div>
       
       <div className="grid gap-4 md:grid-cols-2">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="space-y-2">
-            <Skeleton className="h-4 w-[80px]" />
-            <Skeleton className="h-10 w-full" />
+            <FastSkeleton className="h-4 w-[80px]" />
+            <FastSkeleton className="h-10 w-full" />
           </div>
         ))}
       </div>
       
       <div className="flex justify-end space-x-4">
-        <Skeleton className="h-10 w-[80px]" />
-        <Skeleton className="h-10 w-[100px]" />
+        <FastSkeleton className="h-10 w-[80px]" />
+        <FastSkeleton className="h-10 w-[100px]" />
       </div>
     </div>
   );
 }
 
-// Page loading wrapper
+// Page loading wrapper optimisé
 interface PageLoadingProps {
   children?: React.ReactNode;
   title?: string;
@@ -163,11 +180,23 @@ export function PageLoading({ children, title, subtitle }: PageLoadingProps) {
     <div className="space-y-6">
       {(title || subtitle) && (
         <div className="space-y-2">
-          {title && <Skeleton className="h-8 w-[300px]" />}
-          {subtitle && <Skeleton className="h-4 w-[200px]" />}
+          {title && <FastSkeleton className="h-8 w-[300px]" />}
+          {subtitle && <FastSkeleton className="h-4 w-[200px]" />}
         </div>
       )}
       {children}
+    </div>
+  );
+}
+
+// Composant de chargement instantané pour les transitions rapides
+export function InstantLoading({ message = "Chargement..." }: { message?: string }) {
+  return (
+    <div className="flex items-center justify-center p-4">
+      <div className="flex items-center space-x-2">
+        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-muted-foreground">{message}</span>
+      </div>
     </div>
   );
 }

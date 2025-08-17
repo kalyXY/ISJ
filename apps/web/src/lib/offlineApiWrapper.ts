@@ -222,6 +222,3 @@ export class OfflineApiWrapper {
     return await this.storageService.getCachedBulletins();
   }
 }
-
-// Initialiser le wrapper automatiquement
-export const offlineApiWrapper = OfflineApiWrapper.getInstance();

@@ -166,8 +166,39 @@ export const anneesScolairesService = {
   getById: async (id: string): Promise<AnneeScolaire> => {
     const response = await axiosInstance.get(`/academics/annees/${id}`);
     return response.data.data;
+  },
+
+  // Créer une nouvelle année scolaire
+  create: async (data: Omit<AnneeScolaire, 'id' | 'createdAt' | 'updatedAt'>): Promise<AnneeScolaire> => {
+    const response = await axiosInstance.post('/academics/annees', data);
+    return response.data.data;
+  },
+
+  // Mettre à jour une année scolaire
+  update: async (id: string, data: Partial<AnneeScolaire>): Promise<AnneeScolaire> => {
+    const response = await axiosInstance.put(`/academics/annees/${id}`, data);
+    return response.data.data;
+  },
+
+  // Supprimer une année scolaire
+  delete: async (id: string): Promise<void> => {
+    await axiosInstance.delete(`/academics/annees/${id}`);
+  },
+
+  // Définir une année scolaire comme courante
+  setCourante: async (id: string): Promise<AnneeScolaire> => {
+    const response = await axiosInstance.patch(`/academics/annees/${id}/courante`);
+    return response.data.data;
   }
 };
+
+// Fonctions d'export pour compatibilité avec l'ancien code
+export const getAnneesScolaires = anneesScolairesService.getAll;
+export const createAnneeScolaire = anneesScolairesService.create;
+export const updateAnneeScolaire = anneesScolairesService.update;
+export const deleteAnneeScolaire = anneesScolairesService.delete;
+export const setCurrentAnneeScolaire = anneesScolairesService.setCourante;
+export const getAnneeScolareCourante = anneesScolairesService.getCourante;
 
 // Service combiné pour les besoins du module bulletins
 export const academicsService = {
@@ -210,4 +241,70 @@ export const academicsService = {
       anneescolaires
     };
   }
+};
+
+// Exports individuels pour compatibilité avec les composants existants
+export const getClasses = classesService.getAll;
+export const getSections = sectionsService.getAll;
+export const getOptions = optionsService.getAll;
+export const getAllMatieres = matieresService.getAll;
+
+// Fonctions CRUD pour les sections
+export const createSection = async (data: Omit<Section, 'id' | 'createdAt' | 'updatedAt'>): Promise<Section> => {
+  const response = await axiosInstance.post('/academics/sections', data);
+  return response.data.data;
+};
+
+export const updateSection = async (id: string, data: Partial<Section>): Promise<Section> => {
+  const response = await axiosInstance.put(`/academics/sections/${id}`, data);
+  return response.data.data;
+};
+
+export const deleteSection = async (id: string): Promise<void> => {
+  await axiosInstance.delete(`/academics/sections/${id}`);
+};
+
+// Fonctions CRUD pour les classes
+export const createClasse = async (data: Omit<Classe, 'id' | 'createdAt' | 'updatedAt'>): Promise<Classe> => {
+  const response = await axiosInstance.post('/academics/classes', data);
+  return response.data.data;
+};
+
+export const updateClasse = async (id: string, data: Partial<Classe>): Promise<Classe> => {
+  const response = await axiosInstance.put(`/academics/classes/${id}`, data);
+  return response.data.data;
+};
+
+export const deleteClasse = async (id: string): Promise<void> => {
+  await axiosInstance.delete(`/academics/classes/${id}`);
+};
+
+// Fonctions CRUD pour les matières
+export const createMatiere = async (data: Omit<Matiere, 'id' | 'createdAt' | 'updatedAt'>): Promise<Matiere> => {
+  const response = await axiosInstance.post('/academics/matieres', data);
+  return response.data.data;
+};
+
+export const updateMatiere = async (id: string, data: Partial<Matiere>): Promise<Matiere> => {
+  const response = await axiosInstance.put(`/academics/matieres/${id}`, data);
+  return response.data.data;
+};
+
+export const deleteMatiere = async (id: string): Promise<void> => {
+  await axiosInstance.delete(`/academics/matieres/${id}`);
+};
+
+// Fonctions CRUD pour les options
+export const createOption = async (data: Omit<Option, 'id' | 'createdAt' | 'updatedAt'>): Promise<Option> => {
+  const response = await axiosInstance.post('/academics/options', data);
+  return response.data.data;
+};
+
+export const updateOption = async (id: string, data: Partial<Option>): Promise<Option> => {
+  const response = await axiosInstance.put(`/academics/options/${id}`, data);
+  return response.data.data;
+};
+
+export const deleteOption = async (id: string): Promise<void> => {
+  await axiosInstance.delete(`/academics/options/${id}`);
 }; 

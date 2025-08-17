@@ -175,7 +175,7 @@ type GetVerificationGroupByPayload<T extends VerificationGroupByArgs> = Prisma.P
           : Prisma.GetScalarType<T[P], VerificationGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

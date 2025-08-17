@@ -224,7 +224,7 @@ type GetAccountGroupByPayload<T extends AccountGroupByArgs> = Prisma.PrismaPromi
           : Prisma.GetScalarType<T[P], AccountGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

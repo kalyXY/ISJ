@@ -168,7 +168,7 @@ type GetMatiereGroupByPayload<T extends MatiereGroupByArgs> = Prisma.PrismaPromi
           : Prisma.GetScalarType<T[P], MatiereGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

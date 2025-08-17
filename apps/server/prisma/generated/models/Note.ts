@@ -262,7 +262,7 @@ type GetNoteGroupByPayload<T extends NoteGroupByArgs> = Prisma.PrismaPromise<
           : Prisma.GetScalarType<T[P], NoteGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

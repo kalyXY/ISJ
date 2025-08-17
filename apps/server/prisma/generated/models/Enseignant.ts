@@ -182,7 +182,7 @@ type GetEnseignantGroupByPayload<T extends EnseignantGroupByArgs> = Prisma.Prism
           : Prisma.GetScalarType<T[P], EnseignantGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

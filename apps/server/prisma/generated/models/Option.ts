@@ -161,7 +161,7 @@ type GetOptionGroupByPayload<T extends OptionGroupByArgs> = Prisma.PrismaPromise
           : Prisma.GetScalarType<T[P], OptionGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

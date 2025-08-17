@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { API_URL } from '@/config';
-// Importer le wrapper offline pour activer automatiquement les intercepteurs
-import '@/lib/offlineApiWrapper';
+
+// Fonction utilitaire pour vérifier si localStorage est disponible
+const isLocalStorageAvailable = (): boolean => {
+  return typeof window !== 'undefined' && window.localStorage;
+};
 
 // Création d'une instance axios avec la configuration de base
 const axiosInstance = axios.create({
@@ -16,7 +19,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // Récupérer le token depuis localStorage
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
+    const token = isLocalStorageAvailable() ? localStorage.getItem('auth-token') : null;
     
     // Si le token existe, l'ajouter aux headers
     if (token) {
@@ -41,7 +44,9 @@ axiosInstance.interceptors.response.use(
       // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
       if (typeof window !== 'undefined') {
         // Stocker l'URL actuelle pour rediriger l'utilisateur après la connexion
-        localStorage.setItem('redirectAfterLogin', window.location.pathname);
+        if (isLocalStorageAvailable()) {
+          localStorage.setItem('redirectAfterLogin', window.location.pathname);
+        }
         window.location.href = '/login';
       }
     }

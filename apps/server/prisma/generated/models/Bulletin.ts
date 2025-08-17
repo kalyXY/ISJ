@@ -248,7 +248,7 @@ type GetBulletinGroupByPayload<T extends BulletinGroupByArgs> = Prisma.PrismaPro
           : Prisma.GetScalarType<T[P], BulletinGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

@@ -316,10 +316,10 @@ export default function CreateUserPage() {
                 className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
               />
               {errors.email && (
-                <p className="text-sm text-destructive flex items-center gap-1">
+                <div className="text-sm text-destructive flex items-center gap-1">
                   <Info className="h-3 w-3" />
                   {errors.email.message}
-                </p>
+                </div>
               )}
             </div>
 
@@ -350,10 +350,10 @@ export default function CreateUserPage() {
                 </Button>
               </div>
               {errors.password && (
-                <p className="text-sm text-destructive flex items-center gap-1">
+                <div className="text-sm text-destructive flex items-center gap-1">
                   <Info className="h-3 w-3" />
                   {errors.password.message}
-                </p>
+                </div>
               )}
             </div>
 
@@ -403,10 +403,10 @@ export default function CreateUserPage() {
                   </SelectContent>
                 </Select>
                 {errors.role && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
+                  <div className="text-sm text-destructive flex items-center gap-1">
                     <Info className="h-3 w-3" />
                     {errors.role.message}
-                  </p>
+                  </div>
                 )}
               </div>
 
@@ -443,10 +443,10 @@ export default function CreateUserPage() {
                   </SelectContent>
                 </Select>
                 {errors.status && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
+                  <div className="text-sm text-destructive flex items-center gap-1">
                     <Info className="h-3 w-3" />
                     {errors.status.message}
-                  </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -506,10 +506,10 @@ export default function CreateUserPage() {
                         className={errors.parentPhone ? "border-destructive focus-visible:ring-destructive" : ""}
                       />
                       {errors.parentPhone && (
-                        <p className="text-sm text-destructive flex items-center gap-1">
+                        <div className="text-sm text-destructive flex items-center gap-1">
                           <Info className="h-3 w-3" />
                           {errors.parentPhone.message}
-                        </p>
+                        </div>
                       )}
                     </div>
                   </div>

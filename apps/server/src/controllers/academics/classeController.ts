@@ -412,7 +412,9 @@ export const getClassesStats = async (req: Request, res: Response) => {
     // Exclure les classes sans capacité définie pour éviter les erreurs Prisma sur groupBy
     const whereNonNullCapacity = {
       ...where,
-      capaciteMaximale: { not: null as any },
+      capaciteMaximale: {
+        not: null
+      },
     };
 
     const stats = await prisma.classe.aggregate({
@@ -429,7 +431,7 @@ export const getClassesStats = async (req: Request, res: Response) => {
       where: {
         isActive: true,
         classe: anneeScolaire ? {
-          anneeScolaire
+          anneeScolaire: anneeScolaire
         } : undefined
       }
     });

@@ -203,7 +203,7 @@ type GetPeriodeGroupByPayload<T extends PeriodeGroupByArgs> = Prisma.PrismaPromi
           : Prisma.GetScalarType<T[P], PeriodeGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

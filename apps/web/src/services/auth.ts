@@ -17,6 +17,11 @@ interface LoginCredentials {
   password: string;
 }
 
+// Fonction utilitaire pour vérifier si localStorage est disponible
+const isLocalStorageAvailable = (): boolean => {
+  return typeof window !== 'undefined' && window.localStorage;
+};
+
 // Service d'authentification
 const AuthService = {
   // Fonction de connexion
@@ -27,7 +32,7 @@ const AuthService = {
       });
       
       // Stocker le token dans localStorage
-      if (response.data.token) {
+      if (response.data.token && isLocalStorageAvailable()) {
         localStorage.setItem('auth-token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
@@ -40,19 +45,26 @@ const AuthService = {
   
   // Fonction de déconnexion
   logout: (): void => {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('user');
+    if (isLocalStorageAvailable()) {
+      localStorage.removeItem('auth-token');
+      localStorage.removeItem('user');
+    }
     // Rediriger vers la page de connexion
-    window.location.href = '/login';
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
   },
   
   // Récupérer le token
   getToken: (): string | null => {
+    if (!isLocalStorageAvailable()) return null;
     return localStorage.getItem('auth-token');
   },
   
   // Récupérer l'utilisateur connecté
   getCurrentUser: (): any => {
+    if (!isLocalStorageAvailable()) return null;
+    
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
@@ -67,6 +79,7 @@ const AuthService = {
   
   // Vérifier si l'utilisateur est connecté
   isAuthenticated: (): boolean => {
+    if (!isLocalStorageAvailable()) return false;
     return !!localStorage.getItem('auth-token');
   },
   

@@ -182,7 +182,7 @@ type GetParametreEcoleGroupByPayload<T extends ParametreEcoleGroupByArgs> = Pris
           : Prisma.GetScalarType<T[P], ParametreEcoleGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

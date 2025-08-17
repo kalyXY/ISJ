@@ -237,7 +237,7 @@ type GetClasseGroupByPayload<T extends ClasseGroupByArgs> = Prisma.PrismaPromise
           : Prisma.GetScalarType<T[P], ClasseGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

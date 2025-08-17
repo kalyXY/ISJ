@@ -227,7 +227,7 @@ type GetHistoriqueModificationGroupByPayload<T extends HistoriqueModificationGro
           : Prisma.GetScalarType<T[P], HistoriqueModificationGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

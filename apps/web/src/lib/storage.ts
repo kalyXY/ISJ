@@ -64,14 +64,22 @@ export class OfflineStorageService {
 
   private getOrCreateEncryptionKey(): string {
     const key = 'isj-encryption-key';
-    let encryptionKey = localStorage.getItem(key);
     
-    if (!encryptionKey) {
-      encryptionKey = CryptoJS.lib.WordArray.random(256/8).toString();
-      localStorage.setItem(key, encryptionKey);
+    // Vérifier si localStorage est disponible (côté client)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      let encryptionKey = localStorage.getItem(key);
+      
+      if (!encryptionKey) {
+        encryptionKey = CryptoJS.lib.WordArray.random(256/8).toString();
+        localStorage.setItem(key, encryptionKey);
+      }
+      
+      return encryptionKey;
+    } else {
+      // Côté serveur, utiliser une clé par défaut ou générer une nouvelle
+      // Note: Cette clé sera régénérée à chaque redémarrage du serveur
+      return CryptoJS.lib.WordArray.random(256/8).toString();
     }
-    
-    return encryptionKey;
   }
 
   private encrypt(data: any): string {

@@ -207,9 +207,9 @@ export const StudentListByClass = ({ class: classe, open, onOpenChange, onRemove
                             
                             <div className="flex-1">
                               <div className="flex items-center gap-3">
-                                <p className="font-semibold">
+                                <div className="font-semibold">
                                   {index + 1}. {student.firstName} {student.lastName}
-                                </p>
+                                </div>
                                 <Badge variant="outline" className="text-xs">
                                   {student.matricule}
                                 </Badge>

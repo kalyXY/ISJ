@@ -154,7 +154,7 @@ type GetEnseignantMatiereGroupByPayload<T extends EnseignantMatiereGroupByArgs> 
           : Prisma.GetScalarType<T[P], EnseignantMatiereGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

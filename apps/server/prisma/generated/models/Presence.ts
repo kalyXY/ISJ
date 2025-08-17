@@ -161,7 +161,7 @@ type GetPresenceGroupByPayload<T extends PresenceGroupByArgs> = Prisma.PrismaPro
           : Prisma.GetScalarType<T[P], PresenceGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

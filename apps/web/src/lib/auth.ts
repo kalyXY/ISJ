@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { API_URL } from '@/config';
 
 // Types
 export type UserRole = 'admin' | 'enseignant' | 'eleve' | 'parent' | 'parent_attente' | 'pending_parent';
@@ -36,7 +37,7 @@ const api = axios.create({
 
 // Intercepteur pour ajouter le token JWT à toutes les requêtes
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth-token');
+  const token = getTokenFromStorage();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -45,7 +46,7 @@ api.interceptors.request.use((config) => {
 
 // Fonction pour récupérer l'utilisateur courant
 export const getCurrentUser = async (): Promise<User | null> => {
-  const token = localStorage.getItem('auth-token');
+  const token = getTokenFromStorage();
   
   if (!token) {
     console.log('Aucun token trouvé dans localStorage');
@@ -102,7 +103,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
     // car cela pourrait être un problème temporaire du serveur
     if (error.response?.status !== 500) {
       console.log('Suppression du token en raison d\'une erreur non-temporaire');
-      localStorage.removeItem('auth-token');
+      removeTokenFromStorage();
     }
     
     return null;
@@ -123,7 +124,7 @@ export const refreshToken = async (): Promise<string | null> => {
     const token = response.data.token;
     
     // Stocker le nouveau token dans localStorage
-    localStorage.setItem('auth-token', token);
+    setTokenInStorage(token);
     
     // Mettre à jour le cookie
     if (typeof document !== 'undefined') {
@@ -136,6 +137,31 @@ export const refreshToken = async (): Promise<string | null> => {
   } catch (error) {
     console.error('Erreur lors du rafraîchissement du token:', error);
     return null;
+  }
+};
+
+// Fonction utilitaire pour vérifier si localStorage est disponible
+const isLocalStorageAvailable = (): boolean => {
+  return typeof window !== 'undefined' && !!window.localStorage;
+};
+
+// Fonction utilitaire pour récupérer le token de manière sécurisée
+const getTokenFromStorage = (): string | null => {
+  if (!isLocalStorageAvailable()) return null;
+  return localStorage.getItem('auth-token');
+};
+
+// Fonction utilitaire pour stocker le token de manière sécurisée
+const setTokenInStorage = (token: string): void => {
+  if (isLocalStorageAvailable()) {
+    localStorage.setItem('auth-token', token);
+  }
+};
+
+// Fonction utilitaire pour supprimer le token de manière sécurisée
+const removeTokenFromStorage = (): void => {
+  if (isLocalStorageAvailable()) {
+    localStorage.removeItem('auth-token');
   }
 };
 
@@ -161,7 +187,7 @@ export const useAuthStore = create<AuthState>()(
           console.log('Token reçu:', response.data.token.substring(0, 10) + '...');
           
           // Stocker le token dans localStorage pour une persistance plus longue
-          localStorage.setItem('auth-token', response.data.token);
+          setTokenInStorage(response.data.token);
 
           // Déposer également le token dans un cookie (non HttpOnly) afin que le middleware
           // Next.js (côté serveur) puisse l'utiliser pour l'autorisation des pages.
@@ -192,7 +218,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           await api.post('/api/auth/logout');
           // Supprimer le token du localStorage
-          localStorage.removeItem('auth-token');
+          removeTokenFromStorage();
           if (typeof document !== 'undefined') {
             document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
           }
@@ -235,12 +261,12 @@ export const useAuthStore = create<AuthState>()(
           
           // Si pas de token dans les cookies, essayer localStorage
           if (!token) {
-            token = localStorage.getItem('auth-token');
+            token = getTokenFromStorage();
           }
           
           // Stocker le token trouvé dans localStorage pour assurer la cohérence
           if (token) {
-            localStorage.setItem('auth-token', token);
+            setTokenInStorage(token);
           }
           
           // Si aucun token, l'utilisateur n'est pas connecté

@@ -182,7 +182,7 @@ type GetAnneeScolaireGroupByPayload<T extends AnneeScolaireGroupByArgs> = Prisma
           : Prisma.GetScalarType<T[P], AnneeScolaireGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

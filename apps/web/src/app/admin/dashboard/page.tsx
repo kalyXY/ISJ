@@ -2,7 +2,7 @@
 
 import { useRequireAuth } from "@/lib/auth";
 import Spinner from "@/components/ui/spinner";
-import { DashboardSkeleton } from "@/components/ui/loading-skeleton";
+import { DashboardSkeleton, InstantLoading } from "@/components/ui/loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart3,
@@ -35,19 +35,18 @@ export default function AdminDashboard() {
     isError 
   } = useDashboardData();
 
-  // Show loading state while authenticating or if no user yet
+  // Show optimized loading state while authenticating
   if (authLoading || !user) {
     return (
       <div className="flex h-[calc(100vh-8rem)] w-full items-center justify-center">
-        <div className="text-center animate-pulse">
-          <Spinner size="lg" color="primary" />
-          <p className="mt-4 text-primary font-medium">Chargement du tableau de bord...</p>
+        <div className="text-center">
+          <InstantLoading message="Vérification de l'authentification..." />
         </div>
       </div>
     );
   }
 
-  // Show loading state for data with skeleton
+  // Show optimized loading state for data with skeleton
   if (dataLoading) {
     return <DashboardSkeleton />;
   }
@@ -55,21 +54,20 @@ export default function AdminDashboard() {
   // Show error state
   if (isError || dataError) {
     return (
-      <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
-        <div className="text-center max-w-md">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
-          </div>
-          <h2 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Erreur de chargement</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {dataError?.message || "Impossible de charger les données du tableau de bord"}
+      <div className="flex h-[calc(100vh-8rem)] w-full items-center justify-center">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+          <h2 className="text-xl font-semibold text-destructive">
+            Erreur de chargement
+          </h2>
+          <p className="text-muted-foreground max-w-md">
+            Impossible de charger les données du tableau de bord. Veuillez réessayer.
           </p>
           <Button 
-            onClick={() => window.location.reload()}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            onClick={() => window.location.reload()} 
+            variant="outline"
           >
-            <Activity className="h-4 w-4 mr-2" />
-            Réessayer
+            Recharger la page
           </Button>
         </div>
       </div>

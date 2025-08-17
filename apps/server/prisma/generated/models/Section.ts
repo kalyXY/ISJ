@@ -161,7 +161,7 @@ type GetSectionGroupByPayload<T extends SectionGroupByArgs> = Prisma.PrismaPromi
           : Prisma.GetScalarType<T[P], SectionGroupByOutputType[P]>
       }
     >
-  > 
+  >
 
 
 

@@ -35,9 +35,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { isLoading, targetRoute, navigateWithLoading } = useNavigationLoading({
-    minLoadingTime: 500,
-    delay: 120,
-    excludeRoutes: ['/login', '/register', '/admin/dashboard']
+    minLoadingTime: 300, // Réduit de 500ms à 300ms
+    delay: 30, // Réduit de 120ms à 30ms
+    excludeRoutes: ['/login', '/register', '/admin/dashboard'],
+    enablePrefetch: true
   });
   
   // Prefetch routes for better performance
@@ -45,7 +46,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     router.prefetch(href);
   }, [router]);
   
-  // Prefetch all navigation routes on component mount
+  // Prefetch all navigation routes on component mount with optimized timing
   useEffect(() => {
     const routesToPrefetch = [
       "/admin/dashboard",
@@ -57,10 +58,16 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       "/admin/classes/assignment"
     ];
     
-    // Prefetch routes with a slight delay to avoid blocking initial render
+    // Prefetch routes immediately for critical routes, then others
+    const criticalRoutes = ["/admin/dashboard", "/admin/users"];
+    criticalRoutes.forEach(route => prefetchRoute(route));
+    
+    // Prefetch remaining routes with minimal delay
     const timer = setTimeout(() => {
-      routesToPrefetch.forEach(route => prefetchRoute(route));
-    }, 100);
+      routesToPrefetch
+        .filter(route => !criticalRoutes.includes(route))
+        .forEach(route => prefetchRoute(route));
+    }, 50); // Réduit de 100ms à 50ms
     
     return () => clearTimeout(timer);
   }, [prefetchRoute]);
