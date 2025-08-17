@@ -54,6 +54,7 @@ import {
 
 import elevesRoutes from './eleves.routes';
 import bulletinsRoutes from './bulletins.routes';
+import assignmentRoutes from './assignment.routes';
 
 const router = express.Router();
 
@@ -103,5 +104,6 @@ router.put('/annees/:id/setCurrent', setCurrentAnneeScolaire);
 
 router.use('/eleves', elevesRoutes);
 router.use('/bulletins', bulletinsRoutes);
+router.use('/assignment', assignmentRoutes);
 
 export default router; 

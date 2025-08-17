@@ -1,5 +1,43 @@
 # Changelog
 
+## [2025-08-17] - Implémentation de l'affectation des élèves aux salles
+
+### 🎯 Objectif
+Permettre l'affectation d'un élève à une salle spécifique (ex: "A", "B") au sein de sa classe logique (ex: "1ère CG"), en s'assurant que l'affectation n'est possible que dans les salles de la bonne classe.
+
+### ✨ Nouvelles fonctionnalités
+
+#### 🗄️ Modèle de données
+- **Ajout du champ `salleCode`** sur le modèle `Student` dans `prisma/schema.prisma` pour stocker la salle assignée.
+
+#### 🔧 Backend (API)
+- **Nouvelles routes** (`apps/server/src/routes/academics/assignment.routes.ts`) dédiées à l'affectation.
+- **Nouveau contrôleur** (`apps/server/src/controllers/academics/assignmentController.ts`) avec la logique métier :
+  - `GET /api/classes/:classeId/salles` : Récupère les salles disponibles pour une classe.
+  - `GET /api/classes/:classeId/students` : Récupère les élèves d'une classe (avec filtre pour les non-affectés).
+  - `POST /api/classes/:classeId/assign-students` : Affecte en masse des élèves à une salle.
+  - `POST /api/classes/:classeId/unassign-students` : Désaffecte en masse des élèves.
+- **Validation Stricte** : Le backend vérifie que les élèves et la salle cible appartiennent bien à la même classe logique avant toute affectation.
+
+#### 🎨 Frontend
+- **Nouveau service API** (`apps/web/src/services/assignment.ts`) utilisant `axiosInstance`.
+- **Refonte complète de la page d'affectation** (`/admin/classes/assignment/page.tsx`):
+  - Workflow en 2 étapes : sélection de la classe, puis sélection des élèves et de la salle.
+  - La liste des salles est filtrée dynamiquement en fonction de la classe choisie.
+  - Tableau des élèves avec cases à cocher pour la sélection multiple.
+  - Affichage du statut d'affectation de chaque élève (ex: "Salle A" ou "Non affecté").
+  - Logique pour affecter/désaffecter en masse les élèves sélectionnés.
+
+### 🛠️ Fichiers créés/modifiés
+- `apps/server/prisma/schema/schema.prisma`
+- `apps/server/src/routes/academics/assignment.routes.ts`
+- `apps/server/src/controllers/academics/assignmentController.ts`
+- `apps/server/src/routes/academics/academics.routes.ts`
+- `apps/web/src/services/assignment.ts`
+- `apps/web/src/app/admin/classes/assignment/page.tsx`
+
+---
+
 ## [2025-01-19] - Développement complet du module "Gestion des bulletins & notes"
 
 ### 🎯 Objectif atteint

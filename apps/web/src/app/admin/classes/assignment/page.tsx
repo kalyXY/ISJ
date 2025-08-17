@@ -1,529 +1,277 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { 
-  Users, 
-  Plus, 
-  Search, 
-  AlertTriangle, 
-  CheckCircle, 
-  User, 
-  School, 
-  UserPlus,
-  Settings,
-  Eye,
-  Trash2
-} from 'lucide-react';
-import { StudentAssignmentDialog } from '@/components/classes/student-assignment-dialog';
-import { ClassManagementCard } from '@/components/classes/class-management-card';
-import { StudentListByClass } from '@/components/classes/student-list-by-class';
-import { ClassStatsCard } from '@/components/classes/class-stats-card';
-import { API_URL, getAuthHeaders } from '@/config/api';
-
-interface Class {
-  id: string;
-  nom: string;
-  salle?: string;
-  section?: { nom: string };
-  option?: { nom: string };
-  anneeScolaire: string;
-  capaciteMaximale: number;
-  description?: string;
-  studentsCount: number;
-  availableSpots: number;
-  isAtCapacity: boolean;
-  capacityPercentage: number;
-}
-
-interface Student {
-  id: string;
-  firstName: string;
-  lastName: string;
-  matricule: string;
-  classe?: {
-    id: string;
-    nom: string;
-  };
-  parentPhone: string;
-}
-
-interface ClassStats {
-  totalClasses: number;
-  totalCapacity: number;
-  totalStudents: number;
-  availableSpots: number;
-  occupancyPercentage: number;
-}
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { School, User, ArrowRight, Trash2, Loader2 } from 'lucide-react';
+import {
+  getSallesByClass,
+  getStudentsByClass,
+  assignStudentsToSalle,
+  unassignStudentsFromSalle,
+  Salle,
+  StudentForAssignment,
+} from '@/services/assignment';
+import { getAllClasses, Classe } from '@/services/academics';
 
 const ClassAssignmentPage = () => {
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [students, setStudents] = useState<Student[]>([]);
-  const [stats, setStats] = useState<ClassStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedAnneeScolaire, setSelectedAnneeScolaire] = useState('');
-  const [selectedSection, setSelectedSection] = useState('all');
-  const [selectedClass, setSelectedClass] = useState<Class | null>(null);
-  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
-  const [unassignedStudentsOnly, setUnassignedStudentsOnly] = useState(false);
+  // State
+  const [logicalClasses, setLogicalClasses] = useState<Classe[]>([]);
+  const [students, setStudents] = useState<StudentForAssignment[]>([]);
+  const [salles, setSalles] = useState<Salle[]>([]);
 
-  // États pour la gestion des années scolaires, sections, etc.
-  const [anneesScolaires, setAnneesScolaires] = useState<string[]>([]);
-  const [sections, setSections] = useState<Array<{id: string, nom: string}>>([]);
+  const [selectedLogicalClassId, setSelectedLogicalClassId] = useState<string | null>(null);
+  const [selectedSalleCode, setSelectedSalleCode] = useState<string | null>(null);
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
 
-  const fetchClasses = async () => {
+  const [loading, setLoading] = useState({
+    classes: true,
+    students: false,
+    salles: false,
+    assignment: false,
+  });
+
+  // Fetch initial logical classes (classes without a specific 'salle')
+  const fetchLogicalClasses = useCallback(async () => {
+    setLoading(prev => ({ ...prev, classes: true }));
     try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      const params = new URLSearchParams();
-      if (selectedAnneeScolaire) params.append('anneeScolaire', selectedAnneeScolaire);
-      if (selectedSection && selectedSection !== 'all') params.append('sectionId', selectedSection);
-      if (searchTerm) params.append('search', searchTerm);
-      
-      const response = await fetch(`${API_URL}/academics/classes?${params.toString()}`, {
-        headers,
-        credentials: 'include',
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setClasses(data.data);
-      } else {
-        toast.error('Erreur lors du chargement des classes');
-      }
+      // Fetch all classes and filter on the frontend for "logical" ones (those without a salle)
+      const all_classes = await getAllClasses();
+      const logical = all_classes.filter(c => !c.salle);
+      setLogicalClasses(logical);
     } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.error('Erreur lors du chargement des classes logiques.');
+    } finally {
+      setLoading(prev => ({ ...prev, classes: false }));
     }
-  };
-
-  const fetchStudents = async () => {
-    try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      const params = new URLSearchParams();
-      if (searchTerm) params.append('search', searchTerm);
-      if (unassignedStudentsOnly) params.append('classeId', 'null');
-      
-      const response = await fetch(`${API_URL}/academics/eleves?${params.toString()}`, {
-        headers,
-        credentials: 'include',
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setStudents(data.data);
-      } else {
-        toast.error('Erreur lors du chargement des élèves');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    }
-  };
-
-  const fetchStats = async () => {
-    try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      const params = new URLSearchParams();
-      if (selectedAnneeScolaire) params.append('anneeScolaire', selectedAnneeScolaire);
-      
-      let response = await fetch(`${API_URL}/academics/classes/stats?${params.toString()}`, {
-        headers,
-        credentials: 'include',
-      });
-
-      // Fallback: si erreur serveur (ex: année inexistante), retenter sans filtre d'année
-      if (!response.ok) {
-        response = await fetch(`${API_URL}/academics/classes/stats`, {
-          headers,
-          credentials: 'include',
-        });
-      }
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setStats(data.data);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
-    }
-  };
-
-  const fetchMetadata = async () => {
-    try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      // Récupérer les années scolaires
-      const anneesResponse = await fetch(`${API_URL}/academics/annees`, {
-        headers,
-        credentials: 'include',
-      });
-      const anneesData = await anneesResponse.json();
-      if (anneesData.success) {
-        const years = anneesData.data.map((a: any) => a.nom);
-        setAnneesScolaires(years);
-        
-        // Définir l'année courante par défaut
-        const currentYear = anneesData.data.find((a: any) => a.actuelle);
-        if (currentYear) {
-          setSelectedAnneeScolaire(currentYear.nom);
-        }
-      }
-
-      // Récupérer les sections
-      const sectionsResponse = await fetch(`${API_URL}/academics/sections`, {
-        headers,
-        credentials: 'include',
-      });
-      const sectionsData = await sectionsResponse.json();
-      if (sectionsData.success) {
-        setSections(sectionsData.data);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement des métadonnées:', error);
-    }
-  };
-
-  const handleAssignStudent = async (studentId: string, classId: string, forceAssignment = false) => {
-    try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      const response = await fetch(`${API_URL}/academics/eleves/add-to-classe`, {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body: JSON.stringify({
-          eleveId: studentId,
-          classeId: classId,
-          forceAssignment
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        toast.success(data.message);
-        await Promise.all([fetchClasses(), fetchStudents(), fetchStats()]);
-        setAssignmentDialogOpen(false);
-      } else if (response.status === 409) {
-        // Conflits détectés
-        const confirmForce = confirm(
-          `Conflits détectés:\n${data.conflicts.join('\n')}\n\nForcer l'affectation ?`
-        );
-        
-        if (confirmForce) {
-          await handleAssignStudent(studentId, classId, true);
-        }
-      } else {
-        toast.error(data.message || 'Erreur lors de l\'affectation');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    }
-  };
-
-  const handleRemoveStudent = async (classId: string, studentId: string) => {
-    if (!confirm('Retirer cet élève de la classe ?')) return;
-    
-    try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-      const response = await fetch(`${API_URL}/academics/classes/${classId}/students/${studentId}`, {
-        method: 'DELETE',
-        headers,
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        toast.success(data.message);
-        await Promise.all([fetchClasses(), fetchStudents(), fetchStats()]);
-      } else {
-        toast.error(data.message || 'Erreur lors du retrait');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    }
-  };
-
-  useEffect(() => {
-    fetchMetadata();
   }, []);
 
   useEffect(() => {
-    if (selectedAnneeScolaire) {
-      setLoading(true);
-      Promise.all([fetchClasses(), fetchStudents(), fetchStats()])
-        .finally(() => setLoading(false));
-    }
-  }, [selectedAnneeScolaire, selectedSection, searchTerm, unassignedStudentsOnly]);
+    fetchLogicalClasses();
+  }, [fetchLogicalClasses]);
 
-  const getCapacityBadgeVariant = (percentage: number) => {
-    if (percentage >= 100) return 'destructive';
-    if (percentage >= 80) return 'outline';
-    return 'secondary';
+  // Fetch students and salles when a logical class is selected
+  useEffect(() => {
+    if (!selectedLogicalClassId) {
+      setStudents([]);
+      setSalles([]);
+      return;
+    }
+
+    const fetchDataForClass = async () => {
+      setLoading(prev => ({ ...prev, students: true, salles: true }));
+      try {
+        const [studentsData, sallesData] = await Promise.all([
+          getStudentsByClass(selectedLogicalClassId),
+          getSallesByClass(selectedLogicalClassId),
+        ]);
+        setStudents(studentsData);
+        setSalles(sallesData);
+      } catch (error) {
+        toast.error("Erreur lors du chargement des élèves ou des salles.");
+      } finally {
+        setLoading(prev => ({ ...prev, students: false, salles: false }));
+      }
+    };
+
+    fetchDataForClass();
+    setSelectedStudentIds([]);
+    setSelectedSalleCode(null);
+  }, [selectedLogicalClassId]);
+
+  const handleAssign = async () => {
+    if (!selectedLogicalClassId || !selectedSalleCode || selectedStudentIds.length === 0) {
+      toast.warning('Veuillez sélectionner une classe, une salle et au moins un élève.');
+      return;
+    }
+    setLoading(prev => ({ ...prev, assignment: true }));
+    try {
+      const payload = { studentIds: selectedStudentIds, salleCode: selectedSalleCode };
+      const result = await assignStudentsToSalle(selectedLogicalClassId, payload);
+      toast.success(result.message);
+      // Refresh student list
+      const updatedStudents = await getStudentsByClass(selectedLogicalClassId);
+      setStudents(updatedStudents);
+      setSelectedStudentIds([]);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Erreur lors de l'affectation.");
+    } finally {
+      setLoading(prev => ({ ...prev, assignment: false }));
+    }
   };
 
-  const filteredStudents = students.filter(student => 
-    unassignedStudentsOnly ? !student.classe : true
-  );
+  const handleUnassign = async () => {
+    if (!selectedLogicalClassId || selectedStudentIds.length === 0) {
+       toast.warning('Veuillez sélectionner une classe et au moins un élève.');
+      return;
+    }
+    setLoading(prev => ({ ...prev, assignment: true }));
+    try {
+      const payload = { studentIds: selectedStudentIds };
+      const result = await unassignStudentsFromSalle(selectedLogicalClassId, payload);
+      toast.success(result.message);
+      // Refresh student list
+      const updatedStudents = await getStudentsByClass(selectedLogicalClassId);
+      setStudents(updatedStudents);
+      setSelectedStudentIds([]);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Erreur lors de la désaffectation.");
+    } finally {
+      setLoading(prev => ({ ...prev, assignment: false }));
+    }
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    setSelectedStudentIds(checked ? students.map(s => s.id) : []);
+  };
+
+  const toggleStudentSelection = (studentId: string, checked: boolean) => {
+    setSelectedStudentIds(prev =>
+      checked ? [...prev, studentId] : prev.filter(id => id !== studentId)
+    );
+  };
+
+  const selectedClass = useMemo(() => {
+    return logicalClasses.find(c => c.id === selectedLogicalClassId);
+  }, [selectedLogicalClassId, logicalClasses]);
 
   return (
     <div className="space-y-6 p-6">
-      {/* En-tête */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Affectation des élèves</h1>
+          <h1 className="text-3xl font-bold">Affectation aux Salles</h1>
           <p className="text-muted-foreground">
-            Gérez l'affectation des élèves dans les salles de classe
+            Assignez des élèves à une salle au sein de leur classe.
           </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setAssignmentDialogOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <UserPlus className="h-4 w-4" />
-            Affecter un élève
-          </Button>
         </div>
       </div>
 
-      {/* Statistiques */}
-      {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ClassStatsCard
-            title="Classes totales"
-            value={stats.totalClasses}
-            icon={School}
-            variant="default"
-          />
-          <ClassStatsCard
-            title="Capacité totale"
-            value={stats.totalCapacity}
-            icon={Users}
-            variant="default"
-          />
-          <ClassStatsCard
-            title="Élèves inscrits"
-            value={stats.totalStudents}
-            icon={User}
-            variant="default"
-          />
-          <ClassStatsCard
-            title="Taux d'occupation"
-            value={`${stats.occupancyPercentage}%`}
-            icon={CheckCircle}
-            variant={stats.occupancyPercentage > 90 ? "destructive" : "default"}
-          />
-        </div>
-      )}
-
-      {/* Filtres */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Filtres
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Recherche</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-2 block">Année scolaire</label>
-              <Select value={selectedAnneeScolaire} onValueChange={setSelectedAnneeScolaire}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionner l'année" />
-                </SelectTrigger>
-                <SelectContent>
-                  {anneesScolaires.map((annee) => (
-                    <SelectItem key={annee} value={annee}>
-                      {annee}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Section</label>
-              <Select value={selectedSection} onValueChange={setSelectedSection}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Toutes les sections" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toutes les sections</SelectItem>
-                  {sections.map((section) => (
-                    <SelectItem key={section.id} value={section.id}>
-                      {section.nom}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-end">
-              <Button
-                variant={unassignedStudentsOnly ? "default" : "outline"}
-                onClick={() => setUnassignedStudentsOnly(!unassignedStudentsOnly)}
-                className="w-full"
-              >
-                {unassignedStudentsOnly ? "Tous les élèves" : "Élèves non affectés"}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Contenu principal */}
-      <Tabs defaultValue="classes" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="classes">Vue par classes</TabsTrigger>
-          <TabsTrigger value="students">Vue par élèves</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="classes" className="space-y-4">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <CardContent className="p-6">
-                    <div className="h-20 bg-gray-200 rounded"></div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {classes.map((classe) => (
-                <ClassManagementCard
-                  key={classe.id}
-                  class={classe}
-                  onViewStudents={() => setSelectedClass(classe)}
-                  onAssignStudent={() => {
-                    setSelectedClass(classe);
-                    setAssignmentDialogOpen(true);
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="students" className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Colonne de sélection */}
+        <div className="lg:col-span-1 space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Liste des élèves</span>
-                <Badge variant="secondary">
-                  {filteredStudents.length} élève{filteredStudents.length > 1 ? 's' : ''}
-                </Badge>
+              <CardTitle className="flex items-center gap-2">
+                <School className="h-5 w-5" />
+                1. Choisissez une Classe
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {filteredStudents.map((student) => (
-                  <div
-                    key={student.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium">
-                          {student.firstName} {student.lastName}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {student.matricule}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      {student.classe ? (
-                        <Badge variant="secondary">
-                          {student.classe.nom}
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline">
-                          Non affecté
-                        </Badge>
-                      )}
-                      
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            // Implémenter la vue détaillée de l'élève
-                            toast.info('Vue détaillée à implémenter');
-                          }}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        
-                        {!student.classe && (
-                          <Button
-                            size="sm"
-                            onClick={() => setAssignmentDialogOpen(true)}
-                          >
-                            <Plus className="h-4 w-4" />
-                            Affecter
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Select onValueChange={setSelectedLogicalClassId} value={selectedLogicalClassId || ''}>
+                <SelectTrigger disabled={loading.classes}>
+                  <SelectValue placeholder={loading.classes ? "Chargement..." : "Sélectionner une classe"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {logicalClasses.map(cls => (
+                    <SelectItem key={cls.id} value={cls.id}>
+                      {cls.nom}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
 
-      {/* Dialog d'affectation */}
-      <StudentAssignmentDialog
-        open={assignmentDialogOpen}
-        onOpenChange={setAssignmentDialogOpen}
-        classes={classes}
-        students={filteredStudents}
-        selectedClass={selectedClass}
-        onAssign={handleAssignStudent}
-      />
+          {selectedLogicalClassId && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ArrowRight className="h-5 w-5" />
+                  2. Choisissez une Salle
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Select onValueChange={setSelectedSalleCode} value={selectedSalleCode || ''}>
+                  <SelectTrigger disabled={loading.salles}>
+                    <SelectValue placeholder={loading.salles ? "Chargement..." : "Sélectionner une salle"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {salles.map(salle => (
+                      <SelectItem key={salle.salle} value={salle.salle}>
+                        Salle {salle.salle}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                 <div className="mt-4 flex flex-col space-y-2">
+                   <Button onClick={handleAssign} disabled={loading.assignment || !selectedSalleCode || selectedStudentIds.length === 0}>
+                     {loading.assignment && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                     Affecter ({selectedStudentIds.length}) à cette salle
+                   </Button>
+                   <Button onClick={handleUnassign} variant="outline" disabled={loading.assignment || selectedStudentIds.length === 0}>
+                     <Trash2 className="mr-2 h-4 w-4" />
+                     Désaffecter la sélection ({selectedStudentIds.length})
+                   </Button>
+                 </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
-      {/* Dialog de vue des élèves d'une classe */}
-      {selectedClass && (
-        <StudentListByClass
-          class={selectedClass}
-          open={!!selectedClass}
-          onOpenChange={() => setSelectedClass(null)}
-          onRemoveStudent={handleRemoveStudent}
-        />
-      )}
+        {/* Colonne de la liste des élèves */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className='flex items-center gap-2'>
+                  <User className="h-5 w-5" />
+                  <span>Élèves de la classe {selectedClass?.nom || '...'}</span>
+                </div>
+                <Badge variant="secondary">{students.length} élèves</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading.students ? (
+                 <div className="flex justify-center items-center h-48">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                 </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[50px]">
+                        <Checkbox
+                          checked={selectedStudentIds.length === students.length && students.length > 0}
+                          onCheckedChange={toggleSelectAll}
+                        />
+                      </TableHead>
+                      <TableHead>Nom</TableHead>
+                      <TableHead>Matricule</TableHead>
+                      <TableHead className="text-right">Salle Actuelle</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {students.map(student => (
+                      <TableRow key={student.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedStudentIds.includes(student.id)}
+                            onCheckedChange={(checked) => toggleStudentSelection(student.id, !!checked)}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">{student.firstName} {student.lastName}</TableCell>
+                        <TableCell>{student.matricule}</TableCell>
+                        <TableCell className="text-right">
+                          {student.salleCode ? (
+                            <Badge variant="default">Salle {student.salleCode}</Badge>
+                          ) : (
+                            <Badge variant="outline">Non affecté</Badge>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
