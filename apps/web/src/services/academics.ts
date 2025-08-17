@@ -244,6 +244,7 @@ export const academicsService = {
 };
 
 // Exports individuels pour compatibilité avec les composants existants
+export const getAllClasses = classesService.getAll;
 export const getClasses = classesService.getAll;
 export const getSections = sectionsService.getAll;
 export const getOptions = optionsService.getAll;
